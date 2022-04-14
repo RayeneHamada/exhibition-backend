@@ -6,6 +6,11 @@ const imageUpload = require('../config/multerConfig').imageUpload;
 
 
 router.post('/update',jwtHelper.verifyModeratorJwtToken, main_controller.updateExhbition);
+router.post('/updateSponsorDiscCustom0',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorDiscCustom0);
+router.post('/updateSponsorDiscCustom1',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorDiscCustom1);
+router.post('/updateSponsorDiscCustom2',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorDiscCustom2);
+router.post('/updateSponsorCylindre',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorCylindre);
+
 router.get('/all',main_controller.getAll);
 
 //router.post('/googleauth', main_controller.test);
