@@ -18,7 +18,7 @@ const path = require('path');
 const passport = require('passport');
 
 const app = express();
-app.use(helmet());
+//app.use(helmet());
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize())
