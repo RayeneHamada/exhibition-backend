@@ -13,7 +13,7 @@ var exhibitionSchema = new Schema({
     },
     hall_type: {
         type: String,
-        enum: ['L', 'M', 'S'],
+        enum: ['small_exhibition', 'medium_exhibition', 'large_exhibition'],
     },
     carpet_color: {
         type: [Number],

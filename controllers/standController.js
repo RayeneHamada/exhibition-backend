@@ -109,7 +109,7 @@ exports.updateBackgroundColor = (req, res) => {
             else {
                 stand.background_color = req.body.background_color;
                 replaceColor({
-                    image: './public/' + req._id + ".png",
+                    image: './public/' + stand.texture_download_url,
                     colors: {
                         type: 'rgb',
                         targetColor: colors[stand.type],
@@ -118,7 +118,7 @@ exports.updateBackgroundColor = (req, res) => {
                     deltaE: 10
                 })
                     .then((jimpObject) => {
-                        jimpObject.write('./public/' + req._id + ".png", (err) => {
+                        jimpObject.write('./public/' + stand.texture_download_url, (err) => {
                             if (err) return console.log(err);
                             Stand.updateOne({ _id: req.stand }, stand).then(
                                 () => {
