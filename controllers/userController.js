@@ -156,8 +156,8 @@ exports.createExponent = async (req, res) => {
                     res.status(400).send({ success: false, message: err2 });
                 }
                 else {
-                    //let testAccount = await nodemailer.createTestAccount();
-                    /*let transporter = nodemailer.createTransport({
+                    let testAccount = await nodemailer.createTestAccount();
+                    let transporter = nodemailer.createTransport({
                         host: "smtp.ethereal.email",
                         port: 587,
                         secure: false, // true for 465, false for other ports
@@ -165,13 +165,13 @@ exports.createExponent = async (req, res) => {
                             user: testAccount.user, // generated ethereal user
                             pass: testAccount.pass, // generated ethereal password
                         },
-                    });*/
-                    /*let info = await transporter.sendMail({
+                    });
+                    let info = await transporter.sendMail({
                         from: '"3DExhibition Team" <3DExhibition@gmail.com>', // sender address
                         to: userDoc.email, // list of receivers
                         subject: "Coordonnées d'accces à 3DExhibition", // Subject line
                         html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
-                    });*/
+                    });
                     try {
                         fs.copyFileSync("./ressources/" + texture[standDoc.type], "./public/texture" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
                     } catch {
@@ -179,7 +179,7 @@ exports.createExponent = async (req, res) => {
                     }
                     if (req.body.stand.banner) {
                         try {
-                            fs.copyFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type-1], "./public/banner" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            fs.copyFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type], "./public/banner" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
                         } catch {
                             console.log('The file could not be copied');
                         }

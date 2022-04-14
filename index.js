@@ -9,6 +9,7 @@ require('./config/passportConfig');
 
 const http = require("http");
 const express = require("express");
+const helmet =require('helmet');
 const cors = require('cors');
 const path = require('path');
 
@@ -17,11 +18,10 @@ const path = require('path');
 const passport = require('passport');
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize())
-
-
 
 //import routes
 const userRoute = require('./routes/userRoute');
