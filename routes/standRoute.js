@@ -5,7 +5,8 @@ const { pdfUpload } = require('../config/multerConfig');
 const main_controller = require('../controllers/standController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 
-
+router.get('/myStand', jwtHelper.verifyExponentJwtToken,main_controller.myStand);
+router.get('/:id',main_controller.getStandById);
 router.post('/updateLogo',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateLogo);
 router.post('/updatePDF',[pdfUpload.single('pdf'),jwtHelper.verifyExponentJwtToken], main_controller.updatePDF);
 router.post('/updateFurnitureColor',jwtHelper.verifyExponentJwtToken, main_controller.updateFurnitureColor);
@@ -16,6 +17,7 @@ router.post('/updateCustom0',[imageUpload.single('image'),jwtHelper.verifyExpone
 router.post('/updateCustom1',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom1);
 router.post('/updateCustom2',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom2);
 router.post('/updateCustom3',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom3);
+
 
 //router.post('/googleauth', main_controller.test);
 

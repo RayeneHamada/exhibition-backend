@@ -26,10 +26,10 @@ exports.updateExhbition = function (req, res) {
     })
 }
 
-exports.getAll = function (req, res) {
+exports.getExhibition = function (req, res) {
 
     Exhibition.findOne({ _id: "62572b2ead92d761abc7097d" }, 'stands event_name carpet_color display_screen sponsor_disc sponsor_cylinder hall_type').
-        populate({path:'stands',populate: { path: 'exponent', select: 'exponent.company_name exponent.website exponent.firstName exponent.lastName' }}).
+        populate({ path: 'stands', populate: { path: 'exponent', select: 'exponent.company_name exponent.website exponent.firstName exponent.lastName' } }).
         //populate({ path: 'stands.exponent', select: 'company_name website' }).
         exec((err, result) => {
             if (!err) {
@@ -50,6 +50,50 @@ exports.getAll = function (req, res) {
                 res.status(400).send({ success: false, message: err });
             }
         });
+
+}
+exports.getAll = function (req, res) {
+    Exhibition.aggregate([
+        {
+            '$lookup':
+            {
+                'from': "users",
+                'localField': "moderator",
+                'foreignField': "_id",
+                'as': "moderator"
+            }
+        },
+        {
+            '$project': {
+                'event_name': 1,
+                'moderator.firstName': 1,
+                'moderator.lastName': 1,
+                'exhibition_date': 1,
+                'hall_type': 1,
+                numberOfStands: {   $size: "$stands"  }
+            }
+        }
+    ],
+        (err, result) => {
+            res.status(200).send(result);
+
+        });
+    /*Exhibition.find({}, 'moderator event_name exhibition_date carpet_color display_screen sponsor_disc sponsor_cylinder hall_type').
+        populate({ path: 'moderator', select: 'firstName lastName' }).
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    res.status(200).send(result);
+                }
+                else {
+                    res.status(200).send([]);
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });*/
 
 }
 
@@ -98,6 +142,31 @@ exports.updateSponsorDiscCustom0 = (req, res) => {
 
             }
         });
+}
+
+exports.getExhibitionById = function (req, res) {
+    Exhibition.findOne({ _id: req.params.id }, 'stands event_name carpet_color display_screen sponsor_disc sponsor_cylinder hall_type').
+        populate({ path: 'stands', populate: { path: 'exponent', select: 'exponent.company_name' } }).
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    if (result)
+                        res.status(200).send(result);
+                    else {
+                        res.status(200).send([]);
+
+                    }
+                }
+                else {
+                    res.status(200).send([]);
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
 }
 
 exports.updateSponsorDiscCustom1 = (req, res) => {

@@ -59,12 +59,13 @@ exports.authenticate = (req, res, next) => {
 }
 
 exports.createModerator = async (req, res, next) => {
+    console.log(req.body);
     var user = new User(req.body.user);
     let password;
     password = Math.random().toString(36).slice(-8);
     user.password = password;
     user.role = "moderator";
-
+    console.log('hola');
     user.save(async (err, userDoc) => {
         if (!err) {
             var exhibition = new Exhibition(req.body.exhibition);

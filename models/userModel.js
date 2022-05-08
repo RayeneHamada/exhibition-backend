@@ -14,9 +14,6 @@ const GeoSchema = new mongoose.Schema({
 
 var userSchema = new mongoose.Schema({
 
-  phoneNumber: {
-    type: String,
-  },
   email: {
     type: String,
     lowercase: true,
@@ -31,28 +28,7 @@ var userSchema = new mongoose.Schema({
   lastName: {
     type: String,
   },
-  profile_image: {
-    type: String
-  },
-  address: {
-    street: {
-      type: String
-    },
-    zip: {
-      type: String
-    },
-    city: {
-      type: String
-    },
-    country: {
-      type: String,
-      default: 'france'
-    },
 
-    geolocation: GeoSchema,
-
-
-  },
   role: {
     type: String,
     enum: ['admin', 'moderator', 'exponent', 'visitor'],

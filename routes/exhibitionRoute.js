@@ -3,7 +3,9 @@ const router = express.Router();
 const jwtHelper = require('../config/jwtHelper');
 const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
+router.get('/allTest',main_controller.getAll);
 
+router.get('/:id',main_controller.getExhibitionById);
 
 router.post('/update',jwtHelper.verifyModeratorJwtToken, main_controller.updateExhbition);
 router.post('/updateSponsorDiscCustom0',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorDiscCustom0);
@@ -11,7 +13,7 @@ router.post('/updateSponsorDiscCustom1',jwtHelper.verifyModeratorJwtToken, main_
 router.post('/updateSponsorDiscCustom2',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorDiscCustom2);
 router.post('/updateSponsorCylindre',jwtHelper.verifyModeratorJwtToken, main_controller.updateSponsorCylindre);
 
-router.get('/all',main_controller.getAll);
+router.get('/all',main_controller.getExhibition);
 
 //router.post('/googleauth', main_controller.test);
 

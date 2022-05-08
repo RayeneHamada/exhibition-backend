@@ -765,3 +765,42 @@ exports.updateCustom3 = (req, res) => {
             }
         });
 }
+
+exports.getStandById = function (req, res) {
+    console.log(req.params.id);
+    Stand.findOne({ _id: req.params.id }).
+        exec((err, result) => {
+            if (!err) {
+                console.log(result);
+                if (result) {
+                    res.status(200).send(result);
+                }
+                else {
+                    res.status(200).send([]);
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
+}
+exports.myStand = function (req, res) {
+    Stand.findOne({ _id: req.stand }).
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    res.status(200).send(result);
+                }
+                else {
+                    res.status(200).send({});
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
+}
