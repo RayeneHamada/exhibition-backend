@@ -13,6 +13,8 @@ router.post('/updateFurnitureColor',jwtHelper.verifyExponentJwtToken, main_contr
 router.post('/updateBackgroundColor',jwtHelper.verifyExponentJwtToken, main_controller.updateBackgroundColor);
 router.post('/updateTvMedia',jwtHelper.verifyExponentJwtToken, main_controller.updateTvMedia);
 router.post('/updateMeetLink', jwtHelper.verifyExponentJwtToken, main_controller.updateMeetLink);
+router.post('/updateCharacter1', jwtHelper.verifyExponentJwtToken, main_controller.updateCharacter1);
+router.post('/updateCharacter2', jwtHelper.verifyExponentJwtToken, main_controller.updateCharacter2);
 router.post('/updateCustom0',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom0);
 router.post('/updateCustom1',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom1);
 router.post('/updateCustom2',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom2);

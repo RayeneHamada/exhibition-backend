@@ -804,3 +804,50 @@ exports.myStand = function (req, res) {
         });
 
 }
+exports.updateCharacter1 = (req, res) => {
+    Stand.findOne({ _id: req.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                stand.caracter_type_00 = req.body.character_type;
+                Stand.updateOne({ _id: req.stand }, stand).then(
+                    () => {
+                        res.status(201).json({
+                            message: 'Character type updated successfully!'
+                        });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                );
+            }
+        });
+}
+
+exports.updateCharacter2 = (req, res) => {
+    Stand.findOne({ _id: req.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                stand.caracter_type_01 = req.body.character_type;
+                Stand.updateOne({ _id: req.stand }, stand).then(
+                    () => {
+                        res.status(201).json({
+                            message: 'Character type updated successfully!'
+                        });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                );
+            }
+        });
+}

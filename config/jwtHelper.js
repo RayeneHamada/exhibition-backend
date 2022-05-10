@@ -92,7 +92,6 @@ module.exports.verifyModeratorJwtToken = (req, res, next) => {
 }
 
 module.exports.verifyExponentJwtToken = (req, res, next) => {
-    console.log(req.headers['authorization']);
     var token;
     if ('authorization' in req.headers)
        { token = req.headers['authorization'].split(' ')[1];
