@@ -57,8 +57,14 @@ var standSchema = new Schema({
   texture_download_url: {
     type: String
   },
-  caracter_type_00: Number,
-  caracter_type_01: Number,
+  caracter_type_00: {
+    type:Number,
+    default:1
+  },
+  caracter_type_01: {
+    type:Number,
+    default:1
+  },
   exponent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users"
