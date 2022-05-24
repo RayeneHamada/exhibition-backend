@@ -4,8 +4,8 @@ const mongoose = require('mongoose'),
     Stand = mongoose.model('Stands'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas');
-var colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
-
+var texture_colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
+var banner_colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
 
 
 exports.updateExhbition = function (req, res) {
@@ -112,7 +112,7 @@ exports.updateBackgroundColor = (req, res) => {
                     image: './public/' + stand.texture_download_url,
                     colors: {
                         type: 'rgb',
-                        targetColor: colors[stand.type],
+                        targetColor: texture_colors[stand.type],
                         replaceColor: stand.background_color
                     },
                     deltaE: 10
@@ -120,19 +120,37 @@ exports.updateBackgroundColor = (req, res) => {
                     .then((jimpObject) => {
                         jimpObject.write('./public/' + stand.texture_download_url, (err) => {
                             if (err) return console.log(err);
-                            Stand.updateOne({ _id: req.stand }, stand).then(
-                                () => {
-                                    res.status(201).json({
-                                        message: 'Stand updated successfully!'
-                                    });
-                                }
-                            ).catch(
-                                (error) => {
-                                    res.status(400).json({
-                                        error: error
-                                    });
-                                }
-                            );
+                            replaceColor({
+                                image: './public/' + stand.banner.texture_download_url,
+                                colors: {
+                                    type: 'rgb',
+                                    targetColor: texture_colors[stand.type],
+                                    replaceColor: stand.background_color
+                                },
+                                deltaE: 10
+                            })
+                                .then((jimpObject) => {
+                                    jimpObject.write('./public/' + stand.banner.texture_download_url, (err) => {
+                                        if (err) return console.log(err);
+                                        Stand.updateOne({ _id: req.stand }, stand).then(
+                                            () => {
+                                                res.status(201).json({
+                                                    message: 'Stand updated successfully!'
+                                                });
+                                            }
+                                        ).catch(
+                                            (error) => {
+                                                res.status(400).json({
+                                                    error: error
+                                                });
+                                            }
+                                        );
+
+                                    })
+                                })
+                                .catch((err) => {
+                                    console.log(err)
+                                })
 
                         })
                     })
@@ -231,8 +249,8 @@ exports.updateCustom0 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -268,8 +286,8 @@ exports.updateCustom0 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -307,8 +325,8 @@ exports.updateCustom0 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -346,8 +364,8 @@ exports.updateCustom0 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     )
                 }
@@ -384,8 +402,8 @@ exports.updateCustom0 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -432,8 +450,8 @@ exports.updateCustom1 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -469,8 +487,8 @@ exports.updateCustom1 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -508,8 +526,8 @@ exports.updateCustom1 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -546,8 +564,8 @@ exports.updateCustom1 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -584,8 +602,8 @@ exports.updateCustom1 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -633,8 +651,8 @@ exports.updateCustom2 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -671,8 +689,8 @@ exports.updateCustom2 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -709,8 +727,8 @@ exports.updateCustom2 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -757,8 +775,8 @@ exports.updateCustom3 = (req, res) => {
                         }
                     ).finally(
                         () => {
-                            if(req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
                         }
                     );
                 }
@@ -786,6 +804,7 @@ exports.getStandById = function (req, res) {
         });
 
 }
+
 exports.myStand = function (req, res) {
     Stand.findOne({ _id: req.stand }).
         exec((err, result) => {
@@ -804,6 +823,7 @@ exports.myStand = function (req, res) {
         });
 
 }
+
 exports.updateCharacter1 = (req, res) => {
     Stand.findOne({ _id: req.stand },
         (err, stand) => {
