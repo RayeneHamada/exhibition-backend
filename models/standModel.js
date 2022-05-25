@@ -5,6 +5,9 @@ var Schema = mongoose.Schema;
 
 var standSchema = new Schema({
 
+  stand_name :{
+    type:String
+  },
   type: {
     type: String,
     enum: ['S', 'M', 'LR', 'LL', 'XL'],
@@ -25,9 +28,9 @@ var standSchema = new Schema({
       default: false
     },
     furniture_type: {
-      type:Number,
-      default:00
-    }, 
+      type: Number,
+      default: 00
+    },
     color: {
       type: [Number],
       default: [255, 255, 255]
@@ -48,22 +51,36 @@ var standSchema = new Schema({
   logo_download_url: { //logo carré
     type: String,
   },
-  meet_link: {
-    type: String
-  },
-  pdf_download_url: {
-    type: String,
+  menu: {
+    meet_link: {
+      type: String
+    },
+    website: {
+      type: String
+    },
+    phoneNumber: {
+      type: String
+    },
+    address: {
+      type: String
+    },
+    description: {
+      type: String
+    },
+    pdf_download_url: {
+      type: String,
+    },
   },
   texture_download_url: {
     type: String
   },
   caracter_type_00: {
-    type:Number,
-    default:1
+    type: Number,
+    default: 1
   },
   caracter_type_01: {
-    type:Number,
-    default:1
+    type: Number,
+    default: 1
   },
   exponent: {
     type: mongoose.Schema.Types.ObjectId,

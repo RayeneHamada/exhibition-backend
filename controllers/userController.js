@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
@@ -8,10 +9,11 @@ const mongoose = require('mongoose'),
     jwt = require('jsonwebtoken'),
     nodemailer = require("nodemailer"),
     replaceColor = require('replace-color'),
-    { createCanvas, loadImage } = require('canvas');
-fs = require('fs');
+    { createCanvas, loadImage } = require('canvas'),
+    fs = require('fs');
+
 var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
-var banners = { "XL": ["stand_main_top_01_albedo.png","stand_main_top_02_albedo.png","stand_main_top_03_albedo.png","stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png","stand_lr_top_02_albedo.png","stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png","stand_lr_top_02_albedo.png","stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png","stand_medium_top_02_albedo.png"] };
+var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
 exports.signup = function (req, res, next) {
     var user = new User();
     user.firstName = req.body.firstName;
@@ -80,14 +82,11 @@ exports.createModerator = async (req, res, next) => {
                     res.status(400).send({ success: false, message: err2 });
                 }
                 else {
-                    let testAccount = await nodemailer.createTestAccount();
                     let transporter = nodemailer.createTransport({
-                        host: "smtp.ethereal.email",
-                        port: 587,
-                        secure: false, // true for 465, false for other ports
+                        service: "gmail",
                         auth: {
-                            user: testAccount.user, // generated ethereal user
-                            pass: testAccount.pass, // generated ethereal password
+                            user: process.env.NODE_MAILER_EMAIL,
+                            pass: process.env.NODE_MAILER_PASSWORD,
                         },
                     });
                     let info = await transporter.sendMail({
@@ -146,6 +145,7 @@ exports.createExponent = async (req, res) => {
         if (!err) {
             var stand = new Stand(req.body.stand);
             stand.exponent = userDoc._id;
+            stand.stand_name = userDoc.exponent.company_name;
             stand.texture_download_url = "texture" + userDoc._id + ".png";
             stand.exhibition = req.exhibition
             if (req.body.stand.banner)
@@ -157,14 +157,11 @@ exports.createExponent = async (req, res) => {
                     res.status(400).send({ success: false, message: err2 });
                 }
                 else {
-                    let testAccount = await nodemailer.createTestAccount();
                     let transporter = nodemailer.createTransport({
-                        host: "smtp.ethereal.email",
-                        port: 587,
-                        secure: false, // true for 465, false for other ports
+                        service: "gmail",
                         auth: {
-                            user: testAccount.user, // generated ethereal user
-                            pass: testAccount.pass, // generated ethereal password
+                            user: process.env.NODE_MAILER_EMAIL,
+                            pass: process.env.NODE_MAILER_PASSWORD,
                         },
                     });
                     let info = await transporter.sendMail({

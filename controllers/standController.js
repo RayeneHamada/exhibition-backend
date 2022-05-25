@@ -59,7 +59,7 @@ exports.updatePDF = (req, res) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
-                stand.pdf_download_url = req.file.filename;
+                stand.menu.pdf_download_url = req.file.filename;
                 Stand.updateOne({ _id: stand._id }, stand).then(
                     () => {
                         res.status(201).json({
@@ -124,7 +124,7 @@ exports.updateBackgroundColor = (req, res) => {
                                 image: './public/' + stand.banner.texture_download_url,
                                 colors: {
                                     type: 'rgb',
-                                    targetColor: texture_colors[stand.type],
+                                    targetColor: banner_colors[stand.type],
                                     replaceColor: stand.background_color
                                 },
                                 deltaE: 10
@@ -173,30 +173,6 @@ exports.updateTvMedia = (req, res) => {
                     () => {
                         res.status(201).json({
                             message: 'Tv content updated successfully!'
-                        });
-                    }
-                ).catch(
-                    (error) => {
-                        res.status(400).json({
-                            error: error
-                        });
-                    }
-                );
-            }
-        });
-}
-
-exports.updateMeetLink = (req, res) => {
-    Stand.findOne({ _id: req.stand },
-        (err, stand) => {
-            if (!stand)
-                return res.status(404).json({ status: false, message: 'Stand record not found.' });
-            else {
-                stand.meet_link = req.body.meet_link;
-                Stand.updateOne({ _id: req.stand }, stand).then(
-                    () => {
-                        res.status(201).json({
-                            message: 'Meet link updated successfully!'
                         });
                     }
                 ).catch(
@@ -338,7 +314,6 @@ exports.updateCustom0 = (req, res) => {
                         loadImage(req.file.path).then((logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
-                                console.log('ajma');
                                 //Drawing the logo un Custom Area 0
                                 let hRatio0 = 369.664 / logo.width;
                                 let vShift0 = (205.824 - logo.height * hRatio0) / 2
@@ -784,6 +759,506 @@ exports.updateCustom3 = (req, res) => {
         });
 }
 
+exports.updateBannerCustom0 = (req, res) => {
+    Stand.findOne({ _id: req.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                const canvas = createCanvas(512, 512);
+                const ctx = canvas.getContext('2d');
+                if (stand.type == "XL") {
+                    switch (stand.banner.banner_type) {
+                        case 0:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 503.296 / logo.width;
+                                        let vShift = (130.56 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 5.632, 376.832 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 130.56 / logo.height;
+                                        let hShift = (503.296 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 5.632 + hShift, 376.832, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+
+                        case 1:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 498.688 / logo.width;
+                                        let vShift = (99.84 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 7.168, 403.968 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 99.84 / logo.height;
+                                        let hShift = (498.688 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 7.168 + hShift, 403.968, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+                        case 3:
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 494.592 / logo.width;
+                                        let vShift = (94.208 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 10.24, 402.944 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 94.208 / logo.height;
+                                        let hShift = (494.592 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 10.24 + hShift, 402.944, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+                        case 4:
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 496.128 / logo.width;
+                                        let vShift = (123.904 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 8.192, 379.392 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 123.904 / logo.height;
+                                        let hShift = (496.128 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 8.192 + hShift, 8.192, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+
+                        default:
+                            console.log('erreur fel banner');
+                    }
+
+                }
+                if (stand.type == "LL" || stand.type == "LR") {
+                    switch (stand.banner.banner_type) {
+                        case 0:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 442.88 / logo.width;
+                                        let vShift = (442.88 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 4.096, 64 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 442.88 / logo.height;
+                                        let hShift = (442.88 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 4.096 + hShift, 64, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+
+                        case 1:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 506.88 / logo.width;
+                                        let vShift = (129.536 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 3.072, 378.368 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 129.536 / logo.height;
+                                        let hShift = (506.88 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 3.072 + hShift, 378.368, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+                        case 2:
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 497.152 / logo.width;
+                                        let vShift = (199.168 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 7.68, 305.664 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 199.168 / logo.height;
+                                        let hShift = (497.152 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 7.68 + hShift, 305.664, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+
+                        default:
+                            console.log('erreur fel banners');
+                    }
+
+                }
+                if (stand.type == "M") {
+                    switch (stand.banner.banner_type) {
+                        case 0:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 4.608 / logo.width;
+                                        let vShift = (508.928 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 4.608, 308.224 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 508.928 / logo.height;
+                                        let hShift = (4.608 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 4.608 + hShift, 308.224, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+
+                        case 1:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 197.632 / logo.width;
+                                        let vShift = (129.536 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 308.736, 3.072 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 129.536 / logo.height;
+                                        let hShift = (197.632 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 308.736 + hShift, 3.072, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+                        default:
+                            console.log('erreur fel banners');
+                    }
+
+                }
+            }
+        });
+}
+
+exports.updateBannerCustom1 = (req, res) => {
+    Stand.findOne({ _id: req.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                const canvas = createCanvas(512, 512);
+                const ctx = canvas.getContext('2d');
+                if (stand.type == "XL") {
+                    switch (stand.banner.banner_type) {
+                        case 0:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 131.072 / logo.width;
+                                        let vShift = (129.536 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 7.168, 241.152 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 129.536 / logo.height;
+                                        let hShift = (131.072 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 7.168 + hShift, 241.152, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+                        case 1:
+
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 1
+                                        let hRatio = 498.176 / logo.width;
+                                        let vShift = (200.704 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 6.656, 186.88 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 1
+                                        let vRatio = 200.704 / logo.height;
+                                        let hShift = (498.176 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 6.656 + hShift, 186.88, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+                        case 3:
+                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                                ctx.drawImage(image, 0, 0)
+                                loadImage(req.file.path).then((logo) => {
+                                    let ratio = logo.width / logo.height;
+                                    if (ratio > 1) {
+                                        //Drawing the logo un Custom Area 0
+                                        let hRatio = 256 / logo.width;
+                                        let vShift = (192 - logo.height * hRatio) / 2
+                                        ctx.drawImage(logo, 8.192, 178.688 + vShift, logo.width * hRatio, logo.height * hRatio)
+                                    }
+                                    else {
+                                        //Drawing the logo un Custom Area 0
+                                        let vRatio = 192 / logo.height;
+                                        let hShift = (256 - logo.width * vRatio) / 2
+                                        ctx.drawImage(logo, 8.192 + hShift, 178.688, logo.width * vRatio, logo.height * vRatio)
+                                    }
+                                    ctx.drawImage(image, 0, 0, 0, 0);
+                                    const buffer = canvas.toBuffer("image/png");
+                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
+
+                                })
+                            }).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        error: error
+                                    });
+                                }
+                            ).finally(
+                                () => {
+                                    if (req.file)
+                                        fs.rmSync(req.file.path, { recursive: true });
+                                }
+                            );
+                            break;
+
+                        default:
+                            console.log('erreur fel banners');
+                    }
+
+                }
+            }
+        });
+}
+
 exports.getStandById = function (req, res) {
     console.log(req.params.id);
     Stand.findOne({ _id: req.params.id }).
@@ -859,6 +1334,52 @@ exports.updateCharacter2 = (req, res) => {
                     () => {
                         res.status(201).json({
                             message: 'Character type updated successfully!'
+                        });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                );
+            }
+        });
+}
+
+exports.getMenu = (req, res) => {
+    Stand.findOne({ _id: req.stand }, "menu").
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    res.status(200).send(result);
+                }
+                else {
+                    res.status(200).send({});
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+}
+
+exports.updateMenu = (req, res) => {
+    Stand.findOne({ _id: req.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                stand.menu.meet_link = req.body.meet_link;
+                stand.menu.website = req.body.website;
+                stand.menu.phoneNumber = req.body.phoneNumber;
+                stand.menu.address = req.body.address;
+                stand.menu.description = req.body.description;
+                Stand.updateOne({ _id: req.stand }, stand).then(
+                    () => {
+                        res.status(201).json({
+                            message: 'Menu updated successfully!'
                         });
                     }
                 ).catch(

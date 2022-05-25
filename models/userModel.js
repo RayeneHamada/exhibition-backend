@@ -51,9 +51,6 @@ var userSchema = new mongoose.Schema({
     company_name: {
       type: String
     },
-    website: {
-      type: String
-    },
     stand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Stands"
