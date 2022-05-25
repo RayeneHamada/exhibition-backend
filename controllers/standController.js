@@ -1351,8 +1351,26 @@ exports.getMenu = (req, res) => {
     Stand.findOne({ _id: req.stand }, "menu").
         exec((err, result) => {
             if (!err) {
-                if (result) {
-                    res.status(200).send(result);
+                if (result.menu) {
+                    res.status(200).send(result.menu);
+                }
+                else {
+                    res.status(200).send({});
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+}
+
+exports.getMenuById = (req, res) => {
+    Stand.findOne({ _id: req.params.id }, "menu").
+        exec((err, result) => {
+            if (!err) {
+                if (result.menu) {
+                    res.status(200).send(result.menu);
                 }
                 else {
                     res.status(200).send({});

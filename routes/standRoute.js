@@ -5,9 +5,11 @@ const { pdfUpload } = require('../config/multerConfig');
 const main_controller = require('../controllers/standController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 
+router.get('/menu', jwtHelper.verifyExponentJwtToken, main_controller.getMenu);
+
 router.get('/myStand', jwtHelper.verifyExponentJwtToken,main_controller.myStand);
 router.get('/:id',main_controller.getStandById);
-router.get('/Menu', jwtHelper.verifyExponentJwtToken, main_controller.getMenu);
+router.get('/menu/:id', jwtHelper.verifyExponentJwtToken, main_controller.getMenuById);
 router.post('/updateLogo',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateLogo);
 router.post('/updatePDF',[pdfUpload.single('pdf'),jwtHelper.verifyExponentJwtToken], main_controller.updatePDF);
 router.post('/updateFurnitureColor',jwtHelper.verifyExponentJwtToken, main_controller.updateFurnitureColor);
