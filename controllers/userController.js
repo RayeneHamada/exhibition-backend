@@ -11,7 +11,7 @@ const mongoose = require('mongoose'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs');
-
+var moment = require('moment');
 var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
 var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
 exports.signup = function (req, res, next) {
@@ -67,7 +67,6 @@ exports.createModerator = async (req, res, next) => {
     password = Math.random().toString(36).slice(-8);
     user.password = password;
     user.role = "moderator";
-    console.log('hola');
     user.save(async (err, userDoc) => {
         if (!err) {
             var exhibition = new Exhibition(req.body.exhibition);
@@ -207,6 +206,70 @@ exports.createExponent = async (req, res) => {
                 return next(err);
         }
     });
+}
+
+exports.participate = (req, res) => {
+    User.find({ 'visitor.email': req.body.email, 'role': 'visitor' }, (err, user) => {
+        if (!err) {
+            if (user) {
+                Exhibition.find({ '_id': req.body.exhibition }, (err, exhibition) => {
+                    if (!err) {
+                        if (exhibition.visitors) {
+                            if (exhibition.visitors.find((visitor) => { return visitor.visitor.email == req.body.email }))
+                                res.send({ "token": user.generateJwt() });
+                            else {
+                                Exhibition.updateOne({ _id: exhibition._id }, { $push: { "visitors": user._id } }).then(
+                                    () => {
+                                        res.send({ "token": user.generateJwt() });
+                                    }
+                                ).catch(
+                                    (error) => {
+                                        res.status(400).json({
+                                            error: error
+                                        });
+                                    }
+                                );
+                            }
+                        }
+                        else{
+                            Exhibition.updateOne({ _id: exhibition._id }, { $push: { "visitors": user._id } }).then(
+                                () => {
+                                    res.send({ "token": user.generateJwt() });
+                                }
+                            ).catch(
+                                (error) => {
+                                    res.status(400).json({
+                                        erro: error
+                                    });
+                                }
+                            );
+                        }
+                    }
+                    else
+                        res.send(err);
+                })
+            }
+            else
+            {
+                var visitor = new User();
+                visitor.visitor.email = req.body.email;
+                visitor.visitor.phoneNumber = req.body.phoneNumber;
+                visitor.visitor.firstName = req.body.firstName;
+                visitor.visitor.lastName = req.body.lastName;
+                visitor.save((err, doc) => {
+                    if (!err) {
+                      return res.json({"token": doc.generateJwt() });
+          
+                    }
+                    else {
+                      return res.json({ 'error': err });
+                    }
+                  });
+            }
+        }
+        else
+            res.send(err);
+    })
 }
 
 exports.userProfile = (req, res, next) => {

@@ -9,6 +9,7 @@ router.post('/signup', main_controller.signup);
 router.post('/login', main_controller.authenticate);
 router.post('/createModerator', jwtHelper.verifyAdminJwtToken, main_controller.createModerator);
 router.post('/createExponent', jwtHelper.verifyModeratorJwtToken, main_controller.createExponent);
+router.post('/participate',  main_controller.participate);
 //router.post('/googleauth', main_controller.test);
 
 /*router.get('/userprofile',jwtHelper.verifyJwtToken,main_controller.userProfile);

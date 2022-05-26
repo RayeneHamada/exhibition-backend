@@ -22,12 +22,23 @@ var userSchema = new mongoose.Schema({
   password: {
     type: String
   },
-  firstName: {
-    type: String,
+  visitor: {
+    email:{
+      type:String,
+      unique:true,
+      default:""
+    },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
+    phoneNumber: {
+      type: String
+    },
   },
-  lastName: {
-    type: String,
-  },
+  
 
   role: {
     type: String,
@@ -87,7 +98,7 @@ userSchema.methods.verifyPassword = function (password) {
 };
 
 userSchema.methods.generateJwt = function () {
-  return jwt.sign({ _id: this._id, role: this.role, profilePicture: this.profile_image, firstName: this.firstName, lastName: this.lastName, email: this.email, exponent_exhibition:this.exponent.exhibition, moderator_exhibition:this.moderator.exhibition, stand:this.exponent.stand },
+  return jwt.sign({ _id: this._id, role: this.role, profilePicture: this.profile_image, firstName: this.firstName, lastName: this.lastName, email: this.email, exponent_exhibition: this.exponent.exhibition, moderator_exhibition: this.moderator.exhibition, stand: this.exponent.stand },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXP

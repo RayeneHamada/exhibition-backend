@@ -8,7 +8,10 @@ var exhibitionSchema = new Schema({
         type: String,
         required: true
     },
-    exhibition_date: {
+    exhibition_start_date: {
+        type: Date,
+    },
+    exhibition_end_date: {
         type: Date,
     },
     hall_type: {
@@ -52,6 +55,12 @@ var exhibitionSchema = new Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Stands"
+        }
+    ],
+    visitors: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users"
         }
     ]
 
