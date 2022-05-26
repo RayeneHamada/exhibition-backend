@@ -26,7 +26,7 @@ var userSchema = new mongoose.Schema({
     email:{
       type:String,
       unique:true,
-      default:""
+      sparse: true
     },
     firstName: {
       type: String,

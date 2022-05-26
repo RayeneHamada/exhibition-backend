@@ -134,6 +134,7 @@ exports.createModerator = async (req, res, next) => {
 }
 
 exports.createExponent = async (req, res) => {
+    console.log(req.body.user);
     var user = new User(req.body.user);
     let password;
     password = Math.random().toString(36).slice(-8);
@@ -201,7 +202,7 @@ exports.createExponent = async (req, res) => {
         }
         else {
             if (err.code == 11000)
-                res.status(422).json({ success: false, message: 'Duplicate email adrress found.' });
+                res.status(422).json({ success: false, message: err });
             else
                 return next(err);
         }
