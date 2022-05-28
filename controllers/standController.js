@@ -3,7 +3,8 @@ const mongoose = require('mongoose'),
     Exhibition = mongoose.model('Exhibitions'),
     Stand = mongoose.model('Stands'),
     replaceColor = require('replace-color'),
-    { createCanvas, loadImage } = require('canvas');
+    { createCanvas, loadImage } = require('canvas'),
+    fs = require('fs');
 var texture_colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
 var banner_colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
 
