@@ -210,7 +210,7 @@ exports.createExponent = async (req, res) => {
 }
 
 exports.participate = (req, res) => {
-    User.find({ 'visitor.email': req.body.email, 'role': 'visitor' }, (err, user) => {
+    User.findOne({ 'visitor.email': req.body.email, 'role': 'visitor' }, (err, user) => {
         if (!err) {
             if (user) {
                 Exhibition.find({ '_id': req.body.exhibition }, (err, exhibition) => {
@@ -232,7 +232,7 @@ exports.participate = (req, res) => {
                                 );
                             }
                         }
-                        else{
+                        else {
                             Exhibition.updateOne({ _id: exhibition._id }, { $push: { "visitors": user._id } }).then(
                                 () => {
                                     res.send({ "token": user.generateJwt() });
@@ -250,8 +250,7 @@ exports.participate = (req, res) => {
                         res.send(err);
                 })
             }
-            else
-            {
+            else {
                 var visitor = new User();
                 visitor.visitor.email = req.body.email;
                 visitor.visitor.phoneNumber = req.body.phoneNumber;
@@ -259,13 +258,37 @@ exports.participate = (req, res) => {
                 visitor.visitor.lastName = req.body.lastName;
                 visitor.save((err, doc) => {
                     if (!err) {
-                      return res.json({"token": doc.generateJwt() });
-          
+                        Exhibition.find({ '_id': req.body.exhibition }, (err, exhibition) => {
+                            if (!err) {
+                                {
+                                    if (exhibition) {
+                                        console.log("yo")
+                                        Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": doc._id } }).then(
+                                            () => {
+                                                res.send({ "token": doc.generateJwt() });
+                                            }
+                                        ).catch(
+                                            (error) => {
+                                                res.status(400).json({
+                                                    erro: error
+                                                });
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        res.send({ "error": "Exhibition not found" })
+                                    }
+                                }
+                            }
+                            else
+                                res.send(err);
+                        })
+
                     }
                     else {
-                      return res.json({ 'error': err });
+                        return res.json({ 'error': err });
                     }
-                  });
+                });
             }
         }
         else

@@ -52,6 +52,51 @@ exports.getExhibition = function (req, res) {
         });
 
 }
+
+exports.getVisitors = function(req,res) {
+    Exhibition.findOne({ _id: req.params.id }, 'visitors').
+        populate({ path: 'visitors', select:'visitor.firstName visitor.lastName visitor.phoneNumber visitor.email'}).
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    if (result.visitors)
+                        res.status(200).send(result.visitors);
+                    else {
+                        res.status(200).send([]);
+
+                    }
+                }
+                else {
+                    res.status(200).send([]);
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
+}
+exports.getExhibitionForVisitor = function (req, res) {
+
+    Exhibition.findOne({ _id: req.params.id }, 'event_name exhibition_start_date exhibition_end_date').
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    res.status(200).send(result);
+                }
+                else {
+                    res.status(200).send([]);
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
+}
+
 exports.getAll = function (req, res) {
     Exhibition.aggregate([
         {
@@ -70,7 +115,7 @@ exports.getAll = function (req, res) {
                 'moderator.lastName': 1,
                 'exhibition_date': 1,
                 'hall_type': 1,
-                numberOfStands: {   $size: "$stands"  }
+                numberOfStands: { $size: "$stands" }
             }
         }
     ],

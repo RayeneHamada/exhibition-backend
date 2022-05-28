@@ -4,6 +4,8 @@ const jwtHelper = require('../config/jwtHelper');
 const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 router.get('/allTest',main_controller.getAll);
+router.get('/getExhibitionForVisitor/:id',main_controller.getExhibitionForVisitor);
+router.get('/getVisitors/:id',main_controller.getVisitors);
 
 router.get('/:id',main_controller.getExhibitionById);
 
