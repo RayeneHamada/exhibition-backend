@@ -2,8 +2,8 @@ const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     replaceColor = require('replace-color'),
-    { createCanvas, loadImage } = require('canvas');
-
+    { createCanvas, loadImage } = require('canvas'),
+    fs = require('fs');
 
 
 exports.updateExhbition = function (req, res) {
