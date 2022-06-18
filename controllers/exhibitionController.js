@@ -77,6 +77,7 @@ exports.getVisitors = function(req,res) {
         });
 
 }
+
 exports.getExhibitionForVisitor = function (req, res) {
 
     Exhibition.findOne({ _id: req.params.id }, 'event_name exhibition_start_date exhibition_end_date').
@@ -164,7 +165,7 @@ exports.updateSponsorDiscCustom0 = (req, res) => {
                             //Drawing the logo un Custom Area 0
                             let vRatio0 = 226.304 / logo.height;
                             let hShift0 = (531.456 - logo.width * vRatio0) / 2
-                            ctx.drawImage(logo, 2.56 + hShift0, 2.048, logo.width * vRatio0, logo.height * vRatio0);
+                            ctx.drawImage(logo, 21.504 + hShift0, 15.36, logo.width * vRatio0, logo.height * vRatio0);
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
