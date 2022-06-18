@@ -309,6 +309,53 @@ exports.updateSponsorDiscCustom2 = (req, res) => {
         });
 }
 
+exports.updateSponsorDiscCustom3 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage('./public/' + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then((logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            //Drawing the logo un Custom Area 0
+                            let hRatio0 = 531.456 / logo.width;
+                            let vShift0 = (225.28 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 23.552, 780.288 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            //Drawing the logo un Custom Area 0
+                            let vRatio0 = 225.28 / logo.height;
+                            let hShift0 = (531.456 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 23.552 + hShift0, 780.288, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
 exports.updateSponsorCylindre = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
