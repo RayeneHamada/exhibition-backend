@@ -61,7 +61,6 @@ exports.authenticate = (req, res, next) => {
 }
 
 exports.createModerator = async (req, res, next) => {
-    console.log(req.body);
     var user = new User(req.body.user);
     let password;
     password = Math.random().toString(36).slice(-8);
@@ -134,7 +133,6 @@ exports.createModerator = async (req, res, next) => {
 }
 
 exports.createExponent = async (req, res) => {
-    console.log(req.body.user);
     var user = new User(req.body.user);
     let password;
     password = Math.random().toString(36).slice(-8);
@@ -213,6 +211,7 @@ exports.participate = (req, res) => {
     User.findOne({ 'visitor.email': req.body.email, 'role': 'visitor' }, (err, user) => {
         if (!err) {
             if (user) {
+
                 Exhibition.find({ '_id': req.body.exhibition }, (err, exhibition) => {
                     if (!err) {
                         if (exhibition.visitors) {
@@ -252,7 +251,9 @@ exports.participate = (req, res) => {
             }
             else {
                 var visitor = new User();
+                console.log(req.body);
                 visitor.visitor.email = req.body.email;
+                visitor.email = req.body.email;
                 visitor.visitor.phoneNumber = req.body.phoneNumber;
                 visitor.visitor.firstName = req.body.firstName;
                 visitor.visitor.lastName = req.body.lastName;
@@ -262,7 +263,6 @@ exports.participate = (req, res) => {
                             if (!err) {
                                 {
                                     if (exhibition) {
-                                        console.log("yo")
                                         Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": doc._id } }).then(
                                             () => {
                                                 res.send({ "token": doc.generateJwt() });
@@ -291,8 +291,7 @@ exports.participate = (req, res) => {
                 });
             }
         }
-        else
-            res.send(err);
+        else { res.send(err); }
     })
 }
 
