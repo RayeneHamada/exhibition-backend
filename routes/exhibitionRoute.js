@@ -14,6 +14,10 @@ router.post('/updateSponsorDiscCustom0',[imageUpload.single('image'),jwtHelper.v
 router.post('/updateSponsorDiscCustom1',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom1);
 router.post('/updateSponsorDiscCustom3',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom2);
 router.post('/updateSponsorDiscCustom2',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom3);
+router.post('/updateSponsorBannerCustom0',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner0);
+router.post('/updateSponsorBannerCustom1',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner1);
+router.post('/updateSponsorBannerCustom2',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner2);
+router.post('/updateSponsorBannerCustom3',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner3);
 router.post('/updateSponsorCylindre',[imageUpload.single('image'),jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre);
 
 router.get('/all',main_controller.getExhibition);

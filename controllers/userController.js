@@ -10,8 +10,8 @@ const mongoose = require('mongoose'),
     nodemailer = require("nodemailer"),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
-    fs = require('fs');
-var moment = require('moment');
+    fs = require('fs'),
+    moment = require('moment');
 var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
 var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
 exports.signup = function (req, res, next) {
@@ -71,9 +71,15 @@ exports.createModerator = async (req, res, next) => {
             var exhibition = new Exhibition(req.body.exhibition);
             exhibition.moderator = userDoc._id;
             if (req.body.exhibition.sponsor_disc)
-                exhibition.sponsor_disc.texture_download_url = "disc" + userDoc._id + ".png";
+                exhibition.sponsor_disc.texture_download_url = "disc_" + userDoc._id + ".png";
             if (req.body.exhibition.sponsor_cylinder)
-                exhibition.sponsor_cylinder.texture_download_url = "cylindre" + userDoc._id + ".png";
+                exhibition.sponsor_cylinder.texture_download_url = "cylinder_" + userDoc._id + ".png";
+            if (req.body.exhibition.sponsor_banners) {
+                exhibition.sponsor_banners.texture_download_url_0 = "sponsorbanner0_" + userDoc._id + ".png";
+                exhibition.sponsor_banners.texture_download_url_1 = "sponsorbanner1_" + userDoc._id + ".png";
+                exhibition.sponsor_banners.texture_download_url_2 = "sponsorbanner2_" + userDoc._id + ".png";
+                exhibition.sponsor_banners.texture_download_url_3 = "sponsorbanner3_" + userDoc._id + ".png";
+            }
 
             exhibition.save(async (err2, exhibitionDoc) => {
                 if (err2) {
@@ -96,7 +102,7 @@ exports.createModerator = async (req, res, next) => {
 
                     if (req.body.exhibition.sponsor_disc) {
                         try {
-                            fs.copyFileSync("./ressources/sponsor_disk_albedo.png", "./public/disc" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            fs.copyFileSync("./ressources/sponsor_disk_albedo.png", "./public/disc_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
                         } catch {
                             console.log('The file could not be copied');
                         }
@@ -104,20 +110,26 @@ exports.createModerator = async (req, res, next) => {
 
                     if (req.body.exhibition.sponsor_cylinder) {
                         try {
-                            fs.copyFileSync("./ressources/sponsor_cylindre_albedo.png", "./public/cylindre" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            fs.copyFileSync("./ressources/sponsor_cylindre_albedo.png", "./public/cylinder_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
                         } catch {
                             console.log('The file could not be copied');
                         }
                     }
-
-                    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+                    if (req.body.exhibition.sponsor_banners) {
+                        try {
+                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner0_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner1_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner2_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner3_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                        } catch (err) {
+                            console.log('The file could not be copied \n ' + err);
+                        }
+                    }
                     await User.updateOne({ _id: userDoc._id }, { "moderator.exhibition": exhibitionDoc._id });
-
 
                     res.status(200).json({ success: true, message: "User created successfully " + nodemailer.getTestMessageUrl(info) });
                 }
             })
-
         }
         else {
             if (err.code == 11000)
@@ -251,7 +263,6 @@ exports.participate = (req, res) => {
             }
             else {
                 var visitor = new User();
-                console.log(req.body);
                 visitor.visitor.email = req.body.email;
                 visitor.email = req.body.email;
                 visitor.visitor.phoneNumber = req.body.phoneNumber;
