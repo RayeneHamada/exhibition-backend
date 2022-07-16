@@ -191,7 +191,7 @@ exports.updateSponsorDiscCustom0 = (req, res) => {
 }
 
 exports.getExhibitionById = function (req, res) {
-    Exhibition.findOne({ _id: req.params.id }, 'stands event_name carpet_color display_screen sponsor_disc sponsor_cylinder hall_type').
+    Exhibition.findOne({ _id: req.params.id }, 'stands event_name carpet_color display_screen sponsor_disc sponsor_cylinder hall_type sponsor_banners').
         populate({ path: 'stands', populate: { path: 'exponent', select: 'exponent.company_name' } }).
         exec((err, result) => {
             if (!err) {
