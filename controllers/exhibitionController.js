@@ -28,7 +28,7 @@ exports.updateExhbition = function (req, res) {
 
 exports.getExhibition = function (req, res) {
 
-    Exhibition.findOne({ _id: "62572b2ead92d761abc7097d" }, 'stands event_name carpet_color display_screen sponsor_disc sponsor_cylinder hall_type').
+    Exhibition.findOne({ _id: "62572b2ead92d761abc7097d" }, 'stands event_name carpet_color display_screen sponsor_disc sponsor_cylinder hall_type sponsor_banners').
         populate({ path: 'stands', populate: { path: 'exponent', select: 'exponent.company_name exponent.website exponent.firstName exponent.lastName' } }).
         //populate({ path: 'stands.exponent', select: 'company_name website' }).
         exec((err, result) => {
