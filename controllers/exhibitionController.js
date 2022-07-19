@@ -429,7 +429,7 @@ exports.updateSponsorBanner0 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_0, buffer);
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
@@ -475,7 +475,7 @@ exports.updateSponsorBanner1 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_1, buffer);
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
@@ -521,7 +521,7 @@ exports.updateSponsorBanner2 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_2, buffer);
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
@@ -567,7 +567,7 @@ exports.updateSponsorBanner3 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_3, buffer);
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
