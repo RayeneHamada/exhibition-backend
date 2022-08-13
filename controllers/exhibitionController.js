@@ -449,6 +449,7 @@ exports.updateSponsorBanner0 = (req, res) => {
             }
         });
 }
+
 exports.updateSponsorBanner1 = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
@@ -495,6 +496,7 @@ exports.updateSponsorBanner1 = (req, res) => {
             }
         });
 }
+
 exports.updateSponsorBanner2 = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
@@ -541,6 +543,7 @@ exports.updateSponsorBanner2 = (req, res) => {
             }
         });
 }
+
 exports.updateSponsorBanner3 = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {

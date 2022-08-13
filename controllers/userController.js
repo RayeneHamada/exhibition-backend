@@ -224,10 +224,10 @@ exports.participate = (req, res) => {
         if (!err) {
             if (user) {
 
-                Exhibition.find({ '_id': req.body.exhibition }, (err, exhibition) => {
+                Exhibition.findOne({ '_id': req.body.exhibition }, (err, exhibition) => {
                     if (!err) {
                         if (exhibition.visitors) {
-                            if (exhibition.visitors.find((visitor) => { return visitor.visitor.email == req.body.email }))
+                            if (exhibition.visitors.find((visitor) => { return new mongoose.Types.ObjectId(user._id).equals(visitor); }))
                                 res.send({ "token": user.generateJwt() });
                             else {
                                 Exhibition.updateOne({ _id: exhibition._id }, { $push: { "visitors": user._id } }).then(
@@ -270,7 +270,7 @@ exports.participate = (req, res) => {
                 visitor.visitor.lastName = req.body.lastName;
                 visitor.save((err, doc) => {
                     if (!err) {
-                        Exhibition.find({ '_id': req.body.exhibition }, (err, exhibition) => {
+                        Exhibition.findOne({ '_id': req.body.exhibition }, (err, exhibition) => {
                             if (!err) {
                                 {
                                     if (exhibition) {
