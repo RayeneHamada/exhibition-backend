@@ -846,7 +846,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                 }
                             );
                             break;
-                        case 3:
+                        case 2:
                             loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
                                 loadImage(req.file.path).then((logo) => {
@@ -882,7 +882,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                 }
                             );
                             break;
-                        case 4:
+                        case 3:
                             loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
                                 loadImage(req.file.path).then((logo) => {
@@ -1214,6 +1214,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                 }
                             );
                             break;
+                            
                         case 3:
                             loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
