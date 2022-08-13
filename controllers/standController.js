@@ -791,7 +791,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -902,7 +902,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -947,7 +947,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -985,7 +985,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1021,7 +1021,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1066,7 +1066,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1104,7 +1104,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1160,7 +1160,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1197,7 +1197,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1233,7 +1233,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
