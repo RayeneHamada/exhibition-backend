@@ -1214,7 +1214,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                 }
                             );
                             break;
-                            
+
                         case 3:
                             loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
@@ -1406,6 +1406,28 @@ exports.updateMenu = (req, res) => {
                     (error) => {
                         res.status(400).json({
                             error: error
+                        });
+                    }
+                );
+            }
+        });
+}
+
+exports.uploadCV = (req, res) => {
+    Stand.findOne({ _id: req.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                cv = {owner:req._id,pdf_download_url:req.file.filename,uploaded_at:Date.now()}
+                Stand.updateOne({ _id: req.body.stand }, { $push: { "pdf_uploaded": cv } }).then(
+                    () => {
+                        res.send({ "success": true,message:'uploaded successfully' });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({
+                            erro: error
                         });
                     }
                 );

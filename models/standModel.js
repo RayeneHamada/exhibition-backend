@@ -5,8 +5,8 @@ var Schema = mongoose.Schema;
 
 var standSchema = new Schema({
 
-  stand_name :{
-    type:String
+  stand_name: {
+    type: String
   },
   type: {
     type: String,
@@ -89,7 +89,17 @@ var standSchema = new Schema({
   exhibition: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Exhibitions"
-  }
+  },
+  pdf_uploaded: [
+    {
+      owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users"
+      },
+      pdf_download_url: String,
+      upload_at: Date
+    }
+  ]
 
 });
 var Stand = module.exports = mongoose.model('Stands', standSchema);

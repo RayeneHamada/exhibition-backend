@@ -24,6 +24,7 @@ router.post('/updateCustom2',[imageUpload.single('image'),jwtHelper.verifyExpone
 router.post('/updateCustom3',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateCustom3);
 router.post('/updateBannerCustom0',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateBannerCustom0);
 router.post('/updateBannerCustom1',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateBannerCustom1);
+router.post('/uploadCV',[pdfUpload.single('pdf'),jwtHelper.verifyVisitorJwtToken], main_controller.uploadCV);
 
 //router.post('/googleauth', main_controller.test);
 
