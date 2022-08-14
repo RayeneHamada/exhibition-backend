@@ -111,7 +111,6 @@ module.exports.verifyExponentJwtToken = (req, res, next) => {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
                     else{
-                        console.log(decoded);
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;

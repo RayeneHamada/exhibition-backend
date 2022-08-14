@@ -9,7 +9,7 @@ exports.new = function (req, res) {
     StandLog.findOne({ stand: req.body.stand_id, action_name: req.body.action, action_by: req._id }, (err, log) => {
         if (!err) {
             if (log) {
-                res.status(203).send({success:true,message:"log already existss"})
+                res.status(203).send({ success: true, message: "log already existss" })
 
             }
             else {
@@ -21,10 +21,10 @@ exports.new = function (req, res) {
 
                 new_log.save(function (err, result) {
                     if (err) {
-                        res.status(400).send({success:false,message:err})
+                        res.status(400).send({ success: false, message: err })
                     }
                     else {
-                        res.status(200).send({success:true,message:"log added successfully"})
+                        res.status(200).send({ success: true, message: "log added successfully" })
 
                     }
                 })
@@ -41,7 +41,7 @@ exports.getStandsVisitsNb = function (req, res) {
         {
             "$match": {
                 "stand": new ObjectId(req.stand),
-                "action_name":"INTERACTION"
+                "action_name": "INTERACTION"
             }
         },
         {
@@ -53,7 +53,10 @@ exports.getStandsVisitsNb = function (req, res) {
     ], function (err, results) {
 
         if (!err) {
-            res.status(200).send({ success: true, data: results[0].count });
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results[0].count });
+            else
+                res.status(200).send({ success: true, data: 0 });
         }
         else {
             res.status(500).send({ success: false, message: err });
@@ -68,16 +71,16 @@ exports.getExhibitionVisitsNb = function (req, res) {
         {
             '$lookup':
             {
-              'from': "stands",
-              'localField': "stand",
-              'foreignField': "_id",
-              'as': "stand"
+                'from': "stands",
+                'localField': "stand",
+                'foreignField': "_id",
+                'as': "stand"
             }
-          },
+        },
         {
             "$match": {
                 "stand.exhibition": new ObjectId(req.exhibition),
-                "action_name":"INTERACTION"
+                "action_name": "INTERACTION"
             }
         },
         {
@@ -89,7 +92,10 @@ exports.getExhibitionVisitsNb = function (req, res) {
     ], function (err, results) {
 
         if (!err) {
-            res.status(200).send({ success: true, data: results[0].count });
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results[0].count });
+            else
+                res.status(200).send({ success: true, data: 0 });
         }
         else {
             res.status(500).send({ success: false, message: err });
