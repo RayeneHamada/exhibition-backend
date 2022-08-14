@@ -26,18 +26,6 @@ router.post('/updateBannerCustom0',[imageUpload.single('image'),jwtHelper.verify
 router.post('/updateBannerCustom1',[imageUpload.single('image'),jwtHelper.verifyExponentJwtToken], main_controller.updateBannerCustom1);
 router.post('/uploadCV',[pdfUpload.single('pdf'),jwtHelper.verifyVisitorJwtToken], main_controller.uploadCV);
 
-//router.post('/googleauth', main_controller.test);
-
-/*router.get('/userprofile',jwtHelper.verifyJwtToken,main_controller.userProfile);
-router.get('/usersList',jwtHelper.verifyAdminJwtToken,main_controller.usersList);
-router.get('/reset/:email',main_controller.sendPasswordResetEmail);
-router.post('/reset',jwtHelper.verifyPasswordResetJwtToken,main_controller.receiveNewPassword);
-router.delete('/delete/:id',jwtHelper.verifyAdminJwtToken,main_controller.user_delete);
-router.put('/updateProfile',jwtHelper.verifyJwtToken,main_controller.updateFullName);
-router.put('/updatePassword',jwtHelper.verifyJwtToken,main_controller.updatePassword);
-router.get('/profile/:id',jwtHelper.verifyAdminJwtToken,main_controller.admin_user_profile);*/
-
-
 
 
 

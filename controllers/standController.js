@@ -1414,7 +1414,7 @@ exports.updateMenu = (req, res) => {
 }
 
 exports.uploadCV = (req, res) => {
-    Stand.findOne({ _id: req.stand },
+    Stand.findOne({ _id: req.body.stand },
         (err, stand) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
