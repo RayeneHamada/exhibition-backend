@@ -90,6 +90,10 @@ var standSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Exhibitions"
   },
+  stand_logs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "StandLogs"
+  }],
   pdf_uploaded: [
     {
       owner: {

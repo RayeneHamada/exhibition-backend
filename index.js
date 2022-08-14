@@ -3,6 +3,7 @@ require('dotenv').config();
 require('./models/userModel');
 require('./models/exhibitionModel');
 require('./models/standModel');
+require('./models/standLogModel');
 
 require('./config/dbConfig');
 require('./config/passportConfig');
@@ -27,11 +28,13 @@ app.use(passport.initialize())
 const userRoute = require('./routes/userRoute');
 const exhibitionRoute = require('./routes/exhibitionRoute');
 const standRoute = require('./routes/standRoute');
+const standLogRoute = require('./routes/standLogRoute');
 
 //use routes
 app.use('/user', userRoute);
 app.use('/exhibition', exhibitionRoute);
 app.use('/stand', standRoute);
+app.use('/stats', standLogRoute);
 
 app.use('/public',express.static(path.join(__dirname, 'public')));
 

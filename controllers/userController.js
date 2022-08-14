@@ -150,6 +150,7 @@ exports.createExponent = async (req, res) => {
     password = Math.random().toString(36).slice(-8);
     user.password = password;
     user.role = "exponent";
+    user.exponent.exhibition = req._id;
 
     user.save(async (err, userDoc) => {
         if (!err) {

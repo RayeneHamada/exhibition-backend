@@ -71,6 +71,10 @@ var userSchema = new mongoose.Schema({
     stand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Stands"
+    },
+    exhibition: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users"
     }
   }
 
