@@ -46,6 +46,9 @@ var userSchema = new mongoose.Schema({
     sexe:{
       type:String,
       enum:['m','f']
+    },
+    age:{
+      type:Number
     }
   },
   
