@@ -48,7 +48,7 @@ exports.getStandsVisitsNb = function (req, res) {
         },
         {
             "$group": {
-                "_id": "$action_by",
+                "_id": null,
                 "count": { "$sum": 1 }
             }
         }
@@ -81,7 +81,6 @@ exports.getExhibitionVisitsNb = function (req, res) {
         }
     ], function (err, results) {
         if (!err) {
-            console.log(results);   
             if (results.length > 0)
                 res.status(200).send({ success: true, data: results[0].count });
             else
@@ -346,7 +345,6 @@ exports.getVisitorsAge = function (req, res) {
     ], function (err, results) {
 
         if (!err) {
-            console.log(results);
             if (results.length > 0)
                 res.status(200).send({ success: true, data: results });
             else
@@ -426,7 +424,6 @@ exports.getVisitorsGender = function (req, res) {
     ], function (err, results) {
 
         if (!err) {
-            console.log(results);
             if (results.length > 0)
                 res.status(200).send({ success: true, data: results });
             else
@@ -454,7 +451,6 @@ exports.getAverageInteractionDuration = function (req, res) {
             }
         }
     ], function (err, results) {
-        console.log(results);
 
         if (!err) {
             if (results.length > 0)
@@ -494,7 +490,6 @@ exports.getInteractions = function (req, res) {
     ], function (err, results) {
 
         if (!err) {
-            console.log(results);
             if (results.length > 0)
                 res.status(200).send({ success: true, data: results });
             else
