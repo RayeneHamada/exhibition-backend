@@ -43,6 +43,10 @@ var userSchema = new mongoose.Schema({
     phoneNumber: {
       type: String
     },
+    sexe:{
+      type:String,
+      enum:['m','f']
+    }
   },
   
 

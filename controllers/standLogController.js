@@ -2,6 +2,7 @@ const mongoose = require('mongoose'),
     ObjectId = require('mongoose').Types.ObjectId,
     User = mongoose.model('Users'),
     Stand = mongoose.model('Stands'),
+    Exhibition = mongoose.model('Exhibitions'),
     StandLog = mongoose.model('StandLogs');
 
 
@@ -66,21 +67,36 @@ exports.getStandsVisitsNb = function (req, res) {
 }
 
 exports.getExhibitionVisitsNb = function (req, res) {
-    console.log(req.exhibition);
+
+    Exhibition.aggregate([
+        { $match: {"_id": new ObjectId(req.exhibition)} }
+        , { $project: { visitors: 1 } } 
+        , { $unwind: '$visitors' } 
+        , {
+            $group: { 
+                _id: { visitor: '$visitors' } 
+                , count: { $sum: 1 } 
+            }
+        }
+    ], function (err, results) {
+        if (!err) {
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results[0].count });
+            else
+                res.status(200).send({ success: true, data: 0 });
+        }
+        else {
+            res.status(500).send({ success: false, message: err });
+        }
+    });
+}
+
+exports.getMeetInteractionNb = function (req, res) {
     StandLog.aggregate([
         {
-            '$lookup':
-            {
-                'from': "stands",
-                'localField': "stand",
-                'foreignField': "_id",
-                'as': "stand"
-            }
-        },
-        {
             "$match": {
-                "stand.exhibition": new ObjectId(req.exhibition),
-                "action_name": "INTERACTION"
+                "stand": new ObjectId(req.stand),
+                "action_name": "MEET"
             }
         },
         {
@@ -103,3 +119,62 @@ exports.getExhibitionVisitsNb = function (req, res) {
 
     })
 }
+
+exports.getWebsiteInteractionNb = function (req, res) {
+    StandLog.aggregate([
+        {
+            "$match": {
+                "stand": new ObjectId(req.stand),
+                "action_name": "WEBSITE"
+            }
+        },
+        {
+            "$group": {
+                "_id": "$action_by",
+                "count": { "$sum": 1 }
+            }
+        }
+    ], function (err, results) {
+
+        if (!err) {
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results[0].count });
+            else
+                res.status(200).send({ success: true, data: 0 });
+        }
+        else {
+            res.status(500).send({ success: false, message: err });
+        }
+
+    })
+}
+
+exports.getBrochureInteractionNb = function (req, res) {
+    StandLog.aggregate([
+        {
+            "$match": {
+                "stand": new ObjectId(req.stand),
+                "action_name": "BROCHURE"
+            }
+        },
+        {
+            "$group": {
+                "_id": "$action_by",
+                "count": { "$sum": 1 }
+            }
+        }
+    ], function (err, results) {
+
+        if (!err) {
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results[0].count });
+            else
+                res.status(200).send({ success: true, data: 0 });
+        }
+        else {
+            res.status(500).send({ success: false, message: err });
+        }
+
+    })
+}
+    

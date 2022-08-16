@@ -269,6 +269,9 @@ exports.participate = (req, res) => {
                 visitor.visitor.phoneNumber = req.body.phoneNumber;
                 visitor.visitor.firstName = req.body.firstName;
                 visitor.visitor.lastName = req.body.lastName;
+                visitor.visitor.sexe = req.body.sexe;
+                visitor.visitor.age = req.body.age;
+
                 visitor.save((err, doc) => {
                     if (!err) {
                         Exhibition.findOne({ '_id': req.body.exhibition }, (err, exhibition) => {
