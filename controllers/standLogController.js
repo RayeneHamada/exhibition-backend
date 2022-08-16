@@ -75,12 +75,13 @@ exports.getExhibitionVisitsNb = function (req, res) {
         , { $unwind: '$visitors' }
         , {
             $group: {
-                _id: { visitor: '$visitors' }
+                _id: null
                 , count: { $sum: 1 }
             }
         }
     ], function (err, results) {
         if (!err) {
+            console.log(results);   
             if (results.length > 0)
                 res.status(200).send({ success: true, data: results[0].count });
             else
