@@ -12,5 +12,6 @@ router.get('/getBrochureInteractionNb',jwtHelper.verifyExponentJwtToken,main_con
 router.get('/getVisitorsAge',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorsAge);
 router.get('/getVisitorsGender',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorsGender);
 router.get('/getAverageInteractionDuration',jwtHelper.verifyExponentJwtToken,main_controller.getAverageInteractionDuration);
+router.get('/getInteractions',jwtHelper.verifyExponentJwtToken,main_controller.getInteractions);
 
 module.exports = router;

@@ -18,7 +18,7 @@ exports.new = function (req, res) {
                     stand: req.body.stand_id,
                     action_name: req.body.action,
                     action_by: req._id,
-                    action_duration:req.body.duration
+                    action_duration: req.body.duration
                 })
 
                 new_log.save(function (err, result) {
@@ -458,6 +458,44 @@ exports.getAverageInteractionDuration = function (req, res) {
         if (!err) {
             if (results.length > 0)
                 res.status(200).send({ success: true, data: results[0].count });
+            else
+                res.status(200).send({ success: true, data: 0 });
+        }
+        else {
+            res.status(500).send({ success: false, message: err });
+        }
+
+    })
+}
+
+exports.getInteractions = function (req, res) {
+    StandLog.aggregate([
+        {
+            "$match": {
+                "stand": new ObjectId(req.stand),
+                "action_name": "INTERACTION"
+            }
+        },
+        {
+            "$project": {
+                "m": { "$month": "$action_at" },
+                "d": { "$dayOfMonth": "$action_at" },
+                "h": { "$hour": "$action_at" },
+                "_id": 1
+            }
+        },
+        {
+            "$group": {
+                "_id": { "month": "$m", "day": "$d", "hour": "$h" },
+                "total": { "$sum": 1 }
+            }
+        }
+    ], function (err, results) {
+
+        if (!err) {
+            console.log(results);
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results });
             else
                 res.status(200).send({ success: true, data: 0 });
         }
