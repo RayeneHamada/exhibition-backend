@@ -21,7 +21,8 @@ var standLogSchema = new Schema({
         it calculates how the user kept the menu open
     */
     action_duration: {
-        type: Date,
+        type: Number,
+        default:0
     },
     action_at: {
         type: Date,

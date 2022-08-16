@@ -9,5 +9,8 @@ router.get('/exhibitionVisits',jwtHelper.verifyExponentJwtToken,main_controller.
 router.get('/getMeetInteractionNb',jwtHelper.verifyExponentJwtToken,main_controller.getMeetInteractionNb);
 router.get('/getWebsiteInteractionNb',jwtHelper.verifyExponentJwtToken,main_controller.getWebsiteInteractionNb);
 router.get('/getBrochureInteractionNb',jwtHelper.verifyExponentJwtToken,main_controller.getBrochureInteractionNb);
+router.get('/getVisitorsAge',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorsAge);
+router.get('/getVisitorsGender',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorsGender);
+router.get('/getAverageInteractionDuration',jwtHelper.verifyExponentJwtToken,main_controller.getAverageInteractionDuration);
 
 module.exports = router;
