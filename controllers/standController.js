@@ -202,15 +202,15 @@ exports.updateCustom0 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
-                                let hRatio0 = 165.376 / logo.width;
+                                let hRatio0 = 94.72 / logo.width;
                                 let vShift0 = (118.272 - logo.height * hRatio0) / 2
-                                ctx.drawImage(logo, 2.56, 2.048 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                                ctx.drawImage(logo, 37.888, 2.048 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                             }
                             else {
                                 //Drawing the logo un Custom Area 0
-                                let vRatio0 = 118.272 / logo.height;
+                                let vRatio0 = 94.72 / logo.height;
                                 let hShift0 = (165.376 - logo.width * vRatio0) / 2
-                                ctx.drawImage(logo, 2.56 + hShift0, 2.048, logo.width * vRatio0, logo.height * vRatio0);
+                                ctx.drawImage(logo, 37.888 + hShift0, 2.048, logo.width * vRatio0, logo.height * vRatio0);
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -240,15 +240,15 @@ exports.updateCustom0 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
-                                let hRatio0 = 417.792 / logo.width;
+                                let hRatio0 = 231.424 / logo.width;
                                 let vShift0 = (231.424 - logo.height * hRatio0) / 2
                                 ctx.drawImage(logo, 600.064, 784.384 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                             }
                             else {
                                 //Drawing the logo un Custom Area 0
-                                let vRatio0 = 118.272 / logo.height;
-                                let hShift0 = (165.376 - logo.width * vRatio0) / 2
-                                ctx.drawImage(logo, 600.064 + hShift0, 784.384, logo.width * vRatio0, logo.height * vRatio0);
+                                let vRatio0 = 231.424 / logo.height;
+                                let hShift0 = (231.424 - logo.width * vRatio0) / 2
+                                ctx.drawImage(logo, 693.248 + hShift0, 784.384, logo.width * vRatio0, logo.height * vRatio0);
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -278,15 +278,15 @@ exports.updateCustom0 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
-                                let hRatio0 = 378.88 / logo.width;
+                                let hRatio0 = 209.92 / logo.width;
                                 let vShift0 = (209.92 - logo.height * hRatio0) / 2
-                                ctx.drawImage(logo, 633.856, 269.312 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                                ctx.drawImage(logo, 717.824, 269.312 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                             }
                             else {
                                 //Drawing the logo un Custom Area 0
                                 let vRatio0 = 209.92 / logo.height;
-                                let hShift0 = (378.88 - logo.width * vRatio0) / 2
-                                ctx.drawImage(logo, 633.856 + hShift0, 269.312, logo.width * vRatio0, logo.height * vRatio0);
+                                let hShift0 = (209.92 - logo.width * vRatio0) / 2
+                                ctx.drawImage(logo, 717.824 + hShift0, 269.312, logo.width * vRatio0, logo.height * vRatio0);
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -316,15 +316,15 @@ exports.updateCustom0 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
-                                let hRatio0 = 369.664 / logo.width;
+                                let hRatio0 = 205.824 / logo.width;
                                 let vShift0 = (205.824 - logo.height * hRatio0) / 2
-                                ctx.drawImage(logo, 643.072, 268.288 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                                ctx.drawImage(logo, 724.992, 268.288 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                             }
                             else {
                                 //Drawing the logo un Custom Area 0
                                 let vRatio0 = 205.824 / logo.height;
-                                let hShift0 = (369.664 - logo.width * vRatio0) / 2
-                                ctx.drawImage(logo, 643.072 + hShift0, 268.288, logo.width * vRatio0, logo.height * vRatio0);
+                                let hShift0 = (205.824 - logo.width * vRatio0) / 2
+                                ctx.drawImage(logo, 724.992 + hShift0, 268.288, logo.width * vRatio0, logo.height * vRatio0);
                             }
                             ctx.drawImage(image, 0, 0, 0, 0)
                             const buffer = canvas.toBuffer("image/png");
@@ -354,15 +354,15 @@ exports.updateCustom0 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
-                                let hRatio0 = 606.208 / logo.width;
+                                let hRatio0 = 364.544 / logo.width;
                                 let vShift0 = (303.104 - logo.height * hRatio0) / 2
-                                ctx.drawImage(logo, 120.832, 839.68 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                                ctx.drawImage(logo, 241.664, 839.68 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                             }
                             else {
                                 //Drawing the logo un Custom Area 0
                                 let vRatio0 = 303.104 / logo.height;
-                                let hShift0 = (606.208 - logo.width * vRatio0) / 2
-                                ctx.drawImage(logo, 120.832 + hShift0, 839.68, logo.width * vRatio0, logo.height * vRatio0);
+                                let hShift0 = (364.544 - logo.width * vRatio0) / 2
+                                ctx.drawImage(logo, 241.664 + hShift0, 839.68, logo.width * vRatio0, logo.height * vRatio0);
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -1419,10 +1419,10 @@ exports.uploadCV = (req, res) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
-                cv = {owner:req._id,pdf_download_url:req.file.filename,uploaded_at:Date.now()}
+                cv = { owner: req._id, pdf_download_url: req.file.filename, uploaded_at: Date.now() }
                 Stand.updateOne({ _id: req.body.stand }, { $push: { "pdf_uploaded": cv } }).then(
                     () => {
-                        res.send({ "success": true,message:'uploaded successfully' });
+                        res.send({ "success": true, message: 'uploaded successfully' });
                     }
                 ).catch(
                     (error) => {
