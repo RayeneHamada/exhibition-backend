@@ -53,9 +53,9 @@ exports.getExhibition = function (req, res) {
 
 }
 
-exports.getVisitors = function(req,res) {
+exports.getVisitors = function (req, res) {
     Exhibition.findOne({ _id: req.params.id }, 'visitors').
-        populate({ path: 'visitors', select:'visitor.firstName visitor.lastName visitor.phoneNumber visitor.email'}).
+        populate({ path: 'visitors', select: 'visitor.firstName visitor.lastName visitor.phoneNumber visitor.email' }).
         exec((err, result) => {
             if (!err) {
                 if (result) {
@@ -156,16 +156,16 @@ exports.updateSponsorDiscCustom0 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
-                            let hRatio0 = 531.456 / logo.width;
-                            let vShift0 = (226.304 - logo.height * hRatio0) / 2
-                            ctx.drawImage(logo, 21.504, 15.36 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                            //Drawing the texture un Custom Area 0
+                            let hRatio0 = 592.896 / logo.width;
+                            let vShift0 = (251.904 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 10.24, 8.192 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
-                            let vRatio0 = 226.304 / logo.height;
-                            let hShift0 = (531.456 - logo.width * vRatio0) / 2
-                            ctx.drawImage(logo, 21.504 + hShift0, 15.36, logo.width * vRatio0, logo.height * vRatio0);
+                            //Drawing the texture un Custom Area 0
+                            let vRatio0 = 251.904 / logo.height;
+                            let hShift0 = (592.896 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 10.24 + hShift0, 8.192, logo.width * vRatio0, logo.height * vRatio0);
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
@@ -228,16 +228,16 @@ exports.updateSponsorDiscCustom1 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
-                            let hRatio0 = 531.456 / logo.width;
-                            let vShift0 = (225.28 - logo.height * hRatio0) / 2
-                            ctx.drawImage(logo, 19.456, 268.288 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                            //Drawing the texture un Custom Area 0
+                            let hRatio0 = 592.896 / logo.width;
+                            let vShift0 = (250.88 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 10.24, 260.096 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
-                            let vRatio0 = 225.28 / logo.height;
-                            let hShift0 = (531.456 - logo.width * vRatio0) / 2
-                            ctx.drawImage(logo, 19.456 + hShift0, 268.288, logo.width * vRatio0, logo.height * vRatio0);
+                            //Drawing the texture un Custom Area 0
+                            let vRatio0 = 592.896 / logo.height;
+                            let hShift0 = (250.88 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 10.24 + hShift0, 260.096, logo.width * vRatio0, logo.height * vRatio0);
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
@@ -275,16 +275,16 @@ exports.updateSponsorDiscCustom2 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
-                            let hRatio0 = 531.456 / logo.width;
-                            let vShift0 = (225.28 - logo.height * hRatio0) / 2
-                            ctx.drawImage(logo, 19.456, 520.192 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                            //Drawing the texture un Custom Area 2
+                            let hRatio0 = 592.896 / logo.width;
+                            let vShift0 = (250.88 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 10.24, 762.88 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
-                            let vRatio0 = 225.28 / logo.height;
-                            let hShift0 = (531.456 - logo.width * vRatio0) / 2
-                            ctx.drawImage(logo, 19.456 + hShift0, 520.192, logo.width * vRatio0, logo.height * vRatio0);
+                            //Drawing the texture un Custom Area 2
+                            let vRatio0 = 250.88 / logo.height;
+                            let hShift0 = (592.896 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 10.24 + hShift0, 762.88, logo.width * vRatio0, logo.height * vRatio0);
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
@@ -322,21 +322,21 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
-                            let hRatio0 = 531.456 / logo.width;
-                            let vShift0 = (225.28 - logo.height * hRatio0) / 2
-                            ctx.drawImage(logo, 23.552, 780.288 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                            //Drawing the texture un Custom Area 3
+                            let hRatio0 = 592.896 / logo.width;
+                            let vShift0 = (251.904 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 10.24, 510.976 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
-                            let vRatio0 = 225.28 / logo.height;
-                            let hShift0 = (531.456 - logo.width * vRatio0) / 2
-                            ctx.drawImage(logo, 23.552 + hShift0, 780.288, logo.width * vRatio0, logo.height * vRatio0);
+                            //Drawing the texture un Custom Area 3
+                            let vRatio0 = 251.904 / logo.height;
+                            let hShift0 = (592.896 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 10.24 + hShift0, 510.976, logo.width * vRatio0, logo.height * vRatio0);
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
                         fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
-                        res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
+                        res.status(200).send({ success: true, message: "Disc Custom 3 has been updated successfully" })
 
                     })
                 }).catch(
@@ -369,13 +369,13 @@ exports.updateSponsorCylindre = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture 
                             let hRatio0 = 1024 / logo.width;
                             let vShift0 = (1024 - logo.height * hRatio0) / 2
                             ctx.drawImage(logo, 0, 0 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture 
                             let vRatio0 = 1024 / logo.height;
                             let hShift0 = (1024 - logo.width * vRatio0) / 2
                             ctx.drawImage(logo, 0 + hShift0, 0, logo.width * vRatio0, logo.height * vRatio0);
@@ -416,13 +416,13 @@ exports.updateSponsorBanner0 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let hRatio0 = 1005.568 / logo.width;
                             let vShift0 = (502.784 - logo.height * hRatio0) / 2
                             ctx.drawImage(logo, 9.216, 508.928 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let vRatio0 = 502.784 / logo.height;
                             let hShift0 = (1005.568 - logo.width * vRatio0) / 2
                             ctx.drawImage(logo, 9.216 + hShift0, 508.928, logo.width * vRatio0, logo.height * vRatio0);
@@ -463,13 +463,13 @@ exports.updateSponsorBanner1 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let hRatio0 = 1005.568 / logo.width;
                             let vShift0 = (502.784 - logo.height * hRatio0) / 2
                             ctx.drawImage(logo, 9.216, 508.928 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let vRatio0 = 502.784 / logo.height;
                             let hShift0 = (1005.568 - logo.width * vRatio0) / 2
                             ctx.drawImage(logo, 9.216 + hShift0, 508.928, logo.width * vRatio0, logo.height * vRatio0);
@@ -510,13 +510,13 @@ exports.updateSponsorBanner2 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let hRatio0 = 1005.568 / logo.width;
                             let vShift0 = (502.784 - logo.height * hRatio0) / 2
                             ctx.drawImage(logo, 9.216, 508.928 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let vRatio0 = 502.784 / logo.height;
                             let hShift0 = (1005.568 - logo.width * vRatio0) / 2
                             ctx.drawImage(logo, 9.216 + hShift0, 508.928, logo.width * vRatio0, logo.height * vRatio0);
@@ -557,13 +557,13 @@ exports.updateSponsorBanner3 = (req, res) => {
                     loadImage(req.file.path).then((logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let hRatio0 = 1005.568 / logo.width;
                             let vShift0 = (502.784 - logo.height * hRatio0) / 2
                             ctx.drawImage(logo, 9.216, 508.928 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                         }
                         else {
-                            //Drawing the logo un Custom Area 0
+                            //Drawing the texture un Custom Area 0
                             let vRatio0 = 502.784 / logo.height;
                             let hShift0 = (1005.568 - logo.width * vRatio0) / 2
                             ctx.drawImage(logo, 9.216 + hShift0, 508.928, logo.width * vRatio0, logo.height * vRatio0);
