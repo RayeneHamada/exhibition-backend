@@ -11,7 +11,13 @@ const mongoose = require('mongoose'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
-    moment = require('moment');
+    moment = require('moment'),
+    { S3Client } = require('@aws-sdk/client-s3'),
+    s3Client = new S3Client({
+        accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+    });
+
 var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
 var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
 exports.signup = function (req, res, next) {
@@ -102,6 +108,11 @@ exports.createModerator = async (req, res, next) => {
 
                     if (req.body.exhibition.sponsor_disc) {
                         try {
+                            await s3Client.send(new CopyObjectCommand({
+                                Bucket: "exhibition-textures-bucket",
+                                CopySource: "./ressources/sponsor_disk_albedo.png",
+                                Key: "disc_" + userDoc._id + ".png"
+                            }));
                             fs.copyFileSync("./ressources/sponsor_disk_albedo.png", "./public/disc_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
                         } catch {
                             console.log('The file could not be copied');
@@ -110,6 +121,11 @@ exports.createModerator = async (req, res, next) => {
 
                     if (req.body.exhibition.sponsor_cylinder) {
                         try {
+                            await s3Client.send(new CopyObjectCommand({
+                                Bucket: "exhibition-textures-bucket",
+                                CopySource: "./ressources/sponsor_cylindre_albedo.png",
+                                Key: "cylinder_" + userDoc._id + ".png"
+                            }));
                             fs.copyFileSync("./ressources/sponsor_cylindre_albedo.png", "./public/cylinder_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
                         } catch {
                             console.log('The file could not be copied');

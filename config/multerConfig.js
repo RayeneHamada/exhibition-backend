@@ -1,32 +1,58 @@
 const multer = require('multer');
 const path = require('path');
+const { S3Client } = require('@aws-sdk/client-s3')
+const multerS3 = require('multer-s3')
 
- const imageStorage = multer.diskStorage({
-    // Destination to store image     
-    destination: 'public', 
-   filename: (req, file, cb) => {
-          cb(null, file.fieldname + '_' + Date.now() 
-             + path.extname(file.originalname))
-            // file.fieldname is name of the field (image)
-            // path.extname get the uploaded file extension
+
+const s3 = new S3Client({
+  accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+});
+
+
+
+exports.imageCloudUpload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'exhibition-textures-bucket',
+    metadata: function (req, file, cb) {
+      cb(null, {
+        fieldName: file.fieldname + '_' + Date.now()
+          + path.extname(file.originalname)
+      });
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
     }
+  })
+})
+
+const imageStorage = multer.diskStorage({
+  // Destination to store image     
+  destination: 'public',
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '_' + Date.now()
+      + path.extname(file.originalname))
+    // file.fieldname is name of the field (image)
+    // path.extname get the uploaded file extension
+  }
 });
 
 exports.imageUpload = multer({
-    storage: imageStorage,
-    limits: {
-      fileSize: 10000000 // 1000000 Bytes = 1 MB
-    }
+  storage: imageStorage,
+  limits: {
+    fileSize: 10000000 // 1000000 Bytes = 1 MB
+  }
 })
 
 const pdfStorage = multer.diskStorage({
   // Destination to store image     
-  destination: 'public', 
- filename: (req, file, cb) => {
-        cb(null, file.fieldname + '_' + Date.now() 
-           + path.extname(file.originalname))
-          // file.fieldname is name of the field (image)
-          // path.extname get the uploaded file extension
+  destination: 'public',
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '_' + Date.now()
+      + path.extname(file.originalname))
+    // file.fieldname is name of the field (image)
+    // path.extname get the uploaded file extension
   }
 });
 

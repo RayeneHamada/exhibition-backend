@@ -1434,3 +1434,25 @@ exports.uploadCV = (req, res) => {
             }
         });
 }
+
+exports.uploadCVTest = (req, res) => {
+    Stand.findOne({ _id: req.body.stand },
+        (err, stand) => {
+            if (!stand)
+                return res.status(404).json({ status: false, message: 'Stand record not found.' });
+            else {
+                cv = { owner: req._id, pdf_download_url: req.file.filename, uploaded_at: Date.now() }
+                Stand.updateOne({ _id: req.body.stand }, { $push: { "pdf_uploaded": cv } }).then(
+                    () => {
+                        res.send({ "success": true, message: 'uploaded successfully' });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({
+                            erro: error
+                        });
+                    }
+                );
+            }
+        });
+}
