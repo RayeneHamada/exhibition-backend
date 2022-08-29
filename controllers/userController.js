@@ -12,10 +12,14 @@ const mongoose = require('mongoose'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     moment = require('moment'),
+    { PutObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
-    s3Client = new S3Client({
-        accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+    s3 = new S3Client({
+        credentials: {
+            accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+        },
+        region: process.env.AWS_S3_REGION
     });
 
 var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
@@ -108,37 +112,60 @@ exports.createModerator = async (req, res, next) => {
 
                     if (req.body.exhibition.sponsor_disc) {
                         try {
-                            await s3Client.send(new CopyObjectCommand({
+                            const fileContent = fs.readFileSync("./ressources/sponsor_disk_albedo.png");
+                            params = {
                                 Bucket: "exhibition-textures-bucket",
-                                CopySource: "./ressources/sponsor_disk_albedo.png",
-                                Key: "disc_" + userDoc._id + ".png"
-                            }));
-                            fs.copyFileSync("./ressources/sponsor_disk_albedo.png", "./public/disc_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                        } catch {
-                            console.log('The file could not be copied');
+                                Body: fileContent,
+                                Key: "disc_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                        } catch (err) {
+                            console.log(err);
                         }
                     }
 
                     if (req.body.exhibition.sponsor_cylinder) {
                         try {
-                            await s3Client.send(new CopyObjectCommand({
+                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
+                            params = {
                                 Bucket: "exhibition-textures-bucket",
-                                CopySource: "./ressources/sponsor_cylindre_albedo.png",
-                                Key: "cylinder_" + userDoc._id + ".png"
-                            }));
-                            fs.copyFileSync("./ressources/sponsor_cylindre_albedo.png", "./public/cylinder_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                        } catch {
-                            console.log('The file could not be copied');
+                                Body: fileContent,
+                                Key: "cylinder_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                        } catch (err) {
+                            console.log(err);
                         }
                     }
                     if (req.body.exhibition.sponsor_banners) {
                         try {
-                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner0_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner1_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner2_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                            fs.copyFileSync("./ressources/sponsor_banner.png", "./public/sponsorbanner3_" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
+                            const fileContent = fs.readFileSync("./ressources/sponsor_banner.png");
+                            params = {
+                                Bucket: "exhibition-textures-bucket",
+                                Body: fileContent,
+                                Key: "sponsorbanner0_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                            params = {
+                                Bucket: "exhibition-textures-bucket",
+                                Body: fileContent,
+                                Key: "sponsorbanner1_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                            params = {
+                                Bucket: "exhibition-textures-bucket",
+                                Body: fileContent,
+                                Key: "sponsorbanner2_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                            params = {
+                                Bucket: "exhibition-textures-bucket",
+                                Body: fileContent,
+                                Key: "sponsorbanner3_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
                         } catch (err) {
-                            console.log('The file could not be copied \n ' + err);
+                            console.log("AWS S3 error : " + err);
                         }
                     }
                     await User.updateOne({ _id: userDoc._id }, { "moderator.exhibition": exhibitionDoc._id });
@@ -173,10 +200,10 @@ exports.createExponent = async (req, res) => {
             var stand = new Stand(req.body.stand);
             stand.exponent = userDoc._id;
             stand.stand_name = userDoc.exponent.company_name;
-            stand.texture_download_url = "texture" + userDoc._id + ".png";
+            stand.texture_download_url = "texture_" + userDoc._id + ".png";
             stand.exhibition = req.exhibition
             if (req.body.stand.banner)
-                stand.banner.texture_download_url = "banner" + userDoc._id + ".png";
+                stand.banner.texture_download_url = "banner_" + userDoc._id + ".png";
 
 
             stand.save(async (err2, standDoc) => {
@@ -198,15 +225,27 @@ exports.createExponent = async (req, res) => {
                         html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
                     });
                     try {
-                        fs.copyFileSync("./ressources/" + texture[standDoc.type], "./public/texture" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                    } catch {
-                        console.log('The file could not be copied');
+                        const fileContent = fs.readFileSync("./ressources/" + texture[standDoc.type]);
+                        params = {
+                            Bucket: "exhibition-textures-bucket",
+                            Body: fileContent,
+                            Key: "texture_" + userDoc._id + ".png",
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                    } catch (err) {
+                        console.log("AWS S3 : " + err);
                     }
                     if (req.body.stand.banner) {
                         try {
-                            fs.copyFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type], "./public/banner" + userDoc._id + ".png", fs.constants.COPYFILE_EXCL);
-                        } catch {
-                            console.log('The file could not be copied');
+                            const fileContent = fs.readFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type]);
+                            params = {
+                                Bucket: "exhibition-textures-bucket",
+                                Body: fileContent,
+                                Key: "banner_" + userDoc._id + ".png",
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                        } catch (err) {
+                            console.log('AWS S3 : ' + err);
                         }
                     }
                     await User.updateOne({ _id: userDoc._id }, { "exponent.stand": standDoc._id });

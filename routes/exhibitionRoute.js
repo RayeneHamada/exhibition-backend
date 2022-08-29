@@ -3,6 +3,7 @@ const router = express.Router();
 const jwtHelper = require('../config/jwtHelper');
 const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
+const imageCloudUpload = require('../config/multerConfig').imageCloudUpload;
 router.get('/allTest',main_controller.getAll);
 router.get('/getExhibitionForVisitor/:id',main_controller.getExhibitionForVisitor);
 router.get('/getVisitors/:id',main_controller.getVisitors);

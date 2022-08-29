@@ -5,6 +5,7 @@ const main_controller = require('../controllers/userController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 
 
+router.get('/test', main_controller.testCopy);
 router.post('/signup', main_controller.signup);
 router.post('/login', main_controller.authenticate);
 router.post('/createModerator', jwtHelper.verifyAdminJwtToken, main_controller.createModerator);
