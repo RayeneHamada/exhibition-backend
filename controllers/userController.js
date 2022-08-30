@@ -117,6 +117,7 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "disc_" + userDoc._id + ".png",
+                                ACL:"public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -131,6 +132,8 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder_" + userDoc._id + ".png",
+                                ACL:"public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -144,12 +147,15 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner0_" + userDoc._id + ".png",
+                                ACL:"public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner1_" + userDoc._id + ".png",
+                                ACL:"public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
@@ -162,6 +168,7 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner3_" + userDoc._id + ".png",
+                                ACL:"public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -230,6 +237,7 @@ exports.createExponent = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "texture_" + userDoc._id + ".png",
+                            ACL:"public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                     } catch (err) {
@@ -242,6 +250,7 @@ exports.createExponent = async (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "banner_" + userDoc._id + ".png",
+                                ACL:"public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {

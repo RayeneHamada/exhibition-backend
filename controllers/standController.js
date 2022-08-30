@@ -227,6 +227,8 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
 
@@ -271,6 +273,8 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -314,6 +318,8 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+                                
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -357,6 +363,8 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -400,6 +408,8 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -453,6 +463,8 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom  has been updated successfully" })
@@ -496,6 +508,8 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 1 has been updated successfully" })
@@ -539,6 +553,8 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 1 has been updated successfully" })
@@ -582,6 +598,8 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -625,6 +643,8 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 1 has been updated successfully" })
@@ -679,6 +699,8 @@ exports.updateCustom2 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 2 has been updated successfully" })
@@ -722,6 +744,8 @@ exports.updateCustom2 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 2 has been updated successfully" })
@@ -765,6 +789,8 @@ exports.updateCustom2 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 2 has been updated successfully" })
@@ -818,6 +844,8 @@ exports.updateCustom3 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ACL: "public-read"
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 3 has been updated successfully" })
@@ -875,6 +903,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -918,6 +948,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -959,6 +991,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1001,6 +1035,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1051,6 +1087,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1094,6 +1132,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1135,6 +1175,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1185,6 +1227,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1228,6 +1272,8 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1289,6 +1335,8 @@ exports.updateBannerCustom1 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1331,6 +1379,8 @@ exports.updateBannerCustom1 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -1373,6 +1423,8 @@ exports.updateBannerCustom1 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ACL: "public-read"
+
                                     }
                                     await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })

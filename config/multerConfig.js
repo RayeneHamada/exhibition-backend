@@ -14,6 +14,7 @@ const s3 = new S3Client({
 exports.fileCloudUpload = multer({
   storage: multerS3({
     s3: s3,
+    acl: 'public-read',
     bucket: process.env.AWS_S3_TEXTURE_BUCKET,
     metadata: function (req, file, cb) {
       cb(null, {
