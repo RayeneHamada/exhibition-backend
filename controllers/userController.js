@@ -162,6 +162,7 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner2_" + userDoc._id + ".png",
+                                ACL:"public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
