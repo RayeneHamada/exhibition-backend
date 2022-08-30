@@ -182,6 +182,7 @@ exports.updateSponsorDiscCustom0 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 0 has been updated successfully" })
@@ -259,6 +260,7 @@ exports.updateSponsorDiscCustom1 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
@@ -311,6 +313,7 @@ exports.updateSponsorDiscCustom2 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
@@ -363,6 +366,7 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 3 has been updated successfully" })
@@ -415,6 +419,7 @@ exports.updateSponsorCylindre = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
@@ -467,6 +472,7 @@ exports.updateSponsorBanner0 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_0,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -519,6 +525,7 @@ exports.updateSponsorBanner1 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_1,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -571,6 +578,7 @@ exports.updateSponsorBanner2 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_2,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -623,6 +631,7 @@ exports.updateSponsorBanner3 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_3,
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
