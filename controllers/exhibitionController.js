@@ -143,17 +143,17 @@ exports.getAll = function (req, res) {
 
 }
 
-exports.updateSponsorDiscCustom0 = (req, res) => {
+exports.updateSponsorDiscCustom0 = async (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
-        (err, exhibition) => {
+        async (err, exhibition) => {
             if (!exhibition)
                 return res.status(404).json({ status: false, message: 'exhibition record not found.' });
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_disc.texture_download_url).then(async (image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 0
@@ -169,7 +169,12 @@ exports.updateSponsorDiscCustom0 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_disc.texture_download_url,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 0 has been updated successfully" })
 
                     })
@@ -215,7 +220,7 @@ exports.getExhibitionById = function (req, res) {
 
 }
 
-exports.updateSponsorDiscCustom1 = (req, res) => {
+exports.updateSponsorDiscCustom1 = async (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
             if (!exhibition)
@@ -223,9 +228,9 @@ exports.updateSponsorDiscCustom1 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_disc.texture_download_url).then(async (image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 0
@@ -241,7 +246,12 @@ exports.updateSponsorDiscCustom1 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_disc.texture_download_url,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
 
                     })
@@ -262,7 +272,7 @@ exports.updateSponsorDiscCustom1 = (req, res) => {
         });
 }
 
-exports.updateSponsorDiscCustom2 = (req, res) => {
+exports.updateSponsorDiscCustom2 = async (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
             if (!exhibition)
@@ -270,9 +280,9 @@ exports.updateSponsorDiscCustom2 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_disc.texture_download_url).then(async (image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 2
@@ -288,7 +298,12 @@ exports.updateSponsorDiscCustom2 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_disc.texture_download_url,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
 
                     })
@@ -317,9 +332,9 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_disc.texture_download_url).then((image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 3
@@ -335,7 +350,12 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_disc.texture_download_url,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 3 has been updated successfully" })
 
                     })
@@ -364,9 +384,9 @@ exports.updateSponsorCylindre = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_disc.texture_download_url).then((image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture 
@@ -382,7 +402,12 @@ exports.updateSponsorCylindre = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_disc.texture_download_url, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_disc.texture_download_url,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
 
                     })
@@ -411,9 +436,9 @@ exports.updateSponsorBanner0 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_banners.texture_download_url_0).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_banners.texture_download_url_0).then((image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 0
@@ -429,7 +454,12 @@ exports.updateSponsorBanner0 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_0, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_banners.texture_download_url_0,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
@@ -458,9 +488,9 @@ exports.updateSponsorBanner1 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_banners.texture_download_url_1).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_banners.texture_download_url_1).then((image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 0
@@ -476,7 +506,12 @@ exports.updateSponsorBanner1 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_1, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_banners.texture_download_url_1,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
@@ -505,9 +540,9 @@ exports.updateSponsorBanner2 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_banners.texture_download_url_2).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_banners.texture_download_url_2).then((image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 0
@@ -523,7 +558,12 @@ exports.updateSponsorBanner2 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_2, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_banners.texture_download_url_2,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })
@@ -552,9 +592,9 @@ exports.updateSponsorBanner3 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage('./public/' + exhibition.sponsor_banners.texture_download_url_3).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_banners.texture_download_url_3).then((image) => {
                     ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then((logo) => {
+                    loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
                         if (ratio > 1) {
                             //Drawing the texture un Custom Area 0
@@ -570,7 +610,12 @@ exports.updateSponsorBanner3 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
-                        fs.writeFileSync("./public/" + exhibition.sponsor_banners.texture_download_url_3, buffer);
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_banners.texture_download_url_3,
+                        }
+                        await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
 
                     })

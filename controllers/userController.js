@@ -114,7 +114,7 @@ exports.createModerator = async (req, res, next) => {
                         try {
                             const fileContent = fs.readFileSync("./ressources/sponsor_disk_albedo.png");
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "disc_" + userDoc._id + ".png",
                             }
@@ -128,7 +128,7 @@ exports.createModerator = async (req, res, next) => {
                         try {
                             const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder_" + userDoc._id + ".png",
                             }
@@ -141,25 +141,25 @@ exports.createModerator = async (req, res, next) => {
                         try {
                             const fileContent = fs.readFileSync("./ressources/sponsor_banner.png");
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner0_" + userDoc._id + ".png",
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner1_" + userDoc._id + ".png",
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner2_" + userDoc._id + ".png",
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner3_" + userDoc._id + ".png",
                             }
@@ -227,7 +227,7 @@ exports.createExponent = async (req, res) => {
                     try {
                         const fileContent = fs.readFileSync("./ressources/" + texture[standDoc.type]);
                         params = {
-                            Bucket: "exhibition-textures-bucket",
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "texture_" + userDoc._id + ".png",
                         }
@@ -239,7 +239,7 @@ exports.createExponent = async (req, res) => {
                         try {
                             const fileContent = fs.readFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type]);
                             params = {
-                                Bucket: "exhibition-textures-bucket",
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "banner_" + userDoc._id + ".png",
                             }

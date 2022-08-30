@@ -4,7 +4,16 @@ const mongoose = require('mongoose'),
     Stand = mongoose.model('Stands'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
-    fs = require('fs');
+    fs = require('fs'),
+    { PutObjectCommand } = require('@aws-sdk/client-s3'),
+    { S3Client } = require('@aws-sdk/client-s3'),
+    s3 = new S3Client({
+        credentials: {
+            accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+        },
+        region: process.env.AWS_S3_REGION
+    });
 var texture_colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
 var banner_colors = { "XL": [3, 0, 52], "LL": [225, 224, 240], "LR": [225, 224, 240], "M": [38, 48, 60], "S": [254, 245, 214] };
 
@@ -102,7 +111,7 @@ exports.updateFurnitureColor = (req, res) => {
         });
 }
 
-exports.updateBackgroundColor = (req, res) => {
+/*exports.updateBackgroundColor = (req, res) => {
     Stand.findOne({ _id: req.stand },
         (err, stand) => {
             if (!stand)
@@ -110,7 +119,7 @@ exports.updateBackgroundColor = (req, res) => {
             else {
                 stand.background_color = req.body.background_color;
                 replaceColor({
-                    image: './public/' + stand.texture_download_url,
+                    image: process.env.AWS_S3_ROOT_PATH + stand.texture_download_url,
                     colors: {
                         type: 'rgb',
                         targetColor: texture_colors[stand.type],
@@ -119,10 +128,10 @@ exports.updateBackgroundColor = (req, res) => {
                     deltaE: 10
                 })
                     .then((jimpObject) => {
-                        jimpObject.write('./public/' + stand.texture_download_url, (err) => {
+                        jimpObject.write(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url, (err) => {
                             if (err) return console.log(err);
                             replaceColor({
-                                image: './public/' + stand.banner.texture_download_url,
+                                image: process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url,
                                 colors: {
                                     type: 'rgb',
                                     targetColor: banner_colors[stand.type],
@@ -131,7 +140,7 @@ exports.updateBackgroundColor = (req, res) => {
                                 deltaE: 10
                             })
                                 .then((jimpObject) => {
-                                    jimpObject.write('./public/' + stand.banner.texture_download_url, (err) => {
+                                    jimpObject.write(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url, (err) => {
                                         if (err) return console.log(err);
                                         Stand.updateOne({ _id: req.stand }, stand).then(
                                             () => {
@@ -162,7 +171,7 @@ exports.updateBackgroundColor = (req, res) => {
             }
         });
 }
-
+*/
 exports.updateTvMedia = (req, res) => {
     Stand.findOne({ _id: req.stand },
         (err, stand) => {
@@ -196,9 +205,9 @@ exports.updateCustom0 = (req, res) => {
                 if (stand.type == "S") {
                     const canvas = createCanvas(512, 512);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
@@ -214,7 +223,13 @@ exports.updateCustom0 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
+
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                         })
@@ -234,9 +249,9 @@ exports.updateCustom0 = (req, res) => {
                 else if (stand.type == "M") {
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
@@ -252,7 +267,12 @@ exports.updateCustom0 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
                         })
                     }).catch(
@@ -272,9 +292,9 @@ exports.updateCustom0 = (req, res) => {
 
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
@@ -290,7 +310,12 @@ exports.updateCustom0 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                         })
@@ -310,9 +335,9 @@ exports.updateCustom0 = (req, res) => {
                 else if (stand.type == "LL") {
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
@@ -328,7 +353,12 @@ exports.updateCustom0 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0)
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                         })
@@ -348,9 +378,9 @@ exports.updateCustom0 = (req, res) => {
                 else if (stand.type == "XL") {
                     const canvas = createCanvas(2048, 2048);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
@@ -366,7 +396,12 @@ exports.updateCustom0 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                         })
@@ -396,9 +431,9 @@ exports.updateCustom1 = (req, res) => {
                 if (stand.type == "S") {
                     const canvas = createCanvas(512, 512);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 1
@@ -414,7 +449,12 @@ exports.updateCustom1 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom  has been updated successfully" })
 
                         })
@@ -434,9 +474,9 @@ exports.updateCustom1 = (req, res) => {
                 else if (stand.type == "M") {
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 1
@@ -452,7 +492,12 @@ exports.updateCustom1 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 1 has been updated successfully" })
                         })
                     }).catch(
@@ -472,9 +517,9 @@ exports.updateCustom1 = (req, res) => {
 
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 1
@@ -490,7 +535,12 @@ exports.updateCustom1 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 1 has been updated successfully" })
 
                         })
@@ -510,25 +560,30 @@ exports.updateCustom1 = (req, res) => {
                 else if (stand.type == "LL") {
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
-                                //Drawing the logo un Custom Area 0
+                                //Drawing the texture un Custom Area 1
                                 let hRatio1 = 557.056 / logo.width;
                                 let vShift1 = (512 - logo.height * hRatio1) / 2
                                 ctx.drawImage(logo, 30.72, 502.784 + vShift1, logo.width * hRatio1, logo.height * hRatio1)
                             }
                             else {
-                                //Drawing the logo un Custom Area 0
+                                //Drawing the texture un Custom Area 1
                                 let vRatio1 = 512 / logo.height;
                                 let hShift1 = (557.056 - logo.width * vRatio1) / 2
                                 ctx.drawImage(logo, 30.72 + hShift1, 502.784, logo.width * vRatio1, logo.height * vRatio1)
                             }
                             ctx.drawImage(image, 0, 0, 0, 0)
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                         })
@@ -548,12 +603,12 @@ exports.updateCustom1 = (req, res) => {
                 else if (stand.type == "XL") {
                     const canvas = createCanvas(2048, 2048);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
-                                //Drawing the logo un Custom Area 1
+                                //Drawing the texture un Custom Area 1
                                 let hRatio1 = 673.792 / logo.width;
                                 let vShift1 = (815.104 - logo.height * hRatio1) / 2
                                 ctx.drawImage(logo, 73.728, 1208.32 + vShift1, logo.width * hRatio1, logo.height * hRatio1)
@@ -566,7 +621,12 @@ exports.updateCustom1 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 1 has been updated successfully" })
 
                         })
@@ -597,9 +657,9 @@ exports.updateCustom2 = (req, res) => {
 
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 2
@@ -615,7 +675,12 @@ exports.updateCustom2 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 2 has been updated successfully" })
 
                         })
@@ -635,9 +700,9 @@ exports.updateCustom2 = (req, res) => {
                 else if (stand.type == "LL") {
                     const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 2
@@ -653,7 +718,12 @@ exports.updateCustom2 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0)
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 2 has been updated successfully" })
 
                         })
@@ -673,9 +743,9 @@ exports.updateCustom2 = (req, res) => {
                 else if (stand.type == "XL") {
                     const canvas = createCanvas(2048, 2048);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 2
@@ -691,7 +761,12 @@ exports.updateCustom2 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 2 has been updated successfully" })
 
                         })
@@ -721,9 +796,9 @@ exports.updateCustom3 = (req, res) => {
                 if (stand.type == "XL") {
                     const canvas = createCanvas(2048, 2048);
                     const ctx = canvas.getContext('2d');
-                    loadImage('./public/' + stand.texture_download_url).then((image) => {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
-                        loadImage(req.file.path).then((logo) => {
+                        loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 3
@@ -739,7 +814,12 @@ exports.updateCustom3 = (req, res) => {
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
-                            fs.writeFileSync("./public/" + stand.texture_download_url, buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: stand.texture_download_url,
+                            }
+                            await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 3 has been updated successfully" })
 
                         })
@@ -772,9 +852,9 @@ exports.updateBannerCustom0 = (req, res) => {
                     switch (stand.banner.banner_type) {
                         case 0:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
 
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
@@ -791,7 +871,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -811,9 +896,9 @@ exports.updateBannerCustom0 = (req, res) => {
 
                         case 1:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -829,7 +914,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -847,9 +937,9 @@ exports.updateBannerCustom0 = (req, res) => {
                             );
                             break;
                         case 2:
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -865,7 +955,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -883,9 +978,9 @@ exports.updateBannerCustom0 = (req, res) => {
                             );
                             break;
                         case 3:
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
 
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
@@ -902,7 +997,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -929,9 +1029,9 @@ exports.updateBannerCustom0 = (req, res) => {
                     switch (stand.banner.banner_type) {
                         case 0:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -947,7 +1047,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -967,9 +1072,9 @@ exports.updateBannerCustom0 = (req, res) => {
 
                         case 1:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -985,7 +1090,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1003,9 +1113,9 @@ exports.updateBannerCustom0 = (req, res) => {
                             );
                             break;
                         case 2:
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -1021,7 +1131,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1048,9 +1163,9 @@ exports.updateBannerCustom0 = (req, res) => {
                     switch (stand.banner.banner_type) {
                         case 0:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -1066,7 +1181,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1086,9 +1206,9 @@ exports.updateBannerCustom0 = (req, res) => {
 
                         case 1:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -1104,7 +1224,12 @@ exports.updateBannerCustom0 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1142,9 +1267,9 @@ exports.updateBannerCustom1 = (req, res) => {
                     switch (stand.banner.banner_type) {
                         case 0:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -1160,7 +1285,12 @@ exports.updateBannerCustom1 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1179,9 +1309,9 @@ exports.updateBannerCustom1 = (req, res) => {
                             break;
                         case 1:
 
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 1
@@ -1197,7 +1327,12 @@ exports.updateBannerCustom1 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
@@ -1216,9 +1351,9 @@ exports.updateBannerCustom1 = (req, res) => {
                             break;
 
                         case 3:
-                            loadImage('./public/' + stand.banner.texture_download_url).then((image) => {
+                            loadImage(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url).then((image) => {
                                 ctx.drawImage(image, 0, 0)
-                                loadImage(req.file.path).then((logo) => {
+                                loadImage(req.file.path).then(async (logo) => {
                                     let ratio = logo.width / logo.height;
                                     if (ratio > 1) {
                                         //Drawing the logo un Custom Area 0
@@ -1234,7 +1369,12 @@ exports.updateBannerCustom1 = (req, res) => {
                                     }
                                     ctx.drawImage(image, 0, 0, 0, 0);
                                     const buffer = canvas.toBuffer("image/png");
-                                    fs.writeFileSync("./public/" + stand.banner.texture_download_url, buffer);
+                                    params = {
+                                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                        Body: buffer,
+                                        Key: stand.banner.texture_download_url,
+                                    }
+                                    await s3.send(new PutObjectCommand(params));
                                     res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
 
                                 })
