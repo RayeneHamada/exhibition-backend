@@ -3,7 +3,16 @@ const mongoose = require('mongoose'),
     Exhibition = mongoose.model('Exhibitions'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
-    fs = require('fs');
+    fs = require('fs'),
+    { PutObjectCommand } = require('@aws-sdk/client-s3'),
+    { S3Client } = require('@aws-sdk/client-s3'),
+    s3 = new S3Client({
+        credentials: {
+            accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+        },
+        region: process.env.AWS_S3_REGION
+    });
 
 
 exports.updateExhbition = function (req, res) {
