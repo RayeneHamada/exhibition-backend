@@ -5,13 +5,9 @@ const mongoose = require('mongoose'),
     Stand = mongoose.model("Stands"),
     passport = require('passport'),
     _ = require('lodash'),
-    bcrypt = require('bcryptjs'),
-    jwt = require('jsonwebtoken'),
     nodemailer = require("nodemailer"),
-    replaceColor = require('replace-color'),
-    { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
-    moment = require('moment'),
+    mime = require('mime-types'),
     { PutObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
@@ -117,7 +113,8 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "disc_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -132,7 +129,8 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
 
                             }
                             await s3.send(new PutObjectCommand(params));
@@ -147,7 +145,8 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner0_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
 
                             }
                             await s3.send(new PutObjectCommand(params));
@@ -155,21 +154,24 @@ exports.createModerator = async (req, res, next) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner1_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner2_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner3_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -238,7 +240,8 @@ exports.createExponent = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "texture_" + userDoc._id + ".png",
-                            ACL:"public-read"
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
                     } catch (err) {
@@ -251,7 +254,8 @@ exports.createExponent = async (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "banner_" + userDoc._id + ".png",
-                                ACL:"public-read"
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {

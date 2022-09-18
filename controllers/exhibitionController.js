@@ -4,6 +4,7 @@ const mongoose = require('mongoose'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
+    mime = require('mime-types'),
     { PutObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
@@ -182,6 +183,7 @@ exports.updateSponsorDiscCustom0 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -260,6 +262,7 @@ exports.updateSponsorDiscCustom1 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -313,6 +316,7 @@ exports.updateSponsorDiscCustom2 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -366,6 +370,7 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -419,6 +424,7 @@ exports.updateSponsorCylindre = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -472,6 +478,7 @@ exports.updateSponsorBanner0 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_0,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -525,6 +532,7 @@ exports.updateSponsorBanner1 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_1,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -578,6 +586,7 @@ exports.updateSponsorBanner2 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_2,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -631,6 +640,7 @@ exports.updateSponsorBanner3 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_3,
+                            ContentType : mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));

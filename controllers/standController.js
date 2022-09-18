@@ -1,10 +1,9 @@
 const mongoose = require('mongoose'),
-    User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     Stand = mongoose.model('Stands'),
-    replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
+    mime = require('mime-types'),
     { PutObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
@@ -172,6 +171,7 @@ exports.updateFurnitureColor = (req, res) => {
         });
 }
 */
+
 exports.updateTvMedia = (req, res) => {
     Stand.findOne({ _id: req.stand },
         (err, stand) => {
@@ -227,6 +227,7 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -273,6 +274,7 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -318,8 +320,9 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
-                                
+
                             }
                             await s3.send(new PutObjectCommand(params));
                             res.status(200).send({ success: true, message: "Custom 0 has been updated successfully" })
@@ -363,6 +366,7 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -408,6 +412,7 @@ exports.updateCustom0 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -463,6 +468,7 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -508,6 +514,7 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -553,6 +560,7 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -598,6 +606,7 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -643,6 +652,7 @@ exports.updateCustom1 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -699,6 +709,7 @@ exports.updateCustom2 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -744,6 +755,7 @@ exports.updateCustom2 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -789,6 +801,7 @@ exports.updateCustom2 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -844,6 +857,7 @@ exports.updateCustom3 = (req, res) => {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: buffer,
                                 Key: stand.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 
                             }
@@ -903,6 +917,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -948,6 +963,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -991,6 +1007,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1035,6 +1052,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1087,6 +1105,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1132,6 +1151,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1175,6 +1195,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1227,6 +1248,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1272,6 +1294,7 @@ exports.updateBannerCustom0 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1335,6 +1358,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1379,6 +1403,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
@@ -1423,6 +1448,7 @@ exports.updateBannerCustom1 = (req, res) => {
                                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                         Body: buffer,
                                         Key: stand.banner.texture_download_url,
+                                        ContentType: mime.contentType('image/png'),
                                         ACL: "public-read"
 
                                     }
