@@ -48,7 +48,7 @@ var standSchema = new Schema({
   },
 
   background_color: [Number],
-  logo_download_url: { //logo carré
+  logo_download_url: {
     type: String,
   },
   menu: {

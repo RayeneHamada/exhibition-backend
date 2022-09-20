@@ -1,10 +1,12 @@
 const mongoose = require('mongoose'),
     Exhibition = mongoose.model('Exhibitions'),
     Stand = mongoose.model('Stands'),
+    User = mongoose.model('Users'),
+    StandLog = mongoose.model('StandLogs'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     mime = require('mime-types'),
-    { PutObjectCommand } = require('@aws-sdk/client-s3'),
+    { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
         credentials: {
@@ -44,7 +46,7 @@ exports.updateLogo = (req, res) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
-                stand.logo_download_url = req.file.filename;
+                stand.logo_download_url = req.file.key;
                 Stand.updateOne({ _id: stand._id }, stand).then(
                     () => {
                         res.status(201).json({
@@ -1568,14 +1570,14 @@ exports.updateCharacter2 = (req, res) => {
 }
 
 exports.getMenu = (req, res) => {
-    Stand.findOne({ _id: req.stand }, "menu").
+    Stand.findOne({ _id: req.stand }, "menu logo_download_url").
         exec((err, result) => {
             if (!err) {
                 if (result.menu) {
-                    res.status(200).send(result.menu);
+                    res.status(200).send({menu:result.menu,logo:result.logo_download_url});
                 }
                 else {
-                    res.status(200).send({});
+                    res.status(200).send({logo:result.logo_download_url});
 
                 }
             }
@@ -1673,4 +1675,49 @@ exports.uploadCVTest = (req, res) => {
                 );
             }
         });
+}
+
+exports.deleteStand = function (req, res) {
+    User.deleteOne({ 'exponent.stand': req.params.id }, (err, user) => {
+        if (err) {
+            res.status(400).send({ success: false, message: err })
+        }
+        else
+        Stand.findByIdAndDelete(req.params.id, async (err, stand) => {
+            if (err) {
+                res.status(400).send({ success: false, message: err })
+            }
+            else {
+                await StandLog.deleteMany({'stand': req.params.id })
+                params = {
+                    Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                    Key: stand.texture_download_url,
+                }
+                await s3.send(new DeleteObjectCommand(params));
+                if (stand.menu.pdf_download_url) {
+                    params = {
+                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                        Key: stand.menu.pdf_download_url,
+                    }
+                    await s3.send(new DeleteObjectCommand(params));
+                }
+                if (stand.banner.texture_download_url) {
+                    params = {
+                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                        Key: stand.banner.texture_download_url,
+                    }
+                    await s3.send(new DeleteObjectCommand(params));
+                }
+                if (stand.logo_download_url) {
+                    params = {
+                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                        Key: stand.logo_download_url,
+                    }
+                    await s3.send(new DeleteObjectCommand(params));
+                }
+                res.status(200).send({ success: true, message: 'Stand deleted successfuly.' })
+            }
+        });
+    })
+
 }

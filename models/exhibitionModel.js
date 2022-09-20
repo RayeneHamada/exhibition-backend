@@ -61,6 +61,13 @@ var exhibitionSchema = new Schema({
         texture_download_url_2: String,
         texture_download_url_3: String
     },
+    webinar:{
+        purchased:{
+            type:Boolean,
+            default:true
+        },
+        video_download_url:String
+    },
     stands: [
         {
             type: mongoose.Schema.Types.ObjectId,

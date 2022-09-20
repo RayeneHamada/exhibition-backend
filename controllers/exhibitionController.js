@@ -1,11 +1,12 @@
 const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
+    Stand = mongoose.model('Stands'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     mime = require('mime-types'),
-    { PutObjectCommand } = require('@aws-sdk/client-s3'),
+    { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
         credentials: {
@@ -183,7 +184,7 @@ exports.updateSponsorDiscCustom0 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -262,7 +263,7 @@ exports.updateSponsorDiscCustom1 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -316,7 +317,7 @@ exports.updateSponsorDiscCustom2 = async (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -370,7 +371,7 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -424,7 +425,7 @@ exports.updateSponsorCylindre = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -478,7 +479,7 @@ exports.updateSponsorBanner0 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_0,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -532,7 +533,7 @@ exports.updateSponsorBanner1 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_1,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -586,7 +587,7 @@ exports.updateSponsorBanner2 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_2,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -640,7 +641,7 @@ exports.updateSponsorBanner3 = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_3,
-                            ContentType : mime.contentType('image/png'),
+                            ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
                         await s3.send(new PutObjectCommand(params));
@@ -663,3 +664,72 @@ exports.updateSponsorBanner3 = (req, res) => {
             }
         });
 }
+
+exports.updateWebinar = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition }, async (err, exhibition) => {
+        if (exhibition.webinar.video_download_url) {
+            params = {
+                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                Key: exhibition.webinar.video_download_url,
+
+            }
+            await s3.send(new DeleteObjectCommand(params));
+        }
+        exhibition.webinar.video_download_url = req.file.key;
+        Exhibition.updateOne({ _id: req.exhibition }, exhibition, (err, result) => {
+            if (!err) {
+                res.status(200).send({ success: true, data: req.file.key });
+            }
+            else {
+                res.status(400).send({ success: false });
+            }
+        })
+
+    })
+}
+
+exports.getWebinar = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition }, (err, exhibition) => {
+        if (!err) {
+            res.status(200).send({ success: true, data: exhibition.webinar });
+        }
+        else {
+            res.status(400).send({ success: false });
+        }
+    })
+}
+
+exports.getWebinarForVisitor = (req, res) => {
+    Exhibition.findOne({ _id: req.params.id }, (err, exhibition) => {
+        if (!err) {
+            res.status(200).send({ success: true, data: exhibition.webinar });
+        }
+        else {
+            res.status(400).send({ success: false });
+        }
+    })
+}
+
+exports.getStands = function (req, res) {
+    Exhibition.findOne({ _id: req.exhibition }, 'stands').
+        populate(
+            {
+                path: 'stands',
+                select: 'stand_name position type exponent',
+                populate: {
+                    path: 'exponent',
+                    select: 'firstName lastName email'
+                }
+            },
+        ).
+        exec((err, result) => {
+            if (!err) {
+                res.send({ success: true, data: result });
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
+}
+

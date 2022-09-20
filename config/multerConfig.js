@@ -15,6 +15,7 @@ exports.fileCloudUpload = multer({
   storage: multerS3({
     s3: s3,
     acl: 'public-read',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
     bucket: process.env.AWS_S3_TEXTURE_BUCKET,
     metadata: function (req, file, cb) {
       cb(null, {
@@ -24,6 +25,38 @@ exports.fileCloudUpload = multer({
     },
     key: function (req, file, cb) {
       cb(null, Date.now().toString())
+    }
+  })
+})
+
+exports.logoCloudUpload = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: 'public-read',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, file.fieldname + '_' + Date.now()
+        + path.extname(file.originalname))
+    }
+  })
+})
+
+exports.videoCloudUpload = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: 'public-read',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null,  file.fieldname + '_' + Date.now()
+        + path.extname(file.originalname))
     }
   })
 })
