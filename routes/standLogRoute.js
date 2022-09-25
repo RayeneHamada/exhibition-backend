@@ -13,5 +13,7 @@ router.get('/getVisitorsAge',jwtHelper.verifyExponentJwtToken,main_controller.ge
 router.get('/getVisitorsGender',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorsGender);
 router.get('/getAverageInteractionDuration',jwtHelper.verifyExponentJwtToken,main_controller.getAverageInteractionDuration);
 router.get('/getInteractions',jwtHelper.verifyExponentJwtToken,main_controller.getInteractions);
+router.get('/getVisitorSector',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorSector);
+router.get('/getVisitorProfession',jwtHelper.verifyExponentJwtToken,main_controller.getVisitorProfession);
 
 module.exports = router;

@@ -26,7 +26,7 @@ exports.new = function (req, res) {
                         res.status(400).send({ success: false, message: err })
                     }
                     else {
-                        res.status(200).send({ success: true, message: "log added successfully" })
+                        res.status(201).send({ success: true, message: "log added successfully" })
 
                     }
                 })
@@ -501,3 +501,96 @@ exports.getInteractions = function (req, res) {
 
     })
 }
+
+exports.getVisitorSector = function (req, res) {
+    StandLog.aggregate([
+        {
+            '$match':
+
+            {
+                "stand": new ObjectId(req.stand),
+                "action_name": "INTERACTION"
+            }
+        },
+        {
+            '$lookup':
+            {
+                'from': "users",
+                'localField': "action_by",
+                'foreignField': "_id",
+                'as': "visitor"
+            }
+        },
+        {
+            "$group":
+            {
+                _id:
+                {
+                    sector: "$visitor.visitor.sector"
+                },
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ], function (err, results) {
+
+        if (!err) {
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results });
+            else
+                res.status(200).send({ success: true, data: 0 });
+        }
+        else {
+            res.status(500).send({ success: false, message: err });
+        }
+
+    })
+}
+
+exports.getVisitorProfession = function (req, res) {
+    StandLog.aggregate([
+        {
+            '$match':
+
+            {
+                "stand": new ObjectId(req.stand),
+                "action_name": "INTERACTION"
+            }
+        },
+        {
+            '$lookup':
+            {
+                'from': "users",
+                'localField': "action_by",
+                'foreignField': "_id",
+                'as': "visitor"
+            }
+        },
+        {
+            "$group":
+            {
+                _id:
+                {
+                    profession: "$visitor.visitor.profession"
+                },
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ], function (err, results) {
+
+        if (!err) {
+            if (results.length > 0)
+                res.status(200).send({ success: true, data: results });
+            else
+                res.status(200).send({ success: true, data: 0 });
+        }
+        else {
+            res.status(500).send({ success: false, message: err });
+        }
+
+    })
+}
+

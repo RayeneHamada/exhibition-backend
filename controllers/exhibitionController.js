@@ -64,6 +64,20 @@ exports.getExhibition = function (req, res) {
 
 }
 
+exports.getEntrance = function (req, res) {
+
+    Exhibition.findOne({ _id: req.params.id }, 'entrance').
+        exec((err, result) => {
+            if (!err) {
+                res.status(200).send(result.entrance);
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+
+}
+
 exports.getVisitors = function (req, res) {
     Exhibition.findOne({ _id: req.params.id }, 'visitors').
         populate({ path: 'visitors', select: 'visitor.firstName visitor.lastName visitor.phoneNumber visitor.email' }).

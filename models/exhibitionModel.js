@@ -61,12 +61,21 @@ var exhibitionSchema = new Schema({
         texture_download_url_2: String,
         texture_download_url_3: String
     },
-    webinar:{
-        purchased:{
-            type:Boolean,
-            default:true
+    entrance: {
+        sponsor_banners: {
+            texture_download_url_0: String,
+            texture_download_url_1: String,
         },
-        video_download_url:String
+        cube_screen: {
+            texture_download_url: String,
+        }
+    },
+    webinar: {
+        purchased: {
+            type: Boolean,
+            default: true
+        },
+        video_download_url: String
     },
     stands: [
         {

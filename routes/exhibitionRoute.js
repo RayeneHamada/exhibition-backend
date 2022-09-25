@@ -12,6 +12,7 @@ router.get('/allTest', main_controller.getAll);
 router.get('/getExhibitionForVisitor/:id', main_controller.getExhibitionForVisitor);
 router.get('/getVisitors/:id', main_controller.getVisitors);
 router.get('/:id', main_controller.getExhibitionById);
+router.get('/entrance/:id', main_controller.getEntrance);
 
 router.post('/webinar', [videoCloudUpload.single('webinar'), jwtHelper.verifyModeratorJwtToken], main_controller.updateWebinar);
 router.post('/update', jwtHelper.verifyModeratorJwtToken, main_controller.updateExhbition);

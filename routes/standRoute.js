@@ -8,7 +8,8 @@ const fileCloudUpload = require('../config/multerConfig').fileCloudUpload;
 const logoCloudUpload = require('../config/multerConfig').logoCloudUpload;
 
 router.get('/menu', jwtHelper.verifyExponentJwtToken, main_controller.getMenu);
-
+router.get('/getStandVisitors/:offset',jwtHelper.verifyExponentJwtToken,main_controller.getStandVisitors);
+router.get('/getStandVisitorsSheet',jwtHelper.verifyExponentJwtToken,main_controller.getStandVisitorsSheet);
 router.get('/myStand', jwtHelper.verifyExponentJwtToken,main_controller.myStand);
 router.get('/:id',main_controller.getStandById);
 router.get('/menu/:id',  main_controller.getMenuById);

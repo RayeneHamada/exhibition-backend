@@ -96,12 +96,8 @@ var standSchema = new Schema({
   }],
   pdf_uploaded: [
     {
-      owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Users"
-      },
-      pdf_download_url: String,
-      upload_at: Date
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users"
     }
   ]
 

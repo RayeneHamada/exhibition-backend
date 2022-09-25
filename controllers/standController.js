@@ -6,6 +6,7 @@ const mongoose = require('mongoose'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     mime = require('mime-types'),
+    XLSX = require('xlsx'),
     { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
@@ -42,15 +43,24 @@ exports.updateExhbition = function (req, res) {
 
 exports.updateLogo = (req, res) => {
     Stand.findOne({ _id: req.stand },
-        (err, stand) => {
+        async (err, stand) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
+                if (stand.logo_download_url) {
+                    params = {
+                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                        Key: stand.logo_download_url,
+
+                    }
+                    await s3.send(new DeleteObjectCommand(params));
+                }
                 stand.logo_download_url = req.file.key;
                 Stand.updateOne({ _id: stand._id }, stand).then(
                     () => {
                         res.status(201).json({
-                            message: 'Logo updated successfully!'
+                            message: 'Logo updated successfully!',
+                            path: req.file.location
                         });
                     }
                 ).catch(
@@ -66,10 +76,18 @@ exports.updateLogo = (req, res) => {
 
 exports.updatePDF = (req, res) => {
     Stand.findOne({ _id: req.stand },
-        (err, stand) => {
+        async (err, stand) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
+                if (stand.menu.pdf_download_url) {
+                    params = {
+                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                        Key: stand.menu.pdf_download_url,
+
+                    }
+                    await s3.send(new DeleteObjectCommand(params));
+                }
                 stand.menu.pdf_download_url = req.file.filename;
                 Stand.updateOne({ _id: stand._id }, stand).then(
                     () => {
@@ -1574,10 +1592,10 @@ exports.getMenu = (req, res) => {
         exec((err, result) => {
             if (!err) {
                 if (result.menu) {
-                    res.status(200).send({menu:result.menu,logo:result.logo_download_url});
+                    res.status(200).send({ menu: result.menu, logo: result.logo_download_url });
                 }
                 else {
-                    res.status(200).send({logo:result.logo_download_url});
+                    res.status(200).send({ logo: result.logo_download_url });
 
                 }
             }
@@ -1639,8 +1657,7 @@ exports.uploadCV = (req, res) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
-                cv = { owner: req._id, pdf_download_url: req.file.filename, uploaded_at: Date.now() }
-                Stand.updateOne({ _id: req.body.stand }, { $push: { "pdf_uploaded": cv } }).then(
+                Stand.updateOne({ _id: req.body.stand }, { $push: { "pdf_uploaded": req._id } }).then(
                     () => {
                         res.send({ "success": true, message: 'uploaded successfully' });
                     }
@@ -1677,47 +1694,106 @@ exports.uploadCVTest = (req, res) => {
         });
 }
 
-exports.deleteStand = function (req, res) {
+exports.deleteStand = (req, res) => {
     User.deleteOne({ 'exponent.stand': req.params.id }, (err, user) => {
         if (err) {
             res.status(400).send({ success: false, message: err })
         }
         else
-        Stand.findByIdAndDelete(req.params.id, async (err, stand) => {
-            if (err) {
-                res.status(400).send({ success: false, message: err })
-            }
-            else {
-                await StandLog.deleteMany({'stand': req.params.id })
-                params = {
-                    Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                    Key: stand.texture_download_url,
+            Stand.findByIdAndDelete(req.params.id, async (err, stand) => {
+                if (err) {
+                    res.status(400).send({ success: false, message: err })
                 }
-                await s3.send(new DeleteObjectCommand(params));
-                if (stand.menu.pdf_download_url) {
+                else {
+                    await StandLog.deleteMany({ 'stand': req.params.id })
                     params = {
                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                        Key: stand.menu.pdf_download_url,
+                        Key: stand.texture_download_url,
                     }
                     await s3.send(new DeleteObjectCommand(params));
-                }
-                if (stand.banner.texture_download_url) {
-                    params = {
-                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                        Key: stand.banner.texture_download_url,
+                    if (stand.menu.pdf_download_url) {
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Key: stand.menu.pdf_download_url,
+                        }
+                        await s3.send(new DeleteObjectCommand(params));
                     }
-                    await s3.send(new DeleteObjectCommand(params));
-                }
-                if (stand.logo_download_url) {
-                    params = {
-                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                        Key: stand.logo_download_url,
+                    if (stand.banner.texture_download_url) {
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Key: stand.banner.texture_download_url,
+                        }
+                        await s3.send(new DeleteObjectCommand(params));
                     }
-                    await s3.send(new DeleteObjectCommand(params));
+                    if (stand.logo_download_url) {
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Key: stand.logo_download_url,
+                        }
+                        await s3.send(new DeleteObjectCommand(params));
+                    }
+                    res.status(200).send({ success: true, message: 'Stand deleted successfuly.' })
                 }
-                res.status(200).send({ success: true, message: 'Stand deleted successfuly.' })
-            }
-        });
+            });
     })
 
+}
+
+exports.getStandVisitors = (req, res) => {
+    StandLog.distinct('action_by', { stand: req.stand }, (err, result) => {
+        if (!err) {
+            User.find({ _id: { "$in": result } }, 'visitor', { skip: req.params.offset * 20, limit: 20 }, (err, visitors) => {
+                if (!err) {
+                    res.status(200).send({ success: true, data: visitors, nbDocuments: result.length });
+                }
+                else {
+                    res.status(400).send({ success: false, message: err.message })
+
+                }
+            })
+        }
+        else {
+            res.status(400).send({ success: false, message: err.message })
+        }
+    })
+}
+
+exports.getStandVisitorsSheet = (req, res) => {
+    StandLog.distinct('action_by', { stand: req.stand }, (err, result) => {
+        if (!err) {
+            User.find({ _id: { "$in": result } }, 'visitor', (err, visitors) => {
+                if (!err) {
+                    formatted_visitors = [];
+                    visitors.forEach(visitor => {
+                        formatted_visitors.push({
+                            'Nom': visitor.visitor.firstName,
+                            "Prénom": visitor.visitor.lastName,
+                            "Sexe": visitor.visitor.sexe,
+                            "Age": visitor.visitor.age,
+                            "Numéro de télèphone": visitor.visitor.phoneNumber,
+                            "E-mail": visitor.visitor.email,
+                            "Secteur d'acttivité": visitor.visitor.sector,
+                            "Poste": visitor.visitor.profession,
+                            "Etablissement": visitor.visitor.establishment
+                        })
+
+                    });
+                    const ws = XLSX.utils.json_to_sheet(formatted_visitors);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Liste_des_visiteurs');
+                    file = XLSX.write(wb, { type: "buffer", bookType: "xls" })
+                    res.writeHead(200, { 'content-type': 'application/vnd.ms-excel','content-disposition': 'attachment' });
+                    res.write(file);
+                    res.end();
+                }
+                else {
+                    res.status(400).send({ success: false, message: err.message })
+
+                }
+            })
+        }
+        else {
+            res.status(400).send({ success: false, message: err.message })
+        }
+    })
 }

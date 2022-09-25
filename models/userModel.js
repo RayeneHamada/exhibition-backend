@@ -29,9 +29,9 @@ var userSchema = new mongoose.Schema({
     type: String,
   },
   visitor: {
-    email:{
-      type:String,
-      unique:true,
+    email: {
+      type: String,
+      unique: true,
       sparse: true
     },
     firstName: {
@@ -43,15 +43,30 @@ var userSchema = new mongoose.Schema({
     phoneNumber: {
       type: String
     },
-    sexe:{
-      type:String,
-      enum:['m','f']
+    sexe: {
+      type: String,
+      enum: ['m', 'f']
     },
-    age:{
-      type:Number
-    }
+    age: {
+      type: Number
+    },
+    cv_download_url: {
+      type: String
+    },
+    profession: {
+      type: String
+    },
+    sector: {
+      type: String
+    },
+    establishment: {
+      type: String
+    },
+    sharedata: {
+      type: Boolean
+    },
   },
-  
+
 
   role: {
     type: String,

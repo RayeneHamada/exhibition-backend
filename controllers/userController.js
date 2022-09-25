@@ -20,6 +20,9 @@ const mongoose = require('mongoose'),
 
 var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
 var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
+
+
+
 exports.signup = function (req, res, next) {
     var user = new User();
     user.firstName = req.body.firstName;
@@ -85,6 +88,9 @@ exports.createModerator = async (req, res, next) => {
                 exhibition.sponsor_banners.texture_download_url_1 = "sponsorbanner1_" + userDoc._id + ".png";
                 exhibition.sponsor_banners.texture_download_url_2 = "sponsorbanner2_" + userDoc._id + ".png";
                 exhibition.sponsor_banners.texture_download_url_3 = "sponsorbanner3_" + userDoc._id + ".png";
+                exhibition.entrance.sponsor_banners.texture_download_url_0 = "entrance_banner0_" + userDoc._id + ".png";
+                exhibition.entrance.sponsor_banners.texture_download_url_1 = "entrance_banner1_" + userDoc._id + ".png";
+                exhibition.entrance.cube_screen.texture_download_url = "cube_screen_" + userDoc._id + ".png";
             }
 
             exhibition.save(async (err2, exhibitionDoc) => {
@@ -99,12 +105,58 @@ exports.createModerator = async (req, res, next) => {
                             pass: process.env.NODE_MAILER_PASSWORD,
                         },
                     });
-                    let info = await transporter.sendMail({
-                        from: '"3DExhibition Team" <3DExhibition@gmail.com>', // sender address
-                        to: userDoc.email, // list of receivers
-                        subject: "Coordonnées d'accces à 3DExhibition", // Subject line
-                        html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
-                    });
+                    try {
+                        let info = await transporter.sendMail({
+                            from: '"3DExhibition Team" <3DExhibition@gmail.com>', // sender address
+                            to: userDoc.email, // list of receivers
+                            subject: "Coordonnées d'accces à 3DExhibition", // Subject line
+                            html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
+                        });
+                    } catch (err) {
+                        throw ({ success: false, message: "error while sending e-mail" });
+                    }
+
+                    try {
+                        const fileContent = fs.readFileSync("./ressources/cube_screen_albedo.png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: fileContent,
+                            Key: "cube_screen_" + userDoc._id + ".png",
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                    } catch (err) {
+                        console.log(err);
+                    }
+
+                    try {
+                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner_00.png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: fileContent,
+                            Key: "entrance_banner0_" + userDoc._id + ".png",
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                    } catch (err) {
+                        console.log(err);
+                    }
+
+                    try {
+                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner_01.png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: fileContent,
+                            Key: "entrance_banner1_" + userDoc._id + ".png",
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                    } catch (err) {
+                        console.log(err);
+                    }
 
                     if (req.body.exhibition.sponsor_disc) {
                         try {
@@ -180,7 +232,7 @@ exports.createModerator = async (req, res, next) => {
                     }
                     await User.updateOne({ _id: userDoc._id }, { "moderator.exhibition": exhibitionDoc._id });
 
-                    res.status(200).json({ success: true, message: "User created successfully " + nodemailer.getTestMessageUrl(info) });
+                    res.status(200).json({ success: true, message: "User created successfully." });
                 }
             })
         }
@@ -191,8 +243,6 @@ exports.createModerator = async (req, res, next) => {
                 return next(err);
         }
     });
-
-
 
 
 }
@@ -265,7 +315,7 @@ exports.createExponent = async (req, res) => {
                     await User.updateOne({ _id: userDoc._id }, { "exponent.stand": standDoc._id });
                     Exhibition.updateOne({ _id: req.exhibition }, { $push: { "stands": standDoc._id } }).then(
                         () => {
-                            res.status(200).json({ success: true, message: "Exponent created successfully " + nodemailer.getTestMessageUrl(info) });
+                            res.status(200).json({ success: true, message: "Exponent created successfully." });
                         }
                     ).catch(
                         (error) => {
@@ -340,6 +390,10 @@ exports.participate = (req, res) => {
                 visitor.visitor.lastName = req.body.lastName;
                 visitor.visitor.sexe = req.body.sexe;
                 visitor.visitor.age = req.body.age;
+                visitor.visitor.profession = req.body.profession;
+                visitor.visitor.sector = req.body.sector;
+                visitor.visitor.establishment = req.body.establishment;
+                visitor.visitor.sharedata = req.body.sharedata;
 
                 visitor.save((err, doc) => {
                     if (!err) {
