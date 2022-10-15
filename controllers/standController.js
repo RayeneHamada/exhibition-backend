@@ -130,7 +130,7 @@ exports.updateFurnitureColor = (req, res) => {
         });
 }
 
-/*exports.updateBackgroundColor = (req, res) => {
+exports.updateBackgroundColor = (req, res) => {
     Stand.findOne({ _id: req.stand },
         (err, stand) => {
             if (!stand)
@@ -190,7 +190,6 @@ exports.updateFurnitureColor = (req, res) => {
             }
         });
 }
-*/
 
 exports.updateTvMedia = (req, res) => {
     Stand.findOne({ _id: req.stand },
@@ -1500,7 +1499,6 @@ exports.updateBannerCustom1 = (req, res) => {
 }
 
 exports.getStandById = function (req, res) {
-    console.log(req.params.id);
     Stand.findOne({ _id: req.params.id }).
         exec((err, result) => {
             if (!err) {

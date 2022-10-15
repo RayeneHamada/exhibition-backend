@@ -75,14 +75,19 @@ exports.createModerator = async (req, res, next) => {
     password = Math.random().toString(36).slice(-8);
     user.password = password;
     user.role = "moderator";
+
     user.save(async (err, userDoc) => {
         if (!err) {
             var exhibition = new Exhibition(req.body.exhibition);
             exhibition.moderator = userDoc._id;
             if (req.body.exhibition.sponsor_disc)
                 exhibition.sponsor_disc.texture_download_url = "disc_" + userDoc._id + ".png";
-            if (req.body.exhibition.sponsor_cylinder)
-                exhibition.sponsor_cylinder.texture_download_url = "cylinder_" + userDoc._id + ".png";
+            if (req.body.exhibition.sponsor_cylinder) { 
+                exhibition.sponsor_cylinder.texture_download_url_0 = "cylinder0_" + userDoc._id + ".png"; 
+                exhibition.sponsor_cylinder.texture_download_url_1 = "cylinder1_" + userDoc._id + ".png"; 
+                exhibition.sponsor_cylinder.texture_download_url_2 = "cylinder2_" + userDoc._id + ".png"; 
+                exhibition.sponsor_cylinder.texture_download_url_3 = "cylinder3_" + userDoc._id + ".png"; 
+            }
             if (req.body.exhibition.sponsor_banners) {
                 exhibition.sponsor_banners.texture_download_url_0 = "sponsorbanner0_" + userDoc._id + ".png";
                 exhibition.sponsor_banners.texture_download_url_1 = "sponsorbanner1_" + userDoc._id + ".png";
@@ -180,7 +185,49 @@ exports.createModerator = async (req, res, next) => {
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
-                                Key: "cylinder_" + userDoc._id + ".png",
+                                Key: "cylinder0_" + userDoc._id + ".png",
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
+
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                        } catch (err) {
+                            console.log(err);
+                        }
+                        try {
+                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: fileContent,
+                                Key: "cylinder1_" + userDoc._id + ".png",
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
+
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                        } catch (err) {
+                            console.log(err);
+                        }
+                        try {
+                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: fileContent,
+                                Key: "cylinder2_" + userDoc._id + ".png",
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read"
+
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                        } catch (err) {
+                            console.log(err);
+                        }
+                        try {
+                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: fileContent,
+                                Key: "cylinder3_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
                                 ACL: "public-read"
 

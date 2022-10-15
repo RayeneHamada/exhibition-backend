@@ -1,7 +1,6 @@
 const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
-    Stand = mongoose.model('Stands'),
     replaceColor = require('replace-color'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
@@ -746,4 +745,3 @@ exports.getStands = function (req, res) {
         });
 
 }
-

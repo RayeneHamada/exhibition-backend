@@ -49,7 +49,10 @@ var exhibitionSchema = new Schema({
             type: Boolean,
             default: false
         },
-        texture_download_url: String
+        texture_download_url_0: String,
+        texture_download_url_1: String,
+        texture_download_url_2: String,
+        texture_download_url_3: String
     },
     sponsor_banners: {
         purchased: {
