@@ -47,15 +47,15 @@ exports.updateLogo = (req, res) => {
             if (!stand)
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
-                if (stand.menu.logo_download_url) {
+                if (stand.logo_download_url) {
                     params = {
                         Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                        Key: stand.menu.logo_download_url,
+                        Key: stand.logo_download_url,
 
                     }
                     await s3.send(new DeleteObjectCommand(params));
                 }
-                stand.menu.logo_download_url = req.file.key;
+                stand.logo_download_url = req.file.key;
                 Stand.updateOne({ _id: stand._id }, stand).then(
                     () => {
                         res.status(201).json({
@@ -1590,10 +1590,11 @@ exports.getMenu = (req, res) => {
         exec((err, result) => {
             if (!err) {
                 if (result.menu) {
-                    res.status(200).send({ menu: result.menu });
+                    res.status(200).send({ menu: result.menu, logo: result.logo_download_url });
                 }
                 else {
-                    res.status(200).send({ menu: {} });
+                    res.status(200).send({ logo: result.logo_download_url });
+
                 }
             }
             else {
@@ -1779,7 +1780,7 @@ exports.getStandVisitorsSheet = (req, res) => {
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Liste_des_visiteurs');
                     file = XLSX.write(wb, { type: "buffer", bookType: "xls" })
-                    res.writeHead(200, { 'content-type': 'application/vnd.ms-excel', 'content-disposition': 'attachment' });
+                    res.writeHead(200, { 'content-type': 'application/vnd.ms-excel','content-disposition': 'attachment' });
                     res.write(file);
                     res.end();
                 }
