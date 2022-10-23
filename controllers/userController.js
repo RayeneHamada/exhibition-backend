@@ -122,7 +122,7 @@ exports.createModerator = async (req, res, next) => {
                     }
 
                     try {
-                        const fileContent = fs.readFileSync("./ressources/cube_screen_albedo.png");
+                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_screen.png");
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
@@ -136,7 +136,7 @@ exports.createModerator = async (req, res, next) => {
                     }
 
                     try {
-                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner_00.png");
+                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner.png");
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
@@ -150,7 +150,7 @@ exports.createModerator = async (req, res, next) => {
                     }
 
                     try {
-                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner_01.png");
+                        const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner.png");
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
@@ -165,7 +165,7 @@ exports.createModerator = async (req, res, next) => {
 
                     if (req.body.exhibition.sponsor_disc) {
                         try {
-                            const fileContent = fs.readFileSync("./ressources/sponsor_disk_albedo.png");
+                            const fileContent = fs.readFileSync("./ressources/exhibition_sponsor_disc.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
@@ -178,10 +178,9 @@ exports.createModerator = async (req, res, next) => {
                             console.log(err);
                         }
                     }
-
                     if (req.body.exhibition.sponsor_cylinder) {
                         try {
-                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
+                            const fileContent = fs.readFileSync("./ressources/exhibition_sponsor_cylindre.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
@@ -191,11 +190,6 @@ exports.createModerator = async (req, res, next) => {
 
                             }
                             await s3.send(new PutObjectCommand(params));
-                        } catch (err) {
-                            console.log(err);
-                        }
-                        try {
-                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
@@ -205,11 +199,6 @@ exports.createModerator = async (req, res, next) => {
 
                             }
                             await s3.send(new PutObjectCommand(params));
-                        } catch (err) {
-                            console.log(err);
-                        }
-                        try {
-                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
@@ -219,11 +208,6 @@ exports.createModerator = async (req, res, next) => {
 
                             }
                             await s3.send(new PutObjectCommand(params));
-                        } catch (err) {
-                            console.log(err);
-                        }
-                        try {
-                            const fileContent = fs.readFileSync("./ressources/sponsor_cylindre_albedo.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
@@ -239,7 +223,7 @@ exports.createModerator = async (req, res, next) => {
                     }
                     if (req.body.exhibition.sponsor_banners) {
                         try {
-                            const fileContent = fs.readFileSync("./ressources/sponsor_banner.png");
+                            const fileContent = fs.readFileSync("./ressources/exhibition_sponsor_banner.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,

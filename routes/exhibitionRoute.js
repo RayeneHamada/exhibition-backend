@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const jwtHelper = require('../config/jwtHelper');
+const jwtHelper = require('../helpers/jwtHelper');
 const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 const videoCloudUpload = require('../config/multerConfig').videoCloudUpload;
 
+router.get('/visitors/:offset',jwtHelper.verifyModeratorJwtToken, main_controller.getVisitors);
+router.get('/visitorsSheet',jwtHelper.verifyModeratorJwtToken,main_controller.getExhibitionVisitorsSheet);
 router.get('/stands',jwtHelper.verifyModeratorJwtToken, main_controller.getStands);
 router.get('/webinar', jwtHelper.verifyModeratorJwtToken, main_controller.getWebinar);
 router.get('/webinarForVisitor/:id', main_controller.getExhibitionForVisitor );
@@ -24,7 +26,10 @@ router.post('/updateSponsorBannerCustom0', [imageUpload.single('image'), jwtHelp
 router.post('/updateSponsorBannerCustom1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner1);
 router.post('/updateSponsorBannerCustom2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner2);
 router.post('/updateSponsorBannerCustom3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner3);
-router.post('/updateSponsorCylindre', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre);
+router.post('/updateSponsorCylindre0', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre0);
+router.post('/updateSponsorCylindre1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre1);
+router.post('/updateSponsorCylindre2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre2);
+router.post('/updateSponsorCylindre3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre3);
 router.get('/all', main_controller.getExhibition);
 
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     replaceColor = require('replace-color'),
+    XLSX = require('xlsx'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     mime = require('mime-types'),
@@ -408,7 +409,7 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
         });
 }
 
-exports.updateSponsorCylindre = (req, res) => {
+exports.updateSponsorCylindre0 = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
             if (!exhibition)
@@ -438,6 +439,168 @@ exports.updateSponsorCylindre = (req, res) => {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateSponsorCylindre1 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_cylinder.texture_download_url_1).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            //Drawing the texture 
+                            let hRatio0 = 1024 / logo.width;
+                            let vShift0 = (1024 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 0, 0 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            //Drawing the texture 
+                            let vRatio0 = 1024 / logo.height;
+                            let hShift0 = (1024 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 0 + hShift0, 0, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_cylinder.texture_download_url_1,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateSponsorCylindre2 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_cylinder.texture_download_url_2).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            //Drawing the texture 
+                            let hRatio0 = 1024 / logo.width;
+                            let vShift0 = (1024 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 0, 0 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            //Drawing the texture 
+                            let vRatio0 = 1024 / logo.height;
+                            let hShift0 = (1024 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 0 + hShift0, 0, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_cylinder.texture_download_url_2,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateSponsorCylindre3 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_cylinder.texture_download_url_3).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            //Drawing the texture 
+                            let hRatio0 = 1024 / logo.width;
+                            let vShift0 = (1024 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 0, 0 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            //Drawing the texture 
+                            let vRatio0 = 1024 / logo.height;
+                            let hShift0 = (1024 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 0 + hShift0, 0, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.sponsor_cylinder.texture_download_url_3,
                             ContentType: mime.contentType('image/png'),
                             ACL: "public-read"
                         }
@@ -744,4 +907,63 @@ exports.getStands = function (req, res) {
             }
         });
 
+}
+
+exports.getVisitors = (req, res) => {
+    Exhibition.distinct('visitors', { _id: req.exhibition }, (err, result) => {
+        if (!err) {
+            User.find({ _id: { "$in": result } }, 'visitor', { skip: req.params.offset * 20, limit: 20 }, (err, visitors) => {
+                if (!err) {
+                    res.status(200).send({ success: true, data: visitors, nbDocuments: result.length });
+                }
+                else {
+                    res.status(400).send({ success: false, message: err.message })
+
+                }
+            })
+        }
+        else {
+            res.status(400).send({ success: false, message: err.message })
+        }
+    })
+}
+
+exports.getExhibitionVisitorsSheet = (req, res) => {
+    Exhibition.distinct('visitors', { _id: req.exhibition }, (err, result) => {
+        if (!err) {
+            User.find({ _id: { "$in": result } }, 'visitor', (err, visitors) => {
+                if (!err) {
+                    formatted_visitors = [];
+                    visitors.forEach(visitor => {
+                        formatted_visitors.push({
+                            'Nom': visitor.visitor.firstName,
+                            "Prénom": visitor.visitor.lastName,
+                            "Sexe": visitor.visitor.sexe,
+                            "Age": visitor.visitor.age,
+                            "Numéro de télèphone": visitor.visitor.phoneNumber,
+                            "E-mail": visitor.visitor.email,
+                            "Secteur d'acttivité": visitor.visitor.sector,
+                            "Poste": visitor.visitor.profession,
+                            "Etablissement": visitor.visitor.establishment
+                        })
+
+                    });
+                    const ws = XLSX.utils.json_to_sheet(formatted_visitors);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Liste_des_visiteurs');
+                    file = XLSX.write(wb, { type: "buffer", bookType: "xls" })
+                    res.writeHead(200, { 'content-type': 'application/vnd.ms-excel','content-disposition': 'attachment' });
+                    res.write(file);
+                    res.end();
+                }
+                else {
+                    res.status(400).send({ success: false, message: err.message })
+
+                }
+            })
+        }
+        else {
+            res.status(400).send({ success: false, message: err.message })
+        }
+    })
 }

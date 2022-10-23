@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const jwtHelper = require('../config/jwtHelper');
+const jwtHelper = require('../helpers/jwtHelper');
 const main_controller = require('../controllers/userController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 

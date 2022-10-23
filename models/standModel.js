@@ -48,10 +48,11 @@ var standSchema = new Schema({
   },
 
   background_color: [Number],
-  logo_download_url: {
-    type: String,
-  },
+
   menu: {
+    logo_download_url: {
+      type: String,
+    },
     meet_link: {
       type: String
     },
