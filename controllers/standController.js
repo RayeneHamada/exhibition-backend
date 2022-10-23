@@ -1604,21 +1604,21 @@ exports.getMenu = (req, res) => {
 }
 
 exports.getMenuById = (req, res) => {
-    Stand.findOne({ _id: req.params.id }, "menu").
-        exec((err, result) => {
-            if (!err) {
-                if (result.menu) {
-                    res.status(200).send(result.menu);
-                }
-                else {
-                    res.status(200).send({});
-
-                }
+    Stand.findOne({ _id: req.params.id }, "menu logo_download_url").
+    exec((err, result) => {
+        if (!err) {
+            if (result.menu) {
+                res.status(200).send({ menu: result.menu, logo: result.logo_download_url });
             }
             else {
-                res.status(400).send({ success: false, message: err });
+                res.status(200).send({ logo: result.logo_download_url });
+
             }
-        });
+        }
+        else {
+            res.status(400).send({ success: false, message: err });
+        }
+    });
 }
 
 exports.updateMenu = (req, res) => {
