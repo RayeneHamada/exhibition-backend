@@ -15,7 +15,9 @@ passport.use(
                 else if(!user.verifyPassword(password))
                     return done(null, false, {message: 'Wrong password.'});
                 else
-                    return done(null, user);
+                    {
+                        return done(null, user);
+                    }
             });
     })
 );

@@ -4,6 +4,7 @@ require('./models/userModel');
 require('./models/exhibitionModel');
 require('./models/standModel');
 require('./models/standLogModel');
+require('./models/ticketModel');
 
 require('./config/dbConfig');
 require('./config/passportConfig');

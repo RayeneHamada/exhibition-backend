@@ -176,7 +176,7 @@ module.exports.verifyStandAccessJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(standAccessUsers.includes(decoded.role))
+                    if(!standAccessUsers.includes(decoded.role))
                     {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
@@ -211,7 +211,7 @@ module.exports.verifyExhibitionAccessJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(exhibitionAccessUsers.includes(decoded.role))
+                    if(!exhibitionAccessUsers.includes(decoded.role))
                     {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
@@ -220,8 +220,8 @@ module.exports.verifyExhibitionAccessJwtToken = (req, res, next) => {
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
-                        req.exhibition = decoded.exponent_exhibition;
-                        req.stand = decoded.stand;
+                        req.exhibition = decoded.moderator_exhibition;
+                        req.role = decoded.role;
                     next();
                     }
                     

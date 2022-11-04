@@ -3,6 +3,7 @@ const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     Stand = mongoose.model("Stands"),
+    Ticket = mongoose.model("Tickets"),
     passport = require('passport'),
     _ = require('lodash'),
     nodemailer = require("nodemailer"),
@@ -18,7 +19,7 @@ const mongoose = require('mongoose'),
         region: process.env.AWS_S3_REGION
     });
 
-var texture = { "XL": "stand_main_albedo.001.png", "LL": "stand_left_albedo.001.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.001.png" };
+var texture = { "XL": "stand_main_albedo.png", "LL": "stand_left_albedo.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.png" };
 var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
 
 
@@ -61,7 +62,7 @@ exports.authenticate = (req, res, next) => {
     // call for passport authentication
     passport.authenticate('local', (err, user, info) => {
         // error from passport middleware
-        if (err) return res.status(400).json(err + "dzadzd");
+        if (err) return res.status(400).json(err);
         // registered user
         else if (user) return res.status(200).json({ "token": user.generateJwt() });
         // unknown user or wrong password
@@ -82,11 +83,11 @@ exports.createModerator = async (req, res, next) => {
             exhibition.moderator = userDoc._id;
             if (req.body.exhibition.sponsor_disc)
                 exhibition.sponsor_disc.texture_download_url = "disc_" + userDoc._id + ".png";
-            if (req.body.exhibition.sponsor_cylinder) { 
-                exhibition.sponsor_cylinder.texture_download_url_0 = "cylinder0_" + userDoc._id + ".png"; 
-                exhibition.sponsor_cylinder.texture_download_url_1 = "cylinder1_" + userDoc._id + ".png"; 
-                exhibition.sponsor_cylinder.texture_download_url_2 = "cylinder2_" + userDoc._id + ".png"; 
-                exhibition.sponsor_cylinder.texture_download_url_3 = "cylinder3_" + userDoc._id + ".png"; 
+            if (req.body.exhibition.sponsor_cylinder) {
+                exhibition.sponsor_cylinder.texture_download_url_0 = "cylinder0_" + userDoc._id + ".png";
+                exhibition.sponsor_cylinder.texture_download_url_1 = "cylinder1_" + userDoc._id + ".png";
+                exhibition.sponsor_cylinder.texture_download_url_2 = "cylinder2_" + userDoc._id + ".png";
+                exhibition.sponsor_cylinder.texture_download_url_3 = "cylinder3_" + userDoc._id + ".png";
             }
             if (req.body.exhibition.sponsor_banners) {
                 exhibition.sponsor_banners.texture_download_url_0 = "sponsorbanner0_" + userDoc._id + ".png";
@@ -371,6 +372,7 @@ exports.createExponent = async (req, res) => {
 }
 
 exports.participate = (req, res) => {
+
     User.findOne({ 'visitor.email': req.body.email, 'role': 'visitor' }, (err, user) => {
         if (!err) {
             if (user) {
@@ -462,6 +464,191 @@ exports.participate = (req, res) => {
         }
         else { res.send(err); }
     })
+}
+
+exports.participateFreely = (req, res) => {
+    var password;
+    password = Math.random().toString(36).slice(-8);
+    User.findOne({ 'email': req.body.email, 'role': 'visitor' }, (err, visitor) => {
+        if (!err) {
+            if (visitor !== null) {
+                var ticket = new Ticket();
+                ticket.visitor = visitor._id;
+                ticket.exhibition = req.body.exhibition;
+                ticket.sharedata = req.body.sharedata;
+                ticket.save((err, ticketDoc) => {
+                    if (err) {
+                        res.status(400).send({ success: false, message: err });
+                    }
+                    else {
+                        User.findOneAndUpdate({ '_id': visitor._id }, { $set: { password: password }, $push: { "visitor.tickets": ticketDoc._id } }).then(
+                            (err, result) => {
+                                if (err);
+                                Exhibition.findOne({ '_id': req.body.exhibition }, async (err, exhibition) => {
+                                    if (!err) {
+                                        {
+                                            if (exhibition) {
+                                                if (!exhibition.visitors.includes(visitor._id))
+                                                    try {
+                                                        await Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": visitor._id } })
+                                                    }
+                                                    catch (error) {
+                                                        console.log("Error while adding " + visitor._id + " to exhibition( " + req.body.exhibition + " )");
+                                                    }
+
+                                                let transporter = nodemailer.createTransport({
+                                                    service: "gmail",
+                                                    auth: {
+                                                        user: process.env.NODE_MAILER_EMAIL,
+                                                        pass: process.env.NODE_MAILER_PASSWORD,
+                                                    },
+                                                });
+                                                try {
+                                                    let info = await transporter.sendMail({
+                                                        from: '"XPOLAND Team" <3DExhibition@gmail.com>', // sender address
+                                                        to: visitor.email, // list of receivers
+                                                        subject: "Coordonnées d'accces à XPOLAND", // Subject line
+                                                        html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
+                                                    });
+                                                    res.status(201).send({ success: true, message: 'Visitor added successfully.' });
+                                                } catch (err) {
+                                                    throw ({ success: false, message: "Error while sending e-mail." });
+                                                }
+                                            }
+                                            else {
+                                                res.status(404).send({ "error": "Exhibition not found" })
+                                            }
+                                        }
+                                    }
+                                    else
+                                        res.send(err);
+                                })
+                            }
+                        ).catch(
+                            (error) => {
+                                res.status(400).send({
+                                    success: false,
+                                    message: error
+                                });
+                            }
+                        );
+                    }
+
+                })
+            }
+            else {
+                var visitor = new User();
+                visitor.visitor.email = req.body.email;
+                visitor.email = req.body.email;
+                visitor.password = password;
+                visitor.visitor.phoneNumber = req.body.phoneNumber;
+                visitor.visitor.firstName = req.body.firstName;
+                visitor.visitor.lastName = req.body.lastName;
+                visitor.visitor.sexe = req.body.sexe;
+                visitor.visitor.age = req.body.age;
+                visitor.visitor.profession = req.body.profession;
+                visitor.visitor.sector = req.body.sector;
+                visitor.visitor.establishment = req.body.establishment;
+                visitor.visitor.sharedata = req.body.sharedata;
+                visitor.save((err, doc) => {
+                    if (!err) {
+                        var ticket = new Ticket();
+                        ticket.visitor = visitor._id;
+                        ticket.exhibition = req.body.exhibition;
+                        ticket.sharedata = req.body.sharedata;
+                        ticket.save((err, ticketDoc) => {
+                            if (err) {
+                                res.status(400).send({ success: false, message: err });
+                            }
+                            else {
+                                Exhibition.findOne({ '_id': req.body.exhibition }, async (err, exhibition) => {
+                                    if (!err) {
+                                        {
+                                            if (exhibition) {
+                                                if (!exhibition.visitors.includes(visitor._id))
+                                                    try {
+                                                        await Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": visitor._id } })
+                                                    }
+                                                    catch (error) {
+                                                        console.log("Error while adding " + visitor._id + " to exhibition( " + req.body.exhibition + " )");
+                                                    }
+
+                                                let transporter = nodemailer.createTransport({
+                                                    service: "gmail",
+                                                    auth: {
+                                                        user: process.env.NODE_MAILER_EMAIL,
+                                                        pass: process.env.NODE_MAILER_PASSWORD,
+                                                    },
+                                                });
+                                                try {
+                                                    let info = await transporter.sendMail({
+                                                        from: '"XPOLAND Team" <3DExhibition@gmail.com>', // sender address
+                                                        to: visitor.email, // list of receivers
+                                                        subject: "Coordonnées d'accces à XPOLAND", // Subject line
+                                                        html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
+                                                    });
+                                                    res.status(201).send({ success: true, message: 'Visitor added successfully.' });
+                                                } catch (err) {
+                                                    throw ({ success: false, message: "Error while sending e-mail." });
+                                                }
+                                            }
+                                            else {
+                                                res.status(404).send({ "error": "Exhibition not found" })
+                                            }
+                                        }
+                                    }
+                                    else
+                                        res.send(err);
+                                })
+
+                            }
+
+                        })
+                    }
+                    else {
+                        return res.json({ 'error': err });
+                    }
+                });
+            }
+        }
+        else { res.send(err); }
+    })
+}
+
+exports.authenticateVisitor = (req, res, next) => {
+
+    User.findOne({ 'email': req.body.email }, (err, doc) => {
+        if (!err) {
+            if (doc) {
+                Ticket.find({ 'visitor': doc._id, exhibition: req.body.exhibition }, (err, docs) => {
+                    if (!err) {
+                        if (docs.length > 0) {
+                            passport.authenticate('local', (err, user, info) => {
+                                // error from passport middleware
+                                if (err) return res.status(400).json(err);
+                                // registered user
+                                else if (user) return res.status(200).json({ success: true, token: user.generateJwt() });
+                                // unknown user or wrong password
+                                else return res.status(404).json(info);
+                            })(req, res, next);
+                        }
+                        else {
+                            res.status(403).send({ success: false, message: 'No ticket found.' })
+                        }
+                    }
+                })
+            }
+            else {
+                res.status(403).send({ success: false, message: 'No ticket found.' })
+            }
+        }
+        else {
+            res.status(400).send({ success: false, message: err })
+        }
+    })
+
+    // call for passport authentication
+
 }
 
 exports.userProfile = (req, res, next) => {

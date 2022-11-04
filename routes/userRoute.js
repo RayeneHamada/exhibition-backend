@@ -6,9 +6,11 @@ const imageUpload = require('../config/multerConfig').imageUpload;
 
 router.post('/signup', main_controller.signup);
 router.post('/login', main_controller.authenticate);
+router.post('/visitor/login', main_controller.authenticateVisitor);
 router.post('/createModerator', jwtHelper.verifyAdminJwtToken, main_controller.createModerator);
 router.post('/createExponent', jwtHelper.verifyModeratorJwtToken, main_controller.createExponent);
 router.post('/participate',  main_controller.participate);
+router.post('/participate/free',  main_controller.participateFreely);
 //router.post('/googleauth', main_controller.test);
 
 /*router.get('/userprofile',jwtHelper.verifyJwtToken,main_controller.userProfile);

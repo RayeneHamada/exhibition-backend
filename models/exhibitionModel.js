@@ -91,7 +91,14 @@ var exhibitionSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Users"
         }
-    ]
+    ],
+    is_free: {
+        type: Boolean,
+        default:false
+    },
+    ticket_price:{
+        type: Number
+    }
 
 });
 // Export Exhibition model

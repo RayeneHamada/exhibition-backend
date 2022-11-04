@@ -62,12 +62,11 @@ var userSchema = new mongoose.Schema({
     establishment: {
       type: String
     },
-    sharedata: {
-      type: Boolean
-    },
+    tickets: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tickets"
+    }]
   },
-
-
   role: {
     type: String,
     enum: ['admin', 'moderator', 'exponent', 'visitor'],
@@ -83,7 +82,7 @@ var userSchema = new mongoose.Schema({
   moderator: {
     exhibition: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Users"
+      ref: "Exhibitions"
     }
   },
   exponent: {
@@ -121,6 +120,32 @@ userSchema.pre('save', function (next) {
   })
 
 });
+
+userSchema.post('findOneAndUpdate', function (doc, next) {
+  let query = this.getUpdate();
+  if (query['$set']) {
+    if (query['$set'].password) {
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(query['$set'].password, salt, (err, hash) => {
+          doc.password = hash;
+          doc.saltSecret = salt;
+          mongoose.model('Users').updateOne({ _id: doc._id }, { $set: { password: hash, saltSecret: salt } }, function (err, result) {
+            if (!err) {
+              next();
+            }
+          });
+        });
+      })
+    }
+    else
+      next();
+  }
+  else
+    next();
+
+
+});
+
 
 //methods
 
