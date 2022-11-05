@@ -48,6 +48,7 @@
     "passport-local": "^1.0.0",
     "pm2": "^5.2.0",
     "replace-color": "^2.3.0",
+    "stripe": "^10.16.0",
     "xlsx": "^0.18.5"
   }
 }

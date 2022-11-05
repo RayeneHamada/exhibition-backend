@@ -888,7 +888,7 @@ exports.getWebinarForVisitor = (req, res) => {
 }
 
 exports.getStands = function (req, res) {
-    const exhibitionId = req.role == 'moderator' ? req.exhibition:req.params.exhibitionId;
+    const exhibitionId = req.role == 'moderator' ? req.exhibition : req.params.exhibitionId;
     Exhibition.findOne({ _id: exhibitionId }, 'stands').
         populate(
             {
@@ -1287,4 +1287,316 @@ exports.getVisitorSector = function (req, res) {
         }
 
     })
+}
+
+exports.updateEntranceSponsorBanner0 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.sponsor_banners.texture_download_url_0).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            let hRatio0 = 1005.568 / logo.width;
+                            let vShift0 = (502.784 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 9.216, 508.928 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            let vRatio0 = 502.784 / logo.height;
+                            let hShift0 = (1005.568 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 9.216 + hShift0, 508.928, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.entrance.sponsor_banners.texture_download_url_0,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Entrance Sponsor Banner Custom 0 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateEntranceSponsorBanner1 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.sponsor_banners.texture_download_url_1).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            let hRatio0 = 1005.568 / logo.width;
+                            let vShift0 = (502.784 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 9.216, 508.928 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            let vRatio0 = 502.784 / logo.height;
+                            let hShift0 = (1005.568 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 9.216 + hShift0, 508.928, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.entrance.sponsor_banners.texture_download_url_1,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Entrance Sponsor Banner Custom 1 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateEntranceCubeScreen00 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.cube_screen.texture_download_url).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            let hRatio0 = 484.352 / logo.width;
+                            let vShift0 = (301.056 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 19.456, 22.528 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            let vRatio0 = 301.056 / logo.height;
+                            let hShift0 = (484.352 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 19.456 + hShift0, 22.528, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.entrance.cube_screen.texture_download_url,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 0 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateEntranceCubeScreen01 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.cube_screen.texture_download_url).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            let hRatio0 = 484.352 / logo.width;
+                            let vShift0 = (301.056 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 529.408, 22.528 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            let vRatio0 = 301.056 / logo.height;
+                            let hShift0 = (484.352 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 529.408 + hShift0, 22.528, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.entrance.cube_screen.texture_download_url,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateEntranceCubeScreen02 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.cube_screen.texture_download_url).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            let hRatio0 = 484.352 / logo.width;
+                            let vShift0 = (301.056 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 21.504, 695.296 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            let vRatio0 = 301.056 / logo.height;
+                            let hShift0 = (484.352 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 21.504 + hShift0, 695.296, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.entrance.cube_screen.texture_download_url,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
+}
+
+exports.updateEntranceCubeScreen03 = (req, res) => {
+    Exhibition.findOne({ _id: req.exhibition },
+        (err, exhibition) => {
+            if (!exhibition)
+                return res.status(404).json({ status: false, message: 'exhibition record not found.' });
+            else {
+                const canvas = createCanvas(1024, 1024);
+                const ctx = canvas.getContext('2d');
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.cube_screen.texture_download_url).then((image) => {
+                    ctx.drawImage(image, 0, 0)
+                    loadImage(req.file.path).then(async (logo) => {
+                        let ratio = logo.width / logo.height;
+                        if (ratio > 1) {
+                            let hRatio0 = 484.352 / logo.width;
+                            let vShift0 = (301.056 - logo.height * hRatio0) / 2
+                            ctx.drawImage(logo, 529.408, 695.296 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                        }
+                        else {
+                            let vRatio0 = 301.056 / logo.height;
+                            let hShift0 = (484.352 - logo.width * vRatio0) / 2
+                            ctx.drawImage(logo, 529.408 + hShift0, 695.296, logo.width * vRatio0, logo.height * vRatio0);
+                        }
+                        ctx.drawImage(image, 0, 0, 0, 0);
+                        const buffer = canvas.toBuffer("image/png");
+                        params = {
+                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                            Body: buffer,
+                            Key: exhibition.entrance.cube_screen.texture_download_url,
+                            ContentType: mime.contentType('image/png'),
+                            ACL: "public-read"
+                        }
+                        await s3.send(new PutObjectCommand(params));
+                        res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
+
+                    })
+                }).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                ).finally(
+                    () => {
+                        if (req.file)
+                            fs.rmSync(req.file.path, { recursive: true });
+                    }
+                );
+
+            }
+        });
 }

@@ -94,9 +94,9 @@ var exhibitionSchema = new Schema({
     ],
     is_free: {
         type: Boolean,
-        default:false
+        default: false
     },
-    ticket_price:{
+    ticket_price: {
         type: Number
     }
 

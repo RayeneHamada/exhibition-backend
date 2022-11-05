@@ -224,7 +224,7 @@ exports.createModerator = async (req, res, next) => {
                     }
                     if (req.body.exhibition.sponsor_banners) {
                         try {
-                            const fileContent = fs.readFileSync("./ressources/exhibition_sponsor_banner.png");
+                            const fileContent = fs.readFileSync("./ressources/sponsor_banner_albedo.png");
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,

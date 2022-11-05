@@ -36,6 +36,13 @@ router.post('/updateSponsorCylindre2', [imageUpload.single('image'), jwtHelper.v
 router.post('/updateSponsorCylindre3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorCylindre3);
 router.get('/all', main_controller.getExhibition);
 
+router.post('/entrance/updateSponsorBannerCustom0', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceSponsorBanner0);
+router.post('/entrance/updateSponsorBannerCustom1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceSponsorBanner1);
+router.post('/entrance/updateEntranceCubeScreen0', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen00);
+router.post('/entrance/updateEntranceCubeScreen1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen01);
+router.post('/entrance/updateEntranceCubeScreen2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen02);
+router.post('/entrance/updateEntranceCubeScreen3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen03);
+
 
 
 

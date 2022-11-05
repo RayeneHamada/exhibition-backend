@@ -407,7 +407,7 @@ exports.updateCustom0 = (req, res) => {
                     )
                 }
                 else if (stand.type == "XL") {
-                    const canvas = createCanvas(2048, 2048);
+                    const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
                     loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
@@ -415,15 +415,15 @@ exports.updateCustom0 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 0
-                                let hRatio0 = 364.544 / logo.width;
-                                let vShift0 = (303.104 - logo.height * hRatio0) / 2
-                                ctx.drawImage(logo, 241.664, 839.68 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                                let hRatio0 = 182.181 / logo.width;
+                                let vShift0 = (151.552 - logo.height * hRatio0) / 2
+                                ctx.drawImage(logo, 120.832, 419.84 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
                             }
                             else {
                                 //Drawing the logo un Custom Area 0
-                                let vRatio0 = 303.104 / logo.height;
-                                let hShift0 = (364.544 - logo.width * vRatio0) / 2
-                                ctx.drawImage(logo, 241.664 + hShift0, 839.68, logo.width * vRatio0, logo.height * vRatio0);
+                                let vRatio0 = 151.552 / logo.height;
+                                let hShift0 = (182.181 - logo.width * vRatio0) / 2
+                                ctx.drawImage(logo, 120.832 + hShift0, 419.84, logo.width * vRatio0, logo.height * vRatio0);
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -647,7 +647,7 @@ exports.updateCustom1 = (req, res) => {
                     );
                 }
                 else if (stand.type == "XL") {
-                    const canvas = createCanvas(2048, 2048);
+                    const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
                     loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
@@ -655,15 +655,15 @@ exports.updateCustom1 = (req, res) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
                                 //Drawing the texture un Custom Area 1
-                                let hRatio1 = 673.792 / logo.width;
-                                let vShift1 = (815.104 - logo.height * hRatio1) / 2
-                                ctx.drawImage(logo, 73.728, 1208.32 + vShift1, logo.width * hRatio1, logo.height * hRatio1)
+                                let hRatio1 = 336.896 / logo.width;
+                                let vShift1 = (407.552 - logo.height * hRatio1) / 2
+                                ctx.drawImage(logo, 36.864, 604.16 + vShift1, logo.width * hRatio1, logo.height * hRatio1)
                             }
                             else {
                                 //Drawing the logo un Custom Area 1
-                                let vRatio1 = 815.104 / logo.height;
-                                let hShift1 = (673.792 - logo.width * vRatio1) / 2
-                                ctx.drawImage(logo, 73.728 + hShift1, 1208.32, logo.width * vRatio1, logo.height * vRatio1)
+                                let vRatio1 = 407.552 / logo.height;
+                                let hShift1 = (336.896 - logo.width * vRatio1) / 2
+                                ctx.drawImage(logo, 36.864 + hShift1, 604.16, logo.width * vRatio1, logo.height * vRatio1)
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -796,23 +796,23 @@ exports.updateCustom2 = (req, res) => {
                     );
                 }
                 else if (stand.type == "XL") {
-                    const canvas = createCanvas(2048, 2048);
+                    const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
                     loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
                         loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
                             if (ratio > 1) {
-                                //Drawing the logo un Custom Area 2
-                                let hRatio2 = 464.896 / logo.width;
-                                let vShift2 = (989.184 - logo.height * hRatio2) / 2
-                                ctx.drawImage(logo, 792.576, 1034.24 + vShift2, logo.width * hRatio2, logo.height * hRatio2)
+                                //Drawing the logo un Custom Area 3
+                                let hRatio2 = 337.92 / logo.width;
+                                let vShift2 = (407.552 - logo.height * hRatio2) / 2
+                                ctx.drawImage(logo, 650.24, 604.16 + vShift2, logo.width * hRatio2, logo.height * hRatio2)
                             }
                             else {
-                                //Drawing the logo un Custom Area 2
-                                let vRatio2 = 989.184 / logo.height;
-                                let hShift2 = (464.896 - logo.width * vRatio1) / 2
-                                ctx.drawImage(logo, 792.576 + hShift2, 1034.24, logo.width * vRatio2, logo.height * vRatio2)
+                                //Drawing the logo un Custom Area 3
+                                let vRatio2 = 407.552 / logo.height;
+                                let hShift2 = (337.92 - logo.width * vRatio2) / 2
+                                ctx.drawImage(logo, 650.24 + hShift2, 604.16, logo.width * vRatio2, logo.height * vRatio2)
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");
@@ -852,23 +852,24 @@ exports.updateCustom3 = (req, res) => {
                 return res.status(404).json({ status: false, message: 'Stand record not found.' });
             else {
                 if (stand.type == "XL") {
-                    const canvas = createCanvas(2048, 2048);
+                    const canvas = createCanvas(1024, 1024);
                     const ctx = canvas.getContext('2d');
                     loadImage(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url).then((image) => {
                         ctx.drawImage(image, 0, 0)
                         loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
+                            
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 3
-                                let hRatio3 = 675.84 / logo.width;
-                                let vShift3 = (815.104 - logo.height * hRatio3) / 2
-                                ctx.drawImage(logo, 1300.48, 1208.32 + vShift3, logo.width * hRatio3, logo.height * hRatio3)
+                                let hRatio3 = 232.448 / logo.width;
+                                let vShift3 = (494.592 - logo.height * hRatio3) / 2
+                                ctx.drawImage(logo, 396.288, 517.12 + vShift3, logo.width * hRatio3, logo.height * hRatio3)
                             }
                             else {
                                 //Drawing the logo un Custom Area 3
-                                let vRatio3 = 815.104 / logo.height;
-                                let hShift3 = (675.84 - logo.width * vRatio3) / 2
-                                ctx.drawImage(logo, 1300.48 + hShift3, 1208.32, logo.width * vRatio3, logo.height * vRatio3)
+                                let vRatio3 = 494.592 / logo.height;
+                                let hShift3 = (232.448 - logo.width * vRatio3) / 2
+                                ctx.drawImage(logo, 396.288 + hShift3, 517.12, logo.width * vRatio3, logo.height * vRatio3)
                             }
                             ctx.drawImage(image, 0, 0, 0, 0);
                             const buffer = canvas.toBuffer("image/png");

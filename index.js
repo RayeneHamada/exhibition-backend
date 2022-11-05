@@ -21,6 +21,7 @@ const passport = require('passport');
 
 const app = express();
 //app.use(helmet());
+app.use("/stripe", express.raw({ type: "*/*" }));
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize())
@@ -30,12 +31,16 @@ const userRoute = require('./routes/userRoute');
 const exhibitionRoute = require('./routes/exhibitionRoute');
 const standRoute = require('./routes/standRoute');
 const standLogRoute = require('./routes/standLogRoute');
+const stripeRoute = require('./routes/stripeRoute');
+
 
 //use routes
 app.use('/user', userRoute);
 app.use('/exhibition', exhibitionRoute);
 app.use('/stand', standRoute);
 app.use('/stats', standLogRoute);
+app.use('/stripe', stripeRoute);
+
 
 app.use('/public',express.static(path.join(__dirname, 'public')));
 
