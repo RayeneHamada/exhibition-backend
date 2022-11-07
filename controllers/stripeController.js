@@ -44,7 +44,7 @@ const mongoose = require('mongoose'),
                 ticket.sharedata = metadata.sharedata;
                 ticket.save((err, ticketDoc) => {
                   if (err) {
-                    res.status(400).send({ success: false, message: err });
+                    console.log({ success: false, message: err });
                   }
                   else {
                     User.findOneAndUpdate({ '_id': visitor._id }, { $set: { password: password }, $push: { "visitor.tickets": ticketDoc._id } }).then(
@@ -76,23 +76,23 @@ const mongoose = require('mongoose'),
                                     subject: "Coordonnées d'accces à XPOLAND", // Subject line
                                     html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
                                   });
-                                  res.status(201).send({ success: true, message: 'Visitor added successfully.' });
+                                  console.log({ success: true, message: 'Visitor added successfully.' });
                                 } catch (err) {
-                                  throw ({ success: false, message: "Error while sending e-mail." });
+                                  console.log({ success: false, message: "Error while sending e-mail." });
                                 }
                               }
                               else {
-                                res.status(404).send({ "error": "Exhibition not found" })
+                                console.log({ "error": "Exhibition not found" })
                               }
                             }
                           }
                           else
-                            res.send(err);
+                            console.log(err);
                         })
                       }
                     ).catch(
                       (error) => {
-                        res.status(400).send({
+                        console.log({
                           success: false,
                           message: error
                         });
@@ -124,7 +124,7 @@ const mongoose = require('mongoose'),
                     ticket.sharedata = metadata.sharedata;
                     ticket.save((err, ticketDoc) => {
                       if (err) {
-                        res.status(400).send({ success: false, message: err });
+                        console.log({ success: false, message: err });
                       }
                       else {
                         Exhibition.findOne({ '_id': metadata.exhibition }, async (err, exhibition) => {
@@ -153,18 +153,18 @@ const mongoose = require('mongoose'),
                                     subject: "Coordonnées d'accces à XPOLAND", // Subject line
                                     html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
                                   });
-                                  res.status(201).send({ success: true, message: 'Visitor added successfully.' });
+                                  console.log({ success: true, message: 'Visitor added successfully.' });
                                 } catch (err) {
-                                  throw ({ success: false, message: "Error while sending e-mail." });
+                                  console.log({ success: false, message: "Error while sending e-mail." });
                                 }
                               }
                               else {
-                                res.status(404).send({ "error": "Exhibition not found" })
+                                console.log({ "error": "Exhibition not found" })
                               }
                             }
                           }
                           else
-                            res.send(err);
+                            console.log(err);
                         })
 
                       }
@@ -172,12 +172,12 @@ const mongoose = require('mongoose'),
                     })
                   }
                   else {
-                    return res.json({ 'error': err });
+                    console.log({ 'error': err });
                   }
                 });
               }
             }
-            else { res.send(err); }
+            else { console.log(err); }
           })
         }
 
