@@ -11,6 +11,7 @@ router.post('/createModerator', jwtHelper.verifyAdminJwtToken, main_controller.c
 router.post('/createExponent', jwtHelper.verifyModeratorJwtToken, main_controller.createExponent);
 router.post('/participate',  main_controller.participate);
 router.post('/participate/free',  main_controller.participateFreely);
+router.post('/participate/paied',  main_controller.payWithCreditCard);
 //router.post('/googleauth', main_controller.test);
 
 /*router.get('/userprofile',jwtHelper.verifyJwtToken,main_controller.userProfile);

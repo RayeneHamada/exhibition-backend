@@ -106,7 +106,7 @@ exports.getVisitors = function (req, res) {
 
 exports.getExhibitionForVisitor = function (req, res) {
 
-    Exhibition.findOne({ _id: req.params.id }, 'event_name exhibition_start_date exhibition_end_date').
+    Exhibition.findOne({ _id: req.params.id }, 'event_name exhibition_start_date exhibition_end_date is_free').
         exec((err, result) => {
             if (!err) {
                 if (result) {

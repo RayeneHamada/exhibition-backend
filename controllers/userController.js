@@ -9,6 +9,7 @@ const mongoose = require('mongoose'),
     nodemailer = require("nodemailer"),
     fs = require('fs'),
     mime = require('mime-types'),
+    stripe = require('stripe')(process.env.STRIPE_SECRET_KEY),
     { PutObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
@@ -612,6 +613,40 @@ exports.participateFreely = (req, res) => {
             }
         }
         else { res.send(err); }
+    })
+}
+
+exports.payWithCreditCard = async (req, res) => {
+
+    Exhibition.findById(req.body.exhibition, 'ticket_price', async (err, doc) => {
+        if (err)
+            res.status(400).send({ success: false, message: err });
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: doc.ticket_price * 100,
+            currency: 'eur',
+            payment_method_types: ['card'],
+            receipt_email: req.body.email,
+            metadata: {
+                email: req.body.email,
+                phoneNumber: req.body.phoneNumber,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                sexe: req.body.sexe,
+                age: req.body.age,
+                profession: req.body.profession,
+                sector: req.body.sector,
+                establishment: req.body.establishment,
+                sharedata: req.body.sharedata
+            }
+        });
+        res.status(200).send({
+            success: true,
+            body: {
+                paymentId: paymentIntent.id,
+                clientSecret: paymentIntent.client_secret,
+            }
+        });
+
     })
 }
 
