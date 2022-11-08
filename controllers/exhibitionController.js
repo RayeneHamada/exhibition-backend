@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
+    Ticket = mongoose.model('Tickets'),
     replaceColor = require('replace-color'),
     ObjectId = require('mongoose').Types.ObjectId,
     XLSX = require('xlsx'),
@@ -1597,6 +1598,37 @@ exports.updateEntranceCubeScreen03 = (req, res) => {
                     }
                 );
 
+            }
+        });
+}
+
+exports.getVisitorsForNetworking = (req, res) => {
+    Ticket.find({ exhibition: req.params.exhibition, sharedata: true }, 'visitor', { skip: req.params.offset * 14, limit: 14 }).
+        populate({ path: 'visitor', select: 'visitor.email visitor.firstName visitor.lastName visitor.phoneNumber visitor.profession visitor.establishment' }).
+        exec((err, result) => {
+            if (!err) {
+                if (result) {
+                    res.status(200).send({ success: true, data: result });
+                }
+                else {
+                    res.status(200).send([]);
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
+}
+
+exports.getVisitorsForNetworkingCount = (req, res) => {
+    Ticket.count({ exhibition: req.params.exhibition, sharedata: true }).
+        exec((err, result) => {
+            if (!err) {
+                    res.status(200).send({ success: true, data: result });
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
             }
         });
 }

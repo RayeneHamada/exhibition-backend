@@ -5,6 +5,8 @@ const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 const videoCloudUpload = require('../config/multerConfig').videoCloudUpload;
 
+router.get('/networking/count/:exhibition',  main_controller.getVisitorsForNetworkingCount);
+router.get('/networking/:exhibition/:offset',  main_controller.getVisitorsForNetworking);
 router.get('/visitorsSector', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorSector);
 router.get('/visitorsAge', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorsAge);
 router.get('/visitorsGender', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorsGender);

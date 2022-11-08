@@ -636,7 +636,8 @@ exports.payWithCreditCard = async (req, res) => {
                 profession: req.body.profession,
                 sector: req.body.sector,
                 establishment: req.body.establishment,
-                sharedata: req.body.sharedata
+                sharedata: req.body.sharedata,
+                exhibition:req.body.exhibition
             }
         });
         res.status(200).send({
