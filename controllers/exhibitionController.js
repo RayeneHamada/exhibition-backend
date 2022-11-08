@@ -1625,7 +1625,8 @@ exports.getVisitorsForNetworkingCount = (req, res) => {
     Ticket.count({ exhibition: req.params.exhibition, sharedata: true }).
         exec((err, result) => {
             if (!err) {
-                    res.status(200).send({ success: true, data: result });
+                let pagesNumber = Math.ceil(result/14)
+                res.status(200).send({ success: true, data: pagesNumber });
             }
             else {
                 res.status(400).send({ success: false, message: err });
