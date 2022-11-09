@@ -5,6 +5,7 @@ const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 const videoCloudUpload = require('../config/multerConfig').videoCloudUpload;
 
+router.get('/income', jwtHelper.verifyModeratorJwtToken, main_controller.getTotalIncome);
 router.get('/networking/count/:exhibition',  main_controller.getVisitorsForNetworkingCount);
 router.get('/networking/:exhibition/:offset',  main_controller.getVisitorsForNetworking);
 router.get('/visitorsSector', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorSector);

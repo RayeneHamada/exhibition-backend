@@ -4,6 +4,7 @@ require('./models/userModel');
 require('./models/exhibitionModel');
 require('./models/standModel');
 require('./models/standLogModel');
+require('./models/exhibitionLogModel');
 require('./models/ticketModel');
 
 require('./config/dbConfig');
@@ -31,6 +32,7 @@ const userRoute = require('./routes/userRoute');
 const exhibitionRoute = require('./routes/exhibitionRoute');
 const standRoute = require('./routes/standRoute');
 const standLogRoute = require('./routes/standLogRoute');
+const exhibitionLogRoute = require('./routes/exhibitionLogRoute');
 const stripeRoute = require('./routes/stripeRoute');
 
 
@@ -39,6 +41,7 @@ app.use('/user', userRoute);
 app.use('/exhibition', exhibitionRoute);
 app.use('/stand', standRoute);
 app.use('/stats', standLogRoute);
+app.use('/exhibition/stats', exhibitionLogRoute);
 app.use('/stripe', stripeRoute);
 
 

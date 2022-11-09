@@ -1547,7 +1547,7 @@ exports.updateCharacter1 = (req, res) => {
                 stand.caracter_type_00 = req.body.character_type;
                 Stand.updateOne({ _id: req.stand }, stand).then(
                     () => {
-                        res.status(201).json({
+                        res.status(200).json({
                             message: 'Character type updated successfully!'
                         });
                     }
@@ -1571,7 +1571,7 @@ exports.updateCharacter2 = (req, res) => {
                 stand.caracter_type_01 = req.body.character_type;
                 Stand.updateOne({ _id: req.stand }, stand).then(
                     () => {
-                        res.status(201).json({
+                        res.status(200).json({
                             message: 'Character type updated successfully!'
                         });
                     }

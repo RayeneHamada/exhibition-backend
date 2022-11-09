@@ -2,14 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
-var standLogSchema = new Schema({
+var exhibitionLogSchema = new Schema({
     /*
         action types are :
-            * INTERACTION : when a user open stand menu
-            * WEBSITE : when a visitor consult a stand website from its menu
-            * MEET : when a visitor joins the from its menu
-            * BROCHURE : when a visitor consult the stand's brochure from its menu
-            * WATCH_VIDEO
+            * Webinar : when a user open webinar
     */
     action_name: {
         type: String,
@@ -32,13 +28,13 @@ var standLogSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users"
     },
-    stand:
+    exhibition:
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Stands"
+        ref: "Exhibitions"
     }
 
 
 });
 // Export StandLog model
-var StandLog = module.exports = mongoose.model('StandLogs', standLogSchema);
+var ExhibitionLog = module.exports = mongoose.model('ExhibitionLogs', exhibitionLogSchema);

@@ -33,7 +33,7 @@ exports.new = function (req, res) {
             }
         }
         else {
-            console.log(err);
+            res.status(400).send({ success: false, message: err })
         }
     })
 }

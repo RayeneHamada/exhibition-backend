@@ -1290,6 +1290,21 @@ exports.getVisitorSector = function (req, res) {
     })
 }
 
+exports.getTotalIncome = function (req, res) {
+    Exhibition.findOne({ _id: req.exhibition }, 'ticket_price', (err, result) => {
+        if (!err)
+            Ticket.count({ 'exhibition': req.exhibition }, function (err, count) {
+                if (!err)
+                    res.status(200).send({ success: true, data: count*result.ticket_price });
+                else
+                    res.status(400).send({ success: false, message: err });
+            })
+        else
+            res.status(400).send({ success: false, message: err });
+    })
+
+}
+
 exports.updateEntranceSponsorBanner0 = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition },
         (err, exhibition) => {
@@ -1625,7 +1640,7 @@ exports.getVisitorsForNetworkingCount = (req, res) => {
     Ticket.count({ exhibition: req.params.exhibition, sharedata: true }).
         exec((err, result) => {
             if (!err) {
-                let pagesNumber = Math.ceil(result/14)
+                let pagesNumber = Math.ceil(result / 14)
                 res.status(200).send({ success: true, data: pagesNumber });
             }
             else {
