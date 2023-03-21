@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
-const standAccessUsers = ["exponent","moderator","admin"];
-const exhibitionAccessUsers = ["moderator","admin"];
+const standAccessUsers = ["exponent", "moderator", "admin"];
+const exhibitionAccessUsers = ["moderator", "admin"];
 
 module.exports.verifyJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -19,7 +19,7 @@ module.exports.verifyJwtToken = (req, res, next) => {
                 else {
                     req._id = decoded._id;
                     next();
-                    
+
                 }
             }
         )
@@ -28,10 +28,10 @@ module.exports.verifyJwtToken = (req, res, next) => {
 
 module.exports.verifyAdminJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -41,16 +41,15 @@ module.exports.verifyAdminJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(decoded.role != 'admin')
-                    {
+                    if (decoded.role != 'admin') {
                         return res.status(403).send({ auth: false, message: 'You should respect users privacy' });
                     }
-                    else{
+                    else {
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
-                    next();
+                        next();
                     }
                 }
             }
@@ -60,10 +59,10 @@ module.exports.verifyAdminJwtToken = (req, res, next) => {
 
 module.exports.verifyModeratorJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -73,17 +72,16 @@ module.exports.verifyModeratorJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(decoded.role != 'moderator')
-                    {
+                    if (decoded.role != 'moderator') {
                         return res.status(403).send({ auth: false, message: 'You should respect users privacy' });
                     }
-                    else{
+                    else {
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
                         req.exhibition = decoded.moderator_exhibition;
-                    next();
+                        next();
                     }
                 }
             }
@@ -93,10 +91,10 @@ module.exports.verifyModeratorJwtToken = (req, res, next) => {
 
 module.exports.verifyExponentJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -106,20 +104,19 @@ module.exports.verifyExponentJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(decoded.role != 'exponent')
-                    {
+                    if (decoded.role != 'exponent') {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
-                    else{
+                    else {
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
                         req.exhibition = decoded.exponent_exhibition;
                         req.stand = decoded.stand;
-                    next();
+                        next();
                     }
-                    
+
                 }
             }
         )
@@ -128,10 +125,10 @@ module.exports.verifyExponentJwtToken = (req, res, next) => {
 
 module.exports.verifyVisitorJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -141,20 +138,19 @@ module.exports.verifyVisitorJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(decoded.role != 'visitor')
-                    {
+                    if (decoded.role != 'visitor') {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
-                    else{
+                    else {
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
                         req.exhibition = decoded.exponent_exhibition;
                         req.stand = decoded.stand;
-                    next();
+                        next();
                     }
-                    
+
                 }
             }
         )
@@ -163,10 +159,10 @@ module.exports.verifyVisitorJwtToken = (req, res, next) => {
 
 module.exports.verifyStandAccessJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -176,20 +172,19 @@ module.exports.verifyStandAccessJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(!standAccessUsers.includes(decoded.role))
-                    {
+                    if (!standAccessUsers.includes(decoded.role)) {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
-                    else{
+                    else {
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
                         req.exhibition = decoded.exponent_exhibition;
                         req.stand = decoded.stand;
-                    next();
+                        next();
                     }
-                    
+
                 }
             }
         )
@@ -198,10 +193,10 @@ module.exports.verifyStandAccessJwtToken = (req, res, next) => {
 
 module.exports.verifyExhibitionAccessJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -211,20 +206,19 @@ module.exports.verifyExhibitionAccessJwtToken = (req, res, next) => {
                 if (err)
                     return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
                 else {
-                    if(!exhibitionAccessUsers.includes(decoded.role))
-                    {
+                    if (!exhibitionAccessUsers.includes(decoded.role)) {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
                     }
-                    else{
+                    else {
                         req._id = decoded._id;
                         req.firstName = decoded.firstName;
                         req.lastName = decoded.lastName;
                         req.email = decoded.email;
                         req.exhibition = decoded.moderator_exhibition;
                         req.role = decoded.role;
-                    next();
+                        next();
                     }
-                    
+
                 }
             }
         )
@@ -233,10 +227,10 @@ module.exports.verifyExhibitionAccessJwtToken = (req, res, next) => {
 
 module.exports.verifyPasswordResetJwtToken = (req, res, next) => {
     var token;
-    if ('authorization' in req.headers)
-       { token = req.headers['authorization'].split(' ')[1];
+    if ('authorization' in req.headers) {
+        token = req.headers['authorization'].split(' ')[1];
     }
-        
+
 
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
@@ -248,7 +242,7 @@ module.exports.verifyPasswordResetJwtToken = (req, res, next) => {
                 else {
                     req._id = decoded.id;
                     next();
-                    
+
                 }
             }
         )

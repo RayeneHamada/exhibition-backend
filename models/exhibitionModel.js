@@ -78,7 +78,13 @@ var exhibitionSchema = new Schema({
             type: Boolean,
             default: true
         },
-        video_download_url: String
+        videos: [
+            {
+                thumbnail_download_url: String,
+                video_download_url: String,
+                video_title: String
+            }
+        ]
     },
     stands: [
         {
@@ -103,3 +109,4 @@ var exhibitionSchema = new Schema({
 });
 // Export Exhibition model
 var Exhibition = module.exports = mongoose.model('Exhibitions', exhibitionSchema);
+exports.exhibitionSchema = exhibitionSchema;

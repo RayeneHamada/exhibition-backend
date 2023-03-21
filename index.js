@@ -9,7 +9,6 @@ require('./models/ticketModel');
 
 require('./config/dbConfig');
 require('./config/passportConfig');
-
 const http = require("http");
 const express = require("express");
 const helmet =require('helmet');

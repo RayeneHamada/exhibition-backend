@@ -4,6 +4,7 @@ const jwtHelper = require('../helpers/jwtHelper');
 const main_controller = require('../controllers/exhibitionController');
 const imageUpload = require('../config/multerConfig').imageUpload;
 const videoCloudUpload = require('../config/multerConfig').videoCloudUpload;
+const fileUpload = require('../config/multerConfig').fileCloudUpload;
 
 router.get('/income', jwtHelper.verifyModeratorJwtToken, main_controller.getTotalIncome);
 router.get('/networking/count/:exhibition',  main_controller.getVisitorsForNetworkingCount);
@@ -24,11 +25,12 @@ router.get('/:id', main_controller.getExhibitionById);
 router.get('/entrance/:id', main_controller.getEntrance);
 
 router.post('/webinar', [videoCloudUpload.single('webinar'), jwtHelper.verifyModeratorJwtToken], main_controller.updateWebinar);
+router.post('/webinar/videos/new', [fileUpload.fields([{ name: 'thumb' }, { name: 'webinar' }]), jwtHelper.verifyModeratorJwtToken], main_controller.addWebniarVideo);
 router.post('/update', jwtHelper.verifyModeratorJwtToken, main_controller.updateExhbition);
 router.post('/updateSponsorDiscCustom0', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom0);
 router.post('/updateSponsorDiscCustom1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom1);
-router.post('/updateSponsorDiscCustom3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom2);
-router.post('/updateSponsorDiscCustom2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom3);
+router.post('/updateSponsorDiscCustom2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom2);
+router.post('/updateSponsorDiscCustom3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom3);
 router.post('/updateSponsorBannerCustom0', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner0);
 router.post('/updateSponsorBannerCustom1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner1);
 router.post('/updateSponsorBannerCustom2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorBanner2);

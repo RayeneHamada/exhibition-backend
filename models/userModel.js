@@ -162,7 +162,6 @@ userSchema.methods.generateJwt = function () {
     });
 }
 userSchema.methods.usePasswordHashToMakeToken = function () {
-  const secret = this.password + "-" + this.create_date
   const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: 36000 // 1 hour
   })

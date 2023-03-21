@@ -1,7 +1,9 @@
 const multer = require('multer');
 const path = require('path');
-const { S3Client } = require('@aws-sdk/client-s3')
-const multerS3 = require('multer-s3')
+const { S3Client } = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3');
+const crypto = require('crypto');
+
 
 
 const s3 = new S3Client({
@@ -11,6 +13,8 @@ const s3 = new S3Client({
 
 
 
+const metadata = {};
+
 exports.fileCloudUpload = multer({
   storage: multerS3({
     s3: s3,
@@ -19,15 +23,17 @@ exports.fileCloudUpload = multer({
     bucket: process.env.AWS_S3_TEXTURE_BUCKET,
     metadata: function (req, file, cb) {
       cb(null, {
-        fieldName: file.fieldname + '_' + Date.now()
-          + path.extname(file.originalname)
+        fieldName: file.fieldname + '_' + Date.now() + path.extname(file.originalname),
+        ...metadata
       });
     },
     key: function (req, file, cb) {
-      cb(null, Date.now().toString())
+      cb(null, file.fieldname + '_' + Date.now()
+        + path.extname(file.originalname))
     }
   })
-})
+});
+
 
 exports.logoCloudUpload = multer({
   storage: multerS3({
@@ -55,7 +61,7 @@ exports.videoCloudUpload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null,  file.fieldname + '_' + Date.now()
+      cb(null, file.fieldname + '_' + Date.now()
         + path.extname(file.originalname))
     }
   })

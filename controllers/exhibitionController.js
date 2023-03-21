@@ -8,6 +8,7 @@ const mongoose = require('mongoose'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     mime = require('mime-types'),
+    crypto = require('crypto'),
     { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
@@ -18,6 +19,11 @@ const mongoose = require('mongoose'),
         region: process.env.AWS_S3_REGION
     });
 
+
+const calculateEtag = (buffer) => {
+    const hash = crypto.createHash('md5').update(buffer).digest('hex');
+    return `"${hash}"`;
+};
 
 exports.updateExhbition = function (req, res) {
     Exhibition.find({ _id: req.body._id }, (err, exhibition) => {
@@ -196,12 +202,16 @@ exports.updateSponsorDiscCustom0 = async (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 0 has been updated successfully" })
@@ -275,12 +285,16 @@ exports.updateSponsorDiscCustom1 = async (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
@@ -329,12 +343,16 @@ exports.updateSponsorDiscCustom2 = async (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 1 has been updated successfully" })
@@ -383,12 +401,16 @@ exports.updateSponsorDiscCustom3 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Disc Custom 3 has been updated successfully" })
@@ -437,12 +459,16 @@ exports.updateSponsorCylindre0 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_disc.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
@@ -491,12 +517,16 @@ exports.updateSponsorCylindre1 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_cylinder.texture_download_url_1,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
@@ -545,12 +575,16 @@ exports.updateSponsorCylindre2 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_cylinder.texture_download_url_2,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
@@ -599,12 +633,16 @@ exports.updateSponsorCylindre3 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_cylinder.texture_download_url_3,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Cylindre has been updated successfully" })
@@ -653,12 +691,16 @@ exports.updateSponsorBanner0 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_0,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -707,12 +749,16 @@ exports.updateSponsorBanner1 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_1,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -761,12 +807,16 @@ exports.updateSponsorBanner2 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_2,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -815,12 +865,16 @@ exports.updateSponsorBanner3 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.sponsor_banners.texture_download_url_3,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
@@ -864,6 +918,25 @@ exports.updateWebinar = (req, res) => {
         })
 
     })
+}
+
+exports.addWebniarVideo = (req, res) => {
+    const webinarVideo = {
+        thumbnail_download_url: req.files.thumb[0].key,
+        video_download_url: req.files.webinar[0].key,
+        video_title: req.body.video_title
+    }
+    Exhibition.updateOne({ _id: req.exhibition }, { $push: { "webinar.videos": webinarVideo } }).then(
+        () => {
+            res.status(201).json({ success: true, data: webinarVideo });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
 }
 
 exports.getWebinar = (req, res) => {
@@ -1295,7 +1368,7 @@ exports.getTotalIncome = function (req, res) {
         if (!err)
             Ticket.count({ 'exhibition': req.exhibition }, function (err, count) {
                 if (!err)
-                    res.status(200).send({ success: true, data: count*result.ticket_price });
+                    res.status(200).send({ success: true, data: count * result.ticket_price });
                 else
                     res.status(400).send({ success: false, message: err });
             })
@@ -1329,12 +1402,16 @@ exports.updateEntranceSponsorBanner0 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.entrance.sponsor_banners.texture_download_url_0,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Entrance Sponsor Banner Custom 0 has been updated successfully" })
@@ -1381,12 +1458,16 @@ exports.updateEntranceSponsorBanner1 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.entrance.sponsor_banners.texture_download_url_1,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Entrance Sponsor Banner Custom 1 has been updated successfully" })
@@ -1433,12 +1514,16 @@ exports.updateEntranceCubeScreen00 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.entrance.cube_screen.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 0 has been updated successfully" })
@@ -1485,12 +1570,16 @@ exports.updateEntranceCubeScreen01 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.entrance.cube_screen.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
@@ -1537,12 +1626,16 @@ exports.updateEntranceCubeScreen02 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.entrance.cube_screen.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
@@ -1589,12 +1682,16 @@ exports.updateEntranceCubeScreen03 = (req, res) => {
                         }
                         ctx.drawImage(image, 0, 0, 0, 0);
                         const buffer = canvas.toBuffer("image/png");
+                        const etag = calculateEtag(buffer);
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
                             Key: exhibition.entrance.cube_screen.texture_download_url,
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: {
+                                ETag: etag,
+                            },
                         }
                         await s3.send(new PutObjectCommand(params));
                         res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })

@@ -9,6 +9,7 @@ const mongoose = require('mongoose'),
     nodemailer = require("nodemailer"),
     fs = require('fs'),
     mime = require('mime-types'),
+    crypto = require('crypto'),
     stripe = require('stripe')(process.env.STRIPE_SECRET_KEY),
     { PutObjectCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
@@ -114,9 +115,9 @@ exports.createModerator = async (req, res, next) => {
                     });
                     try {
                         let info = await transporter.sendMail({
-                            from: '"3DExhibition Team" <3DExhibition@gmail.com>', // sender address
+                            from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
                             to: userDoc.email, // list of receivers
-                            subject: "Coordonnées d'accces à 3DExhibition", // Subject line
+                            subject: "Coordonnées d'accces à XPOLAND", // Subject line
                             html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
                         });
                     } catch (err) {
@@ -125,12 +126,14 @@ exports.createModerator = async (req, res, next) => {
 
                     try {
                         const fileContent = fs.readFileSync("./ressources/entrance_sponsor_screen.png");
+                        const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "cube_screen_" + userDoc._id + ".png",
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: { ETag: eTag }
                         }
                         await s3.send(new PutObjectCommand(params));
                     } catch (err) {
@@ -139,12 +142,14 @@ exports.createModerator = async (req, res, next) => {
 
                     try {
                         const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner.png");
+                        const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "entrance_banner0_" + userDoc._id + ".png",
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: { ETag: eTag }
                         }
                         await s3.send(new PutObjectCommand(params));
                     } catch (err) {
@@ -153,12 +158,14 @@ exports.createModerator = async (req, res, next) => {
 
                     try {
                         const fileContent = fs.readFileSync("./ressources/entrance_sponsor_banner.png");
+                        const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "entrance_banner1_" + userDoc._id + ".png",
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: { ETag: eTag }
                         }
                         await s3.send(new PutObjectCommand(params));
                     } catch (err) {
@@ -168,12 +175,14 @@ exports.createModerator = async (req, res, next) => {
                     if (req.body.exhibition.sponsor_disc) {
                         try {
                             const fileContent = fs.readFileSync("./ressources/exhibition_sponsor_disc.png");
+                            const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "disc_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag }
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -183,39 +192,47 @@ exports.createModerator = async (req, res, next) => {
                     if (req.body.exhibition.sponsor_cylinder) {
                         try {
                             const fileContent = fs.readFileSync("./ressources/exhibition_sponsor_cylindre.png");
+                            const eTag1 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder0_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag1 }
 
                             }
                             await s3.send(new PutObjectCommand(params));
+                            const eTag2 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder1_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag2 }
 
                             }
                             await s3.send(new PutObjectCommand(params));
+                            const eTag3 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder2_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag3 }
 
                             }
                             await s3.send(new PutObjectCommand(params));
+                            const eTag4 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "cylinder3_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag4 }
 
                             }
                             await s3.send(new PutObjectCommand(params));
@@ -226,37 +243,45 @@ exports.createModerator = async (req, res, next) => {
                     if (req.body.exhibition.sponsor_banners) {
                         try {
                             const fileContent = fs.readFileSync("./ressources/sponsor_banner_albedo.png");
+                            const eTag5 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner0_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag5 }
 
                             }
                             await s3.send(new PutObjectCommand(params));
+                            const eTag6 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner1_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag6 }
                             }
                             await s3.send(new PutObjectCommand(params));
+                            const eTag7 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner2_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag7 }
                             }
                             await s3.send(new PutObjectCommand(params));
+                            const eTag8 = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "sponsorbanner3_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag8 }
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -312,19 +337,21 @@ exports.createExponent = async (req, res) => {
                         },
                     });
                     let info = await transporter.sendMail({
-                        from: '"3DExhibition Team" <3DExhibition@gmail.com>', // sender address
+                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
                         to: userDoc.email, // list of receivers
-                        subject: "Coordonnées d'accces à 3DExhibition", // Subject line
+                        subject: "Coordonnées d'accces à XPOLAND", // Subject line
                         html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
                     });
                     try {
                         const fileContent = fs.readFileSync("./ressources/" + texture[standDoc.type]);
+                        const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: fileContent,
                             Key: "texture_" + userDoc._id + ".png",
                             ContentType: mime.contentType('image/png'),
-                            ACL: "public-read"
+                            ACL: "public-read",
+                            Metadata: { ETag: eTag }
                         }
                         await s3.send(new PutObjectCommand(params));
                     } catch (err) {
@@ -333,12 +360,14 @@ exports.createExponent = async (req, res) => {
                     if (req.body.stand.banner) {
                         try {
                             const fileContent = fs.readFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type]);
+                            const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
                             params = {
                                 Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                                 Body: fileContent,
                                 Key: "banner_" + userDoc._id + ".png",
                                 ContentType: mime.contentType('image/png'),
-                                ACL: "public-read"
+                                ACL: "public-read",
+                                Metadata: { ETag: eTag }
                             }
                             await s3.send(new PutObjectCommand(params));
                         } catch (err) {
@@ -506,7 +535,7 @@ exports.participateFreely = (req, res) => {
                                                 });
                                                 try {
                                                     let info = await transporter.sendMail({
-                                                        from: '"XPOLAND Team" <3DExhibition@gmail.com>', // sender address
+                                                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
                                                         to: visitor.email, // list of receivers
                                                         subject: "Coordonnées d'accces à XPOLAND", // Subject line
                                                         html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
@@ -583,7 +612,7 @@ exports.participateFreely = (req, res) => {
                                                 });
                                                 try {
                                                     let info = await transporter.sendMail({
-                                                        from: '"XPOLAND Team" <3DExhibition@gmail.com>', // sender address
+                                                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
                                                         to: visitor.email, // list of receivers
                                                         subject: "Coordonnées d'accces à XPOLAND", // Subject line
                                                         html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
@@ -637,7 +666,7 @@ exports.payWithCreditCard = async (req, res) => {
                 sector: req.body.sector,
                 establishment: req.body.establishment,
                 sharedata: req.body.sharedata,
-                exhibition:req.body.exhibition
+                exhibition: req.body.exhibition
             }
         });
         res.status(200).send({
@@ -707,7 +736,128 @@ exports.usersList = (req, res, next) => {
     })
 }
 
-exports.user_delete = function (req, res) {
+exports.userDelete = function (req, res) {
+    User.deleteOne({ '_id': req.params.id }, function (err) {
+        if (err) {
+            return res.status(403).send(err);
+        }
+        else {
+
+            Panel.deleteMany({ 'owner': req.params.id }, (err) => {
+                if (err) { return res.status(403).send(err); }
+                else { return res.status(200).send('User deleted successfuly'); }
+            })
+        }
+    })
+}
+
+exports.requestPasswordReset = (req, res) => {
+
+    User.findOne({ 'email': req.body.email }, async (err, user) => {
+        if (err)
+            res.status(500).send({ success: false, message: err });
+        else {
+            if (user) {
+                const token = user.usePasswordHashToMakeToken();
+                const transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: process.env.NODE_MAILER_EMAIL,
+                        pass: process.env.NODE_MAILER_PASSWORD,
+                    },
+                });
+                try {
+                    const info = await transporter.sendMail({
+                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
+                        to: user.email, // list of receivers
+                        subject: "Réinitialiser votre mot de passe XPOLAND", // Subject line
+                        html: `
+                            <head>
+                                <meta charset="UTF-8">
+                                <title>Mail</title>
+                                <style>
+                                    @import url('https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
+                                </style>
+                            </head>
+                            <body style="background: #f2f2f2;">
+                
+                            <table cellpadding="0" cellspacing="0" border="0;" style="background: #fff;
+                            margin: 0 auto;">
+                                <tr>
+                                    <td>
+                                        <table cellpadding="0" cellspacing="0" border="0;" width="570" style="background: #fff;margin: 0 auto;">
+                                            <tr>
+                                                <td colspan="2" style=" padding: 20px 70px 0px;">
+                                                    <p style="font-family: 'arial', sans-serif; font-size: 16px; font-weight: 400">
+                                                        Bonjour ${user.firstName} ${user.lastName},               
+                            </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style=" padding: 0 70px;">
+                                                    <p style="font-family: 'arial', sans-serif; font-size: 16px; font-weight: 400; line-height: 22px">
+                                                    <strong>Une réinitialisation du mot de passe de votre compte a été demandée.</strong>
+                                                    Cliquez sur le bouton ci-dessous pour modifier votre mot de passe.<br/>
+                                                    Remarque : ce lien est valable pendant 24 heures. Après expiration de ce délai, vous devrez soumettre une nouvelle demande de réinitialisation de mot de passe.
+                                                    </p>          
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style=" padding: 0 70px;/*background-color: #f8a44b;*/ text-align: center;">
+                                                    <p style="font-family: 'arial', sans-serif; font-size: 16px; font-weight: 400; line-height: 22px">
+                                                        <a href="http://localhost:3000/reset-password-request/${token}" target="_blank" style="text-decoration:none;background: #5d33ce;color: #fff;font-size: 14px;padding:17px;text-transform: uppercase;-webkit-border-radius: 30px;-moz-border-radius: 30px;-o-border-radius: 30px;-ms-border-radius: 30px;border-radius: 30px;line-height: 1.2;white-space: normal;width: 170px;border: 1px solid transparent;font-weight: 500;">Changer votre mot de passe</a>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                            
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style=" padding: 30px 30px 50px;">
+                                                    <img src="https://api.carsdheure.fr/public/img/email/trait.png" alt="" style="margin-bottom: 30px"/>
+                                                    <p style="font-family: 'arial', sans-serif; font-size: 16px; font-weight: 400; margin: 0">
+                                                    L’équipe XPOLAND vous remercie pour votre confiance.
+                                                    </p>
+                                                    <p></p>
+                                                    <p style="font-family: 'arial', sans-serif; font-size: 16px; font-weight: 400; margin: 0">
+                                                    Si vous avez des questions, notre service client est à votre disposition
+                                                    <strong style="text-align:center;">01.10.20.30.40 - contact@xpoland.com
+                                                    </strong>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                
+                
+                            </body>
+                
+                </html>
+                    `, // html body
+                    });
+                    res.status(200).send({ success: true, message: `E-mail sent successfully.` })
+
+
+
+
+
+                } catch (err) {
+                    res.status(500).send({ success: false, message: `Le mail n'a pa pu être envoyé.` });
+
+                }
+            }
+
+            else {
+                res.status(204).send()
+            }
+        }
+    })
+
+}
+
+exports.resetPassword = function (req, res) {
     User.deleteOne({ '_id': req.params.id }, function (err) {
         if (err) {
             return res.status(403).send(err);
