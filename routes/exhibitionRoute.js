@@ -17,7 +17,7 @@ router.get('/visitors/:offset', jwtHelper.verifyModeratorJwtToken, main_controll
 router.get('/visitorsSheet', jwtHelper.verifyModeratorJwtToken, main_controller.getExhibitionVisitorsSheet);
 router.get('/stands/:exhibitionId', jwtHelper.verifyExhibitionAccessJwtToken, main_controller.getStands);
 router.get('/webinar', jwtHelper.verifyModeratorJwtToken, main_controller.getWebinar);
-router.get('/webinarForVisitor/:id', main_controller.getExhibitionForVisitor);
+router.get('/webinarForVisitor/:id', main_controller.getWebinarForVisitor);
 router.get('/allTest', main_controller.getAll);
 router.get('/getExhibitionForVisitor/:id', main_controller.getExhibitionForVisitor);
 router.get('/getVisitors/:id', main_controller.getVisitors);
