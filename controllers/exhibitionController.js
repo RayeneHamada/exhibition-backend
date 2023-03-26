@@ -441,7 +441,7 @@ exports.updateSponsorCylindre0 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_disc.texture_download_url).then((image) => {
+                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.sponsor_cylinder.texture_download_url_0).then((image) => {
                     ctx.drawImage(image, 0, 0)
                     loadImage(req.file.path).then(async (logo) => {
                         let ratio = logo.width / logo.height;
@@ -463,7 +463,7 @@ exports.updateSponsorCylindre0 = (req, res) => {
                         params = {
                             Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
                             Body: buffer,
-                            Key: exhibition.sponsor_disc.texture_download_url,
+                            Key: exhibition.sponsor_cylinder.texture_download_url_0,
                             ContentType: mime.contentType('image/png'),
                             ACL: "public-read",
                             Metadata: {
@@ -877,7 +877,7 @@ exports.updateSponsorBanner3 = (req, res) => {
                             },
                         }
                         await s3.send(new PutObjectCommand(params));
-                        res.status(200).send({ success: true, message: "Sponsor Banner Custom 0 has been updated successfully" })
+                        res.status(200).send({ success: true, message: "Sponsor Banner Custom 3 has been updated successfully" })
 
                     })
                 }).catch(
@@ -1554,49 +1554,55 @@ exports.updateEntranceCubeScreen01 = (req, res) => {
             else {
                 const canvas = createCanvas(1024, 1024);
                 const ctx = canvas.getContext('2d');
-                loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.cube_screen.texture_download_url).then((image) => {
-                    ctx.drawImage(image, 0, 0)
-                    loadImage(req.file.path).then(async (logo) => {
-                        let ratio = logo.width / logo.height;
-                        if (ratio > 1) {
-                            let hRatio0 = 484.352 / logo.width;
-                            let vShift0 = (301.056 - logo.height * hRatio0) / 2
-                            ctx.drawImage(logo, 529.408, 22.528 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
-                        }
-                        else {
-                            let vRatio0 = 301.056 / logo.height;
-                            let hShift0 = (484.352 - logo.width * vRatio0) / 2
-                            ctx.drawImage(logo, 529.408 + hShift0, 22.528, logo.width * vRatio0, logo.height * vRatio0);
-                        }
-                        ctx.drawImage(image, 0, 0, 0, 0);
-                        const buffer = canvas.toBuffer("image/png");
-                        const etag = calculateEtag(buffer);
-                        params = {
-                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                            Body: buffer,
-                            Key: exhibition.entrance.cube_screen.texture_download_url,
-                            ContentType: mime.contentType('image/png'),
-                            ACL: "public-read",
-                            Metadata: {
-                                ETag: etag,
-                            },
-                        }
-                        await s3.send(new PutObjectCommand(params));
-                        res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
+                try {
+                    loadImage(process.env.AWS_S3_ROOT_PATH + exhibition.entrance.cube_screen.texture_download_url).then((image) => {
+                        ctx.drawImage(image, 0, 0);
+                        loadImage(req.file.path).then(async (logo) => {
+                            let ratio = logo.width / logo.height;
+                            if (ratio > 1) {
+                                let hRatio0 = 484.352 / logo.width;
+                                let vShift0 = (301.056 - logo.height * hRatio0) / 2
+                                ctx.drawImage(logo, 529.408, 22.528 + vShift0, logo.width * hRatio0, logo.height * hRatio0)
+                            }
+                            else {
+                                let vRatio0 = 301.056 / logo.height;
+                                let hShift0 = (484.352 - logo.width * vRatio0) / 2
+                                ctx.drawImage(logo, 529.408 + hShift0, 22.528, logo.width * vRatio0, logo.height * vRatio0);
+                            }
+                            ctx.drawImage(image, 0, 0, 0, 0);
+                            const buffer = canvas.toBuffer("image/png");
+                            const etag = calculateEtag(buffer);
+                            params = {
+                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                                Body: buffer,
+                                Key: exhibition.entrance.cube_screen.texture_download_url,
+                                ContentType: mime.contentType('image/png'),
+                                ACL: "public-read",
+                                Metadata: {
+                                    ETag: etag,
+                                },
+                            }
+                            await s3.send(new PutObjectCommand(params));
+                            res.status(200).send({ success: true, message: "Entrance Cube Screen Custom 1 has been updated successfully" })
 
-                    })
-                }).catch(
-                    (error) => {
-                        res.status(400).json({
-                            error: error
-                        });
-                    }
-                ).finally(
-                    () => {
-                        if (req.file)
-                            fs.rmSync(req.file.path, { recursive: true });
-                    }
-                );
+                        })
+                    }).catch(
+                        (error) => {
+                            console.log(error);
+                            res.status(400).json({
+                                error: error
+                            });
+                        }
+                    ).finally(
+                        () => {
+                            if (req.file)
+                                fs.rmSync(req.file.path, { recursive: true });
+                        }
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+
 
             }
         });
