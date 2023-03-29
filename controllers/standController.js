@@ -1605,11 +1605,11 @@ exports.getMenu = (req, res) => {
 }
 
 exports.getMenuById = (req, res) => {
-    Stand.findOne({ _id: req.params.id }, "menu logo_download_url").
+    Stand.findOne({ _id: req.params.id }, "menu logo_download_url stand_name").
     exec((err, result) => {
         if (!err) {
             if (result.menu) {
-                res.status(200).send({ menu: result.menu, logo: result.logo_download_url });
+                res.status(200).send({ menu: result.menu, logo: result.logo_download_url, stand_name:result.stand_name });
             }
             else {
                 res.status(200).send({ logo: result.logo_download_url });

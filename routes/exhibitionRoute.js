@@ -7,8 +7,8 @@ const videoCloudUpload = require('../config/multerConfig').videoCloudUpload;
 const fileUpload = require('../config/multerConfig').fileCloudUpload;
 
 router.get('/income', jwtHelper.verifyModeratorJwtToken, main_controller.getTotalIncome);
-router.get('/networking/count/:exhibition',  main_controller.getVisitorsForNetworkingCount);
-router.get('/networking/:exhibition/:offset',  main_controller.getVisitorsForNetworking);
+router.get('/networking/count/:exhibition', main_controller.getVisitorsForNetworkingCount);
+router.get('/networking/:exhibition/:offset', main_controller.getVisitorsForNetworking);
 router.get('/visitorsSector', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorSector);
 router.get('/visitorsAge', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorsAge);
 router.get('/visitorsGender', jwtHelper.verifyModeratorJwtToken, main_controller.getVisitorsGender);
@@ -47,6 +47,9 @@ router.post('/entrance/updateEntranceCubeScreen0', [imageUpload.single('image'),
 router.post('/entrance/updateEntranceCubeScreen1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen01);
 router.post('/entrance/updateEntranceCubeScreen2', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen02);
 router.post('/entrance/updateEntranceCubeScreen3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen03);
+
+
+router.delete('/:id', jwtHelper.verifyAdminJwtToken, main_controller.deleteExhibition);
 
 
 

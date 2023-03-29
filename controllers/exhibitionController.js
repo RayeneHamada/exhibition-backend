@@ -1751,3 +1751,9 @@ exports.getVisitorsForNetworkingCount = (req, res) => {
             }
         });
 }
+
+exports.deleteExhibition = (req, res) => {
+    Exhibition.findById(req.params.id,(err,exhibition)=>{
+        console.log(exhibition);
+    })
+}
