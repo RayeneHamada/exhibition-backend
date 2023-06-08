@@ -6,6 +6,7 @@ const imageUpload = require('../config/multerConfig').imageUpload;
 const videoCloudUpload = require('../config/multerConfig').videoCloudUpload;
 const fileUpload = require('../config/multerConfig').fileCloudUpload;
 
+router.get('/myTickets', jwtHelper.verifyModeratorJwtToken, main_controller.getMyTickets);
 router.get('/income', jwtHelper.verifyModeratorJwtToken, main_controller.getTotalIncome);
 router.get('/networking/count/:exhibition', main_controller.getVisitorsForNetworkingCount);
 router.get('/networking/:exhibition/:offset', main_controller.getVisitorsForNetworking);
@@ -24,8 +25,11 @@ router.get('/getVisitors/:id', main_controller.getVisitors);
 router.get('/:id', main_controller.getExhibitionById);
 router.get('/entrance/:id', main_controller.getEntrance);
 
+router.post('/updateMyTickets', jwtHelper.verifyModeratorJwtToken, main_controller.updateMyTickets);
 router.post('/webinar', [videoCloudUpload.single('webinar'), jwtHelper.verifyModeratorJwtToken], main_controller.updateWebinar);
 router.post('/webinar/videos/new', [fileUpload.fields([{ name: 'thumb' }, { name: 'webinar' }]), jwtHelper.verifyModeratorJwtToken], main_controller.addWebniarVideo);
+router.put('/webinar/videos/update', [fileUpload.single('thumb'), jwtHelper.verifyModeratorJwtToken], main_controller.updateWebniarVideo);
+router.delete('/webinar/videos/:id', jwtHelper.verifyModeratorJwtToken, main_controller.deleteWebinarVideo);
 router.post('/update', jwtHelper.verifyModeratorJwtToken, main_controller.updateExhbition);
 router.post('/updateSponsorDiscCustom0', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom0);
 router.post('/updateSponsorDiscCustom1', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateSponsorDiscCustom1);
@@ -49,7 +53,7 @@ router.post('/entrance/updateEntranceCubeScreen2', [imageUpload.single('image'),
 router.post('/entrance/updateEntranceCubeScreen3', [imageUpload.single('image'), jwtHelper.verifyModeratorJwtToken], main_controller.updateEntranceCubeScreen03);
 
 
-router.delete('/:id', jwtHelper.verifyAdminJwtToken, main_controller.deleteExhibition);
+router.delete('/:exhibitionId', jwtHelper.verifyAdminJwtToken, main_controller.deleteExhibition);
 
 
 

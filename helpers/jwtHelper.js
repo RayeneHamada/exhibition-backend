@@ -12,10 +12,14 @@ module.exports.verifyJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     req._id = decoded._id;
                     next();
@@ -36,10 +40,14 @@ module.exports.verifyAdminJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     if (decoded.role != 'admin') {
                         return res.status(403).send({ auth: false, message: 'You should respect users privacy' });
@@ -67,10 +75,14 @@ module.exports.verifyModeratorJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     if (decoded.role != 'moderator') {
                         return res.status(403).send({ auth: false, message: 'You should respect users privacy' });
@@ -99,10 +111,14 @@ module.exports.verifyExponentJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     if (decoded.role != 'exponent') {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
@@ -133,10 +149,14 @@ module.exports.verifyVisitorJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     if (decoded.role != 'visitor') {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
@@ -167,10 +187,14 @@ module.exports.verifyStandAccessJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     if (!standAccessUsers.includes(decoded.role)) {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
@@ -201,10 +225,14 @@ module.exports.verifyExhibitionAccessJwtToken = (req, res, next) => {
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
                     if (!exhibitionAccessUsers.includes(decoded.role)) {
                         return res.status(403).send({ auth: false, message: 'Permission Denied' });
@@ -230,17 +258,19 @@ module.exports.verifyPasswordResetJwtToken = (req, res, next) => {
     if ('authorization' in req.headers) {
         token = req.headers['authorization'].split(' ')[1];
     }
-
-
     if (!token)
         return res.status(403).send({ auth: false, message: 'No token provided.' });
     else {
-        jwt.verify(token, process.env.JWT_SECRET,
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,
             (err, decoded) => {
-                if (err)
-                    return res.status(500).send({ auth: false, message: 'Token authentication failed.' });
+                if (err) {
+                    if (err.name === 'TokenExpiredError')
+                        return res.status(401).send({ auth: false, message: 'Token Expired.' });
+                    else
+                        return res.status(500).send({ auth: false, message: 'Token authentication failed.', error: err });
+                }
                 else {
-                    req._id = decoded.id;
+                    req._id = decoded._id;
                     next();
 
                 }

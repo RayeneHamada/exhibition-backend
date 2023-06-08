@@ -8,13 +8,14 @@ const fileCloudUpload = require('../config/multerConfig').fileCloudUpload;
 const logoCloudUpload = require('../config/multerConfig').logoCloudUpload;
 
 router.get('/menu', jwtHelper.verifyExponentJwtToken, main_controller.getMenu);
+router.get('/brochure', jwtHelper.verifyExponentJwtToken, main_controller.getBrochure);
 router.get('/getStandVisitors/:offset',jwtHelper.verifyExponentJwtToken,main_controller.getStandVisitors);
 router.get('/getStandVisitorsSheet',jwtHelper.verifyExponentJwtToken,main_controller.getStandVisitorsSheet);
 router.get('/myStand', jwtHelper.verifyExponentJwtToken,main_controller.myStand);
 router.get('/:id',main_controller.getStandById);
 router.get('/menu/:id',  main_controller.getMenuById);
 router.post('/updateLogo',[logoCloudUpload.single('logo'),jwtHelper.verifyExponentJwtToken], main_controller.updateLogo);
-router.post('/updatePDF',[fileCloudUpload.single('pdf'),jwtHelper.verifyExponentJwtToken], main_controller.updatePDF);
+router.post('/updateBrochure',[fileCloudUpload.single('pdf'),jwtHelper.verifyExponentJwtToken], main_controller.updateBrochure);
 router.post('/updateFurnitureColor',jwtHelper.verifyExponentJwtToken, main_controller.updateFurnitureColor);
 //router.post('/updateBackgroundColor',jwtHelper.verifyExponentJwtToken, main_controller.updateBackgroundColor);
 router.post('/updateTvMedia',jwtHelper.verifyExponentJwtToken, main_controller.updateTvMedia);

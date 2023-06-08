@@ -6,11 +6,15 @@ var ticketSchema = new Schema({
 
     visitor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users"
+        ref: "Visitors"
     },
     exhibition: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Exhibitions"
+    },
+    // Amount payed no matter if the price of the ticket has changed or not
+    price:{
+        type:Number
     },
     sharedata: {
         type: Boolean

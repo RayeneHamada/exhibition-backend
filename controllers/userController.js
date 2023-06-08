@@ -1,10 +1,14 @@
+const { throws } = require('assert');
+
 require('dotenv').config();
 const mongoose = require('mongoose'),
+    bcrypt = require('bcrypt'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     Stand = mongoose.model("Stands"),
     Ticket = mongoose.model("Tickets"),
     passport = require('passport'),
+    jwt = require('jsonwebtoken'),
     _ = require('lodash'),
     nodemailer = require("nodemailer"),
     fs = require('fs'),
@@ -19,7 +23,9 @@ const mongoose = require('mongoose'),
             secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
         },
         region: process.env.AWS_S3_REGION
-    });
+    }),
+    { convertToKebabCase } = require('../helpers/urlHelper');
+
 
 var texture = { "XL": "stand_main_albedo.png", "LL": "stand_left_albedo.png", "LR": "stand_right_albedo.png", "M": "stand_medium_albedo.png", "S": "stand_small_albedo.png" };
 var banners = { "XL": ["stand_main_top_01_albedo.png", "stand_main_top_02_albedo.png", "stand_main_top_03_albedo.png", "stand_main_top_04_albedo.png"], "LR": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "LL": ["stand_lr_top_01_albedo.png", "stand_lr_top_02_albedo.png", "stand_lr_top_03_albedo.png"], "M": ["stand_medium_top_01_albedo.png", "stand_medium_top_02_albedo.png"] };
@@ -62,14 +68,29 @@ exports.signup = function (req, res, next) {
 
 exports.authenticate = (req, res, next) => {
     // call for passport authentication
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('user', (err, user, info) => {
         // error from passport middleware
         if (err) return res.status(400).json(err);
         // registered user
-        else if (user) return res.status(200).json({ "token": user.generateJwt() });
+        else if (user) return res.status(200).json({ "token": user.generateJwt(), refreshToken: user.generateRefreshToken() });
         // unknown user or wrong password
         else return res.status(404).json(info);
     })(req, res, next);
+}
+
+exports.refreshToken = async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+        return res.status(401).send({ success: false, message: 'Refresh token not found' });
+    }
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const user = await User.findById(decoded._id);
+        const accessToken = jwt.sign({ _id: user._id, role: user.role, profilePicture: user.profile_image, firstName: user.firstName, lastName: user.lastName, email: user.email, exponent_exhibition: user.exponent.exhibition, moderator_exhibition: user.moderator.exhibition, stand: user.exponent.stand }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXP });
+        res.status(200).send({ success: true, token: accessToken });
+    } catch (err) {
+        res.status(401).json({ error: 'Invalid refresh token' });
+    }
 }
 
 exports.createModerator = async (req, res, next) => {
@@ -82,6 +103,7 @@ exports.createModerator = async (req, res, next) => {
     user.save(async (err, userDoc) => {
         if (!err) {
             var exhibition = new Exhibition(req.body.exhibition);
+            exhibition.shared_url = convertToKebabCase(exhibition.event_name);
             exhibition.moderator = userDoc._id;
             if (req.body.exhibition.sponsor_disc)
                 exhibition.sponsor_disc.texture_download_url = "disc_" + userDoc._id + ".png";
@@ -103,7 +125,11 @@ exports.createModerator = async (req, res, next) => {
 
             exhibition.save(async (err2, exhibitionDoc) => {
                 if (err2) {
-                    res.status(400).send({ success: false, message: err2 });
+                    await User.deleteOne({ _id: userDoc._id }).exec();
+                    if (err2.code == 11000)
+                        res.status(422).json({ success: false, message: 'Duplicate event name found.' });
+                    else
+                        res.status(400).send({ success: false, message: err2 });
                 }
                 else {
                     let transporter = nodemailer.createTransport({
@@ -805,7 +831,7 @@ exports.requestPasswordReset = (req, res) => {
                                             <tr>
                                                 <td colspan="2" style=" padding: 0 70px;/*background-color: #f8a44b;*/ text-align: center;">
                                                     <p style="font-family: 'arial', sans-serif; font-size: 16px; font-weight: 400; line-height: 22px">
-                                                        <a href="http://localhost:3000/reset-password-request/${token}" target="_blank" style="text-decoration:none;background: #5d33ce;color: #fff;font-size: 14px;padding:17px;text-transform: uppercase;-webkit-border-radius: 30px;-moz-border-radius: 30px;-o-border-radius: 30px;-ms-border-radius: 30px;border-radius: 30px;line-height: 1.2;white-space: normal;width: 170px;border: 1px solid transparent;font-weight: 500;">Changer votre mot de passe</a>
+                                                        <a href="${process.env.REACT_APP_API_URL + 'reset-password/' + token}" target="_blank" style="text-decoration:none;background: #5d33ce;color: #fff;font-size: 14px;padding:17px;text-transform: uppercase;-webkit-border-radius: 30px;-moz-border-radius: 30px;-o-border-radius: 30px;-ms-border-radius: 30px;border-radius: 30px;line-height: 1.2;white-space: normal;width: 170px;border: 1px solid transparent;font-weight: 500;">Changer votre mot de passe</a>
                                                     </p>
                                                 </td>
                                             </tr>
@@ -850,24 +876,41 @@ exports.requestPasswordReset = (req, res) => {
             }
 
             else {
-                res.status(204).send()
+                res.status(404).send({ success: true, message: 'no user found' })
             }
         }
     })
 
 }
 
-exports.resetPassword = function (req, res) {
-    User.deleteOne({ '_id': req.params.id }, function (err) {
-        if (err) {
-            return res.status(403).send(err);
+exports.resetPassword = async (req, res) => {
+    try {
+        const password = req.body.password;
+        const user = await User.findById(req._id);
+        if (user) {
+            bcrypt.genSalt(10, (err, salt) => {
+                if (err) throw err;
+                bcrypt.hash(password, salt, (err, hash) => {
+                    if (err) throw err;
+                    User.findOneAndUpdate(
+                        { _id: req._id },
+                        { password: hash, saltSecret: salt }
+                    )
+                        .then(() =>
+                            res.status(202).send({
+                                success: true,
+                                message: 'Password changed successfully.',
+                            })
+                        )
+                        .catch((err) => {
+                            throw err;
+                        });
+                });
+            });
+        } else {
+            res.status(404).send({ success: false, message: 'User not found' });
         }
-        else {
-
-            Panel.deleteMany({ 'owner': req.params.id }, (err) => {
-                if (err) { return res.status(403).send(err); }
-                else { return res.status(200).send('User deleted successfuly'); }
-            })
-        }
-    })
-}
+    } catch (err) {
+        res.status(500).send({ success: false, message: err });
+    }
+};

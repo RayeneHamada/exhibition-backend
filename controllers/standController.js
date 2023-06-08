@@ -74,7 +74,7 @@ exports.updateLogo = (req, res) => {
         });
 }
 
-exports.updatePDF = (req, res) => {
+exports.updateBrochure = (req, res) => {
     Stand.findOne({ _id: req.stand },
         async (err, stand) => {
             if (!stand)
@@ -88,11 +88,12 @@ exports.updatePDF = (req, res) => {
                     }
                     await s3.send(new DeleteObjectCommand(params));
                 }
-                stand.menu.pdf_download_url = req.file.filename;
+                stand.menu.pdf_download_url = req.file.key;
                 Stand.updateOne({ _id: stand._id }, stand).then(
                     () => {
                         res.status(201).json({
-                            message: 'pdf updated successfully!'
+                            message: 'pdf updated successfully!',
+                            data: req.file.key
                         });
                     }
                 ).catch(
@@ -858,7 +859,7 @@ exports.updateCustom3 = (req, res) => {
                         ctx.drawImage(image, 0, 0)
                         loadImage(req.file.path).then(async (logo) => {
                             let ratio = logo.width / logo.height;
-                            
+
                             if (ratio > 1) {
                                 //Drawing the logo un Custom Area 3
                                 let hRatio3 = 232.448 / logo.width;
@@ -1604,22 +1605,40 @@ exports.getMenu = (req, res) => {
         });
 }
 
-exports.getMenuById = (req, res) => {
-    Stand.findOne({ _id: req.params.id }, "menu logo_download_url stand_name").
-    exec((err, result) => {
-        if (!err) {
-            if (result.menu) {
-                res.status(200).send({ menu: result.menu, logo: result.logo_download_url, stand_name:result.stand_name });
+exports.getBrochure = (req, res) => {
+    Stand.findOne({ _id: req.stand }, "menu.pdf_download_url").
+        exec((err, result) => {
+            if (!err) {
+                if (result.menu) {
+                    res.status(200).send({ data: result.menu.pdf_download_url });
+                }
+                else {
+                    res.status(204).send();
+
+                }
             }
             else {
-                res.status(200).send({ logo: result.logo_download_url });
-
+                res.status(400).send({ success: false, message: err });
             }
-        }
-        else {
-            res.status(400).send({ success: false, message: err });
-        }
-    });
+        });
+}
+
+exports.getMenuById = (req, res) => {
+    Stand.findOne({ _id: req.params.id }, "menu logo_download_url stand_name").
+        exec((err, result) => {
+            if (!err) {
+                if (result.menu) {
+                    res.status(200).send({ menu: result.menu, logo: result.logo_download_url, stand_name: result.stand_name });
+                }
+                else {
+                    res.status(200).send({ logo: result.logo_download_url });
+
+                }
+            }
+            else {
+                res.status(400).send({ success: false, message: err });
+            }
+        });
 }
 
 exports.updateMenu = (req, res) => {
@@ -1781,7 +1800,7 @@ exports.getStandVisitorsSheet = (req, res) => {
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Liste_des_visiteurs');
                     file = XLSX.write(wb, { type: "buffer", bookType: "xls" })
-                    res.writeHead(200, { 'content-type': 'application/vnd.ms-excel','content-disposition': 'attachment' });
+                    res.writeHead(200, { 'content-type': 'application/vnd.ms-excel', 'content-disposition': 'attachment' });
                     res.write(file);
                     res.end();
                 }

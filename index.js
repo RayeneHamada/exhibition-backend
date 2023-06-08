@@ -3,6 +3,7 @@ require('dotenv').config();
 require('./models/userModel');
 require('./models/exhibitionModel');
 require('./models/standModel');
+require('./models/visitorModel');
 require('./models/standLogModel');
 require('./models/exhibitionLogModel');
 require('./models/ticketModel');
@@ -31,6 +32,7 @@ const userRoute = require('./routes/userRoute');
 const exhibitionRoute = require('./routes/exhibitionRoute');
 const standRoute = require('./routes/standRoute');
 const standLogRoute = require('./routes/standLogRoute');
+const visitorRoute = require('./routes/visitorRoute');
 const exhibitionLogRoute = require('./routes/exhibitionLogRoute');
 const stripeRoute = require('./routes/stripeRoute');
 
@@ -42,6 +44,7 @@ app.use('/stand', standRoute);
 app.use('/stats', standLogRoute);
 app.use('/exhibition/stats', exhibitionLogRoute);
 app.use('/stripe', stripeRoute);
+app.use('/visitor', visitorRoute);
 
 
 app.use('/public',express.static(path.join(__dirname, 'public')));

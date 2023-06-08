@@ -2,14 +2,15 @@ const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     Ticket = mongoose.model('Tickets'),
-    replaceColor = require('replace-color'),
+    Stand = mongoose.model('Stands'),
+    StandLog = mongoose.model('StandLogs'),
     ObjectId = require('mongoose').Types.ObjectId,
     XLSX = require('xlsx'),
     { createCanvas, loadImage } = require('canvas'),
     fs = require('fs'),
     mime = require('mime-types'),
     crypto = require('crypto'),
-    { PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'),
+    { PutObjectCommand, DeleteObjectCommand, DeleteObjectsCommand } = require('@aws-sdk/client-s3'),
     { S3Client } = require('@aws-sdk/client-s3'),
     s3 = new S3Client({
         credentials: {
@@ -120,7 +121,7 @@ exports.getExhibitionForVisitor = function (req, res) {
                     res.status(200).send(result);
                 }
                 else {
-                    res.status(200).send([]);
+                    res.status(404).send({success:true,message:'Exhibition not found.'});
 
                 }
             }
@@ -922,10 +923,11 @@ exports.updateWebinar = (req, res) => {
 
 exports.addWebniarVideo = (req, res) => {
     const webinarVideo = {
-        thumbnail_download_url: req.files.thumb[0].key,
         video_download_url: req.files.webinar[0].key,
-        video_title: req.body.video_title
+        video_title: req.body.video_title,
+        video_description: req.body.video_description
     }
+    if (req.files.thumb) webinarVideo.thumbnail_download_url = req.files.thumb[0].key
     Exhibition.updateOne({ _id: req.exhibition }, { $push: { "webinar.videos": webinarVideo } }).then(
         () => {
             res.status(201).json({ success: true, data: webinarVideo });
@@ -939,10 +941,105 @@ exports.addWebniarVideo = (req, res) => {
     );
 }
 
+exports.updateWebniarVideo = (req, res) => {
+    const webinarId = req.exhibition;
+    const videoId = req.body.videoId;
+    const updatedTitle = req.body.video_title;
+    const updatedDescription = req.body.video_description;
+    var updatedThumbnailUrl = null;
+    if (req.file) updatedThumbnailUrl = req.file.key;
+
+    Exhibition.findOne({ _id: webinarId, "webinar.videos._id": videoId }, async (err, doc) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        } else if (!doc) {
+            res.status(404).send("Webinar video not found");
+        } else {
+            const video = doc.webinar.videos.find(v => v._id.toString() === videoId);
+            if (!video) {
+                res.status(404).send("Webinar video not found");
+            } else {
+                video.video_title = updatedTitle;
+                video.video_description = updatedDescription;
+                if (video.thumbnail_download_url && updatedThumbnailUrl) {
+                    params = {
+                        Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                        Key: video.thumbnail_download_url,
+
+                    }
+                    await s3.send(new DeleteObjectCommand(params));
+                }
+                if (updatedThumbnailUrl) {
+                    video.thumbnail_download_url = updatedThumbnailUrl;
+                }
+
+                doc.save(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send(err);
+                    } else {
+                        res.status(200).send(result);
+                    }
+                });
+            }
+        }
+    });
+
+}
+
+exports.deleteWebinarVideo = async (req, res) => {
+    const exhibitionId = req.exhibition;
+    const videoId = req.params.id;
+
+    try {
+        const exhibition = await Exhibition.findById(exhibitionId);
+        if (!exhibition) {
+            return res.status(404).send("Exhibition not found");
+        }
+
+        const webinar = exhibition.webinar;
+        const videoIndex = webinar.videos.findIndex(video => video._id.toString() === videoId);
+        if (videoIndex === -1) {
+            return res.status(404).send("Webinar video not found");
+        }
+
+        const video = webinar.videos[videoIndex];
+        const deletedVideo = webinar.videos.splice(videoIndex, 1)[0];
+        await exhibition.save();
+
+        const videoDownloadKey = video.video_download_url;
+        const thumbnailDownloadKey = video.thumbnail_download_url;
+
+        const standFilesToDelete = [{ Key: videoDownloadKey }];
+        if (thumbnailDownloadKey) {
+            standFilesToDelete.push({ Key: thumbnailDownloadKey });
+        }
+
+        const params = {
+            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+            Delete: {
+                Objects: standFilesToDelete,
+                Quiet: true
+            }
+        };
+
+        await s3.send(new DeleteObjectsCommand(params));
+
+        res.status(200).send({ success: true, message: 'Deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+};
+
 exports.getWebinar = (req, res) => {
     Exhibition.findOne({ _id: req.exhibition }, (err, exhibition) => {
         if (!err) {
-            res.status(200).send({ success: true, data: exhibition.webinar });
+            if (exhibition)
+                res.status(200).send({ success: true, data: exhibition.webinar });
+            else
+                res.status(204).send();
         }
         else {
             res.status(400).send({ success: false });
@@ -1739,6 +1836,7 @@ exports.getVisitorsForNetworking = (req, res) => {
         });
 }
 
+// Usefull to set the pagination system in the event gameplay
 exports.getVisitorsForNetworkingCount = (req, res) => {
     Ticket.count({ exhibition: req.params.exhibition, sharedata: true }).
         exec((err, result) => {
@@ -1752,8 +1850,114 @@ exports.getVisitorsForNetworkingCount = (req, res) => {
         });
 }
 
-exports.deleteExhibition = (req, res) => {
-    Exhibition.findById(req.params.id,(err,exhibition)=>{
-        console.log(exhibition);
+exports.deleteExhibition = async (req, res) => {
+    try {
+        const { exhibitionId } = req.params;
+        const { AWS_S3_TEXTURE_BUCKET } = process.env;
+
+        const result = await Exhibition.findOne({ _id: exhibitionId }).populate({ path: 'stands' }).exec();
+
+        if (!result) {
+            res.status(203).send();
+            return;
+        }
+
+        const standsToDelete = [];
+        const standFilesToDelete = [];
+
+        result.stands.forEach((stand) => {
+            const { _id, tv, banner, menu, texture_download_url, logo_download_url } = stand;
+            standsToDelete.push(_id);
+            if (tv?.media_download_url) standFilesToDelete.push({ Key: tv.media_download_url });
+            if (banner?.texture_download_url) standFilesToDelete.push({ Key: banner.texture_download_url });
+            if (menu?.pdf_download_url) standFilesToDelete.push({ Key: menu.pdf_download_url });
+            if (texture_download_url) standFilesToDelete.push({ Key: texture_download_url });
+            if (logo_download_url) standFilesToDelete.push({ Key: logo_download_url });
+        });
+
+        if (standFilesToDelete.length > 0) {
+            const params = {
+                Bucket: AWS_S3_TEXTURE_BUCKET,
+                Delete: { Objects: standFilesToDelete, Quiet: true }
+            };
+
+            await s3.send(new DeleteObjectsCommand(params));
+        }
+
+        await Stand.deleteMany({ _id: { $in: standsToDelete } }).exec();
+        await User.deleteMany({ 'exponent.exhibition': exhibitionId }).exec();
+        await StandLog.deleteMany({ stand: { $in: standsToDelete } }).exec();
+
+        const exhibitionFilesToDelete = [];
+        const { display_screen, sponsor_disc, sponsor_cylinder, sponsor_banners, entrance, webinar } = result;
+        console.log(webinar);
+        if (display_screen?.purchased) exhibitionFilesToDelete.push({ Key: display_screen.media_download_url });
+        if (sponsor_disc?.purchased) exhibitionFilesToDelete.push({ Key: sponsor_disc.texture_download_url });
+        if (sponsor_cylinder?.purchased) exhibitionFilesToDelete.push({ Key: sponsor_cylinder.texture_download_url_0 }, { Key: sponsor_cylinder.texture_download_url_1 }, { Key: sponsor_cylinder.texture_download_url_2 }, { Key: sponsor_cylinder.texture_download_url_3 });
+        if (sponsor_banners?.purchased) exhibitionFilesToDelete.push({ Key: sponsor_banners.texture_download_url_0 }, { Key: sponsor_cylinder.texture_download_url_1 }, { Key: sponsor_cylinder.texture_download_url_2 }, { Key: sponsor_cylinder.texture_download_url_3 });
+        if (entrance?.sponsor_banners) exhibitionFilesToDelete.push({ Key: entrance.sponsor_banners.texture_download_url_0 }, { Key: entrance.sponsor_banners.texture_download_url_1 });
+        if (entrance?.cube_screen) exhibitionFilesToDelete.push({ Key: entrance.cube_screen.texture_download_url });
+        if (webinar?.videos?.length) {
+            webinar.video.forEach(video => {
+                exhibitionFilesToDelete.push({ Key: video.video_download_url });
+                if (video?.thumbnail_download_url)
+                    exhibitionFilesToDelete.push({ Key: video.thumbnail_download_url });
+
+            })
+        }
+        if (exhibitionFilesToDelete.length > 0) {
+            const params = {
+                Bucket: AWS_S3_TEXTURE_BUCKET,
+                Delete: { Objects: exhibitionFilesToDelete, Quiet: true }
+            };
+
+            await s3.send(new DeleteObjectsCommand(params));
+        }
+
+        await User.deleteOne({ 'moderator.exhibition': exhibitionId }).exec();
+        await Exhibition.deleteOne({ _id: exhibitionId }).exec();
+
+        res.status(200).send({ success: true, message: 'stands deleted successfully.' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ success: false, message: err });
+    }
+};
+
+
+// Returns tickets details 
+exports.getMyTickets = (req, res) => {
+    Exhibition.findById(req.exhibition, 'is_free ticket_price', (err, data) => {
+        if (err)
+            res.status(400).send({ success: false, messge: err });
+        else {
+            res.status(200).send({ success: true, data: data });
+        }
     })
 }
+
+// Update tickets details (switch is_paied on and off and sets the ticket price)
+exports.updateMyTickets = (req, res) => {
+    Exhibition.findById(req.exhibition, (err, exhibition) => {
+        if (err)
+            res.status(400).send({ success: false, messge: err });
+        else {
+            if (!req.body.is_free) {
+                exhibition.ticket_price = req.body.ticket_price
+            }
+            else {
+                exhibition.ticket_price = 0
+            }
+            exhibition.is_free = req.body.is_free;
+            Exhibition.updateOne({ _id: req.exhibition }, exhibition, (err, data) => {
+                if (err) {
+                    res.status(400).send({ success: false, message: err })
+                }
+                else {
+                    res.status(200).send({ success: true, message: "Updated successfuly." })
+                }
+            })
+        }
+    })
+}
+

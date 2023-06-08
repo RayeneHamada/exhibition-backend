@@ -95,7 +95,7 @@ var userSchema = new mongoose.Schema({
     },
     exhibition: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Users"
+      ref: "Exhibitions"
     }
   }
 
@@ -120,7 +120,7 @@ userSchema.pre('save', function (next) {
   })
 
 });
-
+/*
 userSchema.post('findOneAndUpdate', function (doc, next) {
   let query = this.getUpdate();
   if (query['$set']) {
@@ -145,7 +145,7 @@ userSchema.post('findOneAndUpdate', function (doc, next) {
 
 
 });
-
+*/
 
 //methods
 
@@ -156,13 +156,20 @@ userSchema.methods.verifyPassword = function (password) {
 
 userSchema.methods.generateJwt = function () {
   return jwt.sign({ _id: this._id, role: this.role, profilePicture: this.profile_image, firstName: this.firstName, lastName: this.lastName, email: this.email, exponent_exhibition: this.exponent.exhibition, moderator_exhibition: this.moderator.exhibition, stand: this.exponent.stand },
-    process.env.JWT_SECRET,
+    process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: process.env.JWT_EXP
+      expiresIn: process.env.ACCESS_TOKEN_EXP
+    });
+}
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign({ _id: this._id },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXP
     });
 }
 userSchema.methods.usePasswordHashToMakeToken = function () {
-  const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ _id: this._id }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: 36000 // 1 hour
   })
   return token

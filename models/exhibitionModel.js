@@ -6,13 +6,20 @@ var Schema = mongoose.Schema;
 var exhibitionSchema = new Schema({
     event_name: {
         type: String,
+        required: true,
+    },
+    shared_url: {
+        type: String,
+        unique: true,
         required: true
     },
     exhibition_start_date: {
         type: Date,
+        required: true
     },
     exhibition_end_date: {
         type: Date,
+        required: true
     },
     hall_type: {
         type: String,
@@ -26,6 +33,7 @@ var exhibitionSchema = new Schema({
         type: Date,
         default: Date.now
     },
+
     moderator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users"
@@ -82,7 +90,8 @@ var exhibitionSchema = new Schema({
             {
                 thumbnail_download_url: String,
                 video_download_url: String,
-                video_title: String
+                video_title: String,
+                video_description: String
             }
         ]
     },
@@ -95,7 +104,13 @@ var exhibitionSchema = new Schema({
     visitors: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Users"
+            ref: "Visitors"
+        }
+    ],
+    tickets: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Tickets"
         }
     ],
     is_free: {
@@ -107,6 +122,18 @@ var exhibitionSchema = new Schema({
     }
 
 });
+
+exhibitionSchema.index({ shared_url: 1 }, { unique: true });
+
+exhibitionSchema.pre('deleteOne', async function (next) {
+    try {
+        console.log('yo');
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
 // Export Exhibition model
 var Exhibition = module.exports = mongoose.model('Exhibitions', exhibitionSchema);
 exports.exhibitionSchema = exhibitionSchema;

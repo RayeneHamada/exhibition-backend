@@ -96,11 +96,14 @@ var standSchema = new Schema({
   pdf_uploaded: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Users"
+      ref: "Visitors"
     }
   ]
 
 });
+
+
+
 var Stand = module.exports = mongoose.model('Stands', standSchema);
 var StandSchema = module.exports = standSchema;
 
