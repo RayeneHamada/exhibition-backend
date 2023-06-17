@@ -135,7 +135,7 @@ exports.createModerator = async (req, res, next) => {
                     let transporter = nodemailer.createTransport({
                         host: process.env.NODE_MAILER_HOST,
                         port: process.env.NODE_MAILER_PORT,
-                        secure: true,
+                        secure: process.env.NODE_MAILER_SECURE,
                         auth: {
                             user: process.env.NODE_MAILER_EMAIL,
                             pass: process.env.NODE_MAILER_PASSWORD,
@@ -360,7 +360,7 @@ exports.createExponent = async (req, res) => {
                     let transporter = nodemailer.createTransport({
                         host: process.env.NODE_MAILER_HOST,
                         port: process.env.NODE_MAILER_PORT,
-                        secure: true,
+                        secure: process.env.NODE_MAILER_SECURE,
                         auth: {
                             user: process.env.NODE_MAILER_EMAIL,
                             pass: process.env.NODE_MAILER_PASSWORD,
@@ -559,7 +559,7 @@ exports.participateFreely = (req, res) => {
                                                 let transporter = nodemailer.createTransport({
                                                     host: process.env.NODE_MAILER_HOST,
                                                     port: process.env.NODE_MAILER_PORT,
-                                                    secure: true,
+                                                    secure: process.env.NODE_MAILER_SECURE,
                                                     auth: {
                                                         user: process.env.NODE_MAILER_EMAIL,
                                                         pass: process.env.NODE_MAILER_PASSWORD,
@@ -638,7 +638,7 @@ exports.participateFreely = (req, res) => {
                                                 let transporter = nodemailer.createTransport({
                                                     host: process.env.NODE_MAILER_HOST,
                                                     port: process.env.NODE_MAILER_PORT,
-                                                    secure: true,
+                                                    secure: process.env.NODE_MAILER_SECURE,
                                                     auth: {
                                                         user: process.env.NODE_MAILER_EMAIL,
                                                         pass: process.env.NODE_MAILER_PASSWORD,
@@ -796,7 +796,7 @@ exports.requestPasswordReset = (req, res) => {
                 const transporter = nodemailer.createTransport({
                     host: process.env.NODE_MAILER_HOST,
                     port: process.env.NODE_MAILER_PORT,
-                    secure: true,
+                    secure: process.env.NODE_MAILER_SECURE,
                     auth: {
                         user: process.env.NODE_MAILER_EMAIL,
                         pass: process.env.NODE_MAILER_PASSWORD,
