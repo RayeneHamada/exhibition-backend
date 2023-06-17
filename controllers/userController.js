@@ -133,7 +133,9 @@ exports.createModerator = async (req, res, next) => {
                 }
                 else {
                     let transporter = nodemailer.createTransport({
-                        service: "gmail",
+                        host: process.env.NODE_MAILER_HOST,
+                        port: process.env.NODE_MAILER_PORT,
+                        secure: true,
                         auth: {
                             user: process.env.NODE_MAILER_EMAIL,
                             pass: process.env.NODE_MAILER_PASSWORD,
@@ -356,7 +358,9 @@ exports.createExponent = async (req, res) => {
                 }
                 else {
                     let transporter = nodemailer.createTransport({
-                        service: "gmail",
+                        host: process.env.NODE_MAILER_HOST,
+                        port: process.env.NODE_MAILER_PORT,
+                        secure: true,
                         auth: {
                             user: process.env.NODE_MAILER_EMAIL,
                             pass: process.env.NODE_MAILER_PASSWORD,
@@ -553,7 +557,9 @@ exports.participateFreely = (req, res) => {
                                                     }
 
                                                 let transporter = nodemailer.createTransport({
-                                                    service: "gmail",
+                                                    host: process.env.NODE_MAILER_HOST,
+                                                    port: process.env.NODE_MAILER_PORT,
+                                                    secure: true,
                                                     auth: {
                                                         user: process.env.NODE_MAILER_EMAIL,
                                                         pass: process.env.NODE_MAILER_PASSWORD,
@@ -630,7 +636,9 @@ exports.participateFreely = (req, res) => {
                                                     }
 
                                                 let transporter = nodemailer.createTransport({
-                                                    service: "gmail",
+                                                    host: process.env.NODE_MAILER_HOST,
+                                                    port: process.env.NODE_MAILER_PORT,
+                                                    secure: true,
                                                     auth: {
                                                         user: process.env.NODE_MAILER_EMAIL,
                                                         pass: process.env.NODE_MAILER_PASSWORD,
@@ -786,7 +794,9 @@ exports.requestPasswordReset = (req, res) => {
             if (user) {
                 const token = user.usePasswordHashToMakeToken();
                 const transporter = nodemailer.createTransport({
-                    service: "gmail",
+                    host: process.env.NODE_MAILER_HOST,
+                    port: process.env.NODE_MAILER_PORT,
+                    secure: true,
                     auth: {
                         user: process.env.NODE_MAILER_EMAIL,
                         pass: process.env.NODE_MAILER_PASSWORD,
