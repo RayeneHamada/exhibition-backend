@@ -1890,7 +1890,6 @@ exports.deleteExhibition = async (req, res) => {
 
         const exhibitionFilesToDelete = [];
         const { display_screen, sponsor_disc, sponsor_cylinder, sponsor_banners, entrance, webinar } = result;
-        console.log(webinar);
         if (display_screen?.purchased) exhibitionFilesToDelete.push({ Key: display_screen.media_download_url });
         if (sponsor_disc?.purchased) exhibitionFilesToDelete.push({ Key: sponsor_disc.texture_download_url });
         if (sponsor_cylinder?.purchased) exhibitionFilesToDelete.push({ Key: sponsor_cylinder.texture_download_url_0 }, { Key: sponsor_cylinder.texture_download_url_1 }, { Key: sponsor_cylinder.texture_download_url_2 }, { Key: sponsor_cylinder.texture_download_url_3 });

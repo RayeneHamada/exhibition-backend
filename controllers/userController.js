@@ -333,103 +333,124 @@ exports.createModerator = async (req, res, next) => {
 
 }
 
-exports.createExponent = async (req, res) => {
-    var user = new User(req.body.user);
-    let password;
-    password = Math.random().toString(36).slice(-8);
-    user.password = password;
-    user.role = "exponent";
-    user.exponent.exhibition = req.exhibition;
+exports.createExponent = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    user.save(async (err, userDoc) => {
-        if (!err) {
-            var stand = new Stand(req.body.stand);
-            stand.exponent = userDoc._id;
-            stand.stand_name = userDoc.exponent.company_name;
-            stand.texture_download_url = "texture_" + userDoc._id + ".png";
-            stand.exhibition = req.exhibition
-            if (req.body.stand.banner)
-                stand.banner.texture_download_url = "banner_" + userDoc._id + ".png";
+    try {
+        var user = new User(req.body.user);
+        let password;
+        password = Math.random().toString(36).slice(-8);
+        user.password = password;
+        user.role = 'exponent';
+        user.exponent.exhibition = req.exhibition;
 
+        const userDoc = await user.save({ session });
 
-            stand.save(async (err2, standDoc) => {
-                if (err2) {
-                    res.status(400).send({ success: false, message: err2 });
-                }
-                else {
-                    let transporter = nodemailer.createTransport({
-                        host: process.env.NODE_MAILER_HOST,
-                        port: process.env.NODE_MAILER_PORT,
-                        secure: process.env.NODE_MAILER_SECURE,
-                        auth: {
-                            user: process.env.NODE_MAILER_EMAIL,
-                            pass: process.env.NODE_MAILER_PASSWORD,
-                        },
-                    });
-                    let info = await transporter.sendMail({
-                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
-                        to: userDoc.email, // list of receivers
-                        subject: "Coordonnées d'accces à XPOLAND", // Subject line
-                        html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
-                    });
-                    try {
-                        const fileContent = fs.readFileSync("./ressources/" + texture[standDoc.type]);
-                        const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
-                        params = {
-                            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                            Body: fileContent,
-                            Key: "texture_" + userDoc._id + ".png",
-                            ContentType: mime.contentType('image/png'),
-                            ACL: "public-read",
-                            Metadata: { ETag: eTag }
-                        }
-                        await s3.send(new PutObjectCommand(params));
-                    } catch (err) {
-                        console.log("AWS S3 : " + err);
-                    }
-                    if (req.body.stand.banner) {
-                        try {
-                            const fileContent = fs.readFileSync("./ressources/" + banners[standDoc.type][standDoc.banner.banner_type]);
-                            const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
-                            params = {
-                                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
-                                Body: fileContent,
-                                Key: "banner_" + userDoc._id + ".png",
-                                ContentType: mime.contentType('image/png'),
-                                ACL: "public-read",
-                                Metadata: { ETag: eTag }
-                            }
-                            await s3.send(new PutObjectCommand(params));
-                        } catch (err) {
-                            console.log('AWS S3 : ' + err);
-                        }
-                    }
-                    await User.updateOne({ _id: userDoc._id }, { "exponent.stand": standDoc._id });
-                    Exhibition.updateOne({ _id: req.exhibition }, { $push: { "stands": standDoc._id } }).then(
-                        () => {
-                            res.status(200).json({ success: true, message: "Exponent created successfully." });
-                        }
-                    ).catch(
-                        (error) => {
-                            res.status(400).json({
-                                error: error
-                            });
-                        }
-                    );
+        var stand = new Stand(req.body.stand);
+        stand.exponent = userDoc._id;
+        stand.stand_name = userDoc.exponent.company_name;
+        stand.texture_download_url = 'texture_' + userDoc._id + '.png';
+        stand.exhibition = req.exhibition;
+        if (req.body.stand.banner)
+            stand.banner.texture_download_url = 'banner_' + userDoc._id + '.png';
 
+        const standDoc = await stand.save({ session });
 
-                }
-            })
+        const fileContent = fs.readFileSync('./ressources/' + texture[stand.type]);
+        const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
+        const params = {
+            Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+            Body: fileContent,
+            Key: 'texture_' + userDoc._id + '.png',
+            ContentType: mime.contentType('image/png'),
+            ACL: 'public-read',
+            Metadata: { ETag: eTag },
+        };
 
+        try {
+            await s3.send(new PutObjectCommand(params));
+        } catch (error) {
+            // Handle S3 upload error
+            throw new Error('Failed to upload texture file to S3.');
         }
-        else {
-            if (err.code == 11000)
-                res.status(422).json({ success: false, message: err });
-            else
-                return next(err);
+
+        if (req.body.stand.banner) {
+            const fileContent = fs.readFileSync(
+                './ressources/' + banners[stand.type][stand.banner.banner_type]
+            );
+            const eTag = crypto.createHash('md5').update(fileContent).digest('hex');
+            const params = {
+                Bucket: process.env.AWS_S3_TEXTURE_BUCKET,
+                Body: fileContent,
+                Key: 'banner_' + userDoc._id + '.png',
+                ContentType: mime.contentType('image/png'),
+                ACL: 'public-read',
+                Metadata: { ETag: eTag },
+            };
+
+            try {
+                await s3.send(new PutObjectCommand(params));
+            } catch (error) {
+                // Handle S3 upload error
+                throw new Error('Failed to upload banner file to S3.');
+            }
         }
-    });
-}
+
+        await User.updateOne({ _id: userDoc._id }, { 'exponent.stand': stand._id }).session(session);
+        await Exhibition.updateOne(
+            { _id: req.exhibition },
+            { $push: { stands: stand._id } }
+        ).session(session);
+
+        let transporter = nodemailer.createTransport({
+            host: process.env.NODE_MAILER_HOST,
+            port: process.env.NODE_MAILER_PORT,
+            auth: {
+                user: process.env.NODE_MAILER_EMAIL,
+                pass: process.env.NODE_MAILER_PASSWORD,
+            }
+        });
+        let info;
+        try {
+            info = await transporter.sendMail({
+                from: '"XPOLAND Team" <no-reply@xpoland.com>',
+                to: userDoc.email,
+                subject: "Coordonnées d'accces à XPOLAND",
+                html:
+                    "<h3>Login : </h3><strong>" +
+                    user.email +
+                    '</strong><br/><h3>Password : </h3><strong>' +
+                    password +
+                    "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>",
+            });
+        } catch (error) {
+            // Handle email sending error
+            // Delete uploaded files from S3
+            try {
+                await s3.send(new DeleteObjectCommand({ Bucket: process.env.AWS_S3_TEXTURE_BUCKET, Key: 'texture_' + userDoc._id + '.png' }));
+                if (req.body.stand.banner) {
+                    await s3.send(new DeleteObjectCommand({ Bucket: process.env.AWS_S3_TEXTURE_BUCKET, Key: 'banner_' + userDoc._id + '.png' }));
+                }
+            } catch (deleteError) {
+                // Handle S3 file deletion error
+                console.error('Failed to delete files from S3:', deleteError);
+            }
+
+            throw new Error('Failed to send the email.');
+        }
+
+        await session.commitTransaction();
+        session.endSession();
+
+        res.status(200).json({ success: true, message: 'Exponent created successfully.' });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        next(error);
+    }
+};
+
 
 exports.participate = (req, res) => {
 
