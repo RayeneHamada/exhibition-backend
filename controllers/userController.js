@@ -143,7 +143,7 @@ exports.createModerator = async (req, res, next) => {
                     });
                     try {
                         let info = await transporter.sendMail({
-                            from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
+                            from: 'XPOLAND Team', // sender address
                             to: userDoc.email, // list of receivers
                             subject: "Coordonnées d'accces à XPOLAND", // Subject line
                             html: "<h3>Login : </h3><strong>" + user.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
@@ -588,7 +588,7 @@ exports.participateFreely = (req, res) => {
                                                 });
                                                 try {
                                                     let info = await transporter.sendMail({
-                                                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
+                                                        from: 'XPOLAND Team', // sender address
                                                         to: visitor.email, // list of receivers
                                                         subject: "Coordonnées d'accces à XPOLAND", // Subject line
                                                         html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
@@ -667,7 +667,7 @@ exports.participateFreely = (req, res) => {
                                                 });
                                                 try {
                                                     let info = await transporter.sendMail({
-                                                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
+                                                        from: 'XPOLAND Team', // sender address
                                                         to: visitor.email, // list of receivers
                                                         subject: "Coordonnées d'accces à XPOLAND", // Subject line
                                                         html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
@@ -825,7 +825,7 @@ exports.requestPasswordReset = (req, res) => {
                 });
                 try {
                     const info = await transporter.sendMail({
-                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
+                        from: 'XPOLAND Team', // sender address
                         to: user.email, // list of receivers
                         subject: "Réinitialiser votre mot de passe XPOLAND", // Subject line
                         html: `

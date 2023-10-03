@@ -11,154 +11,97 @@ const mongoose = require('mongoose'),
 
 
 
-exports.participateFreely = (req, res) => {
-    var password;
-    password = Math.random().toString(36).slice(-8);
-    Visitor.findOne({ 'email': req.body.email }, async (err, visitor) => {
-        if (!err) {
-            if (visitor) {
-                if (visitor.exhibitions.find((exhibition) => { return new mongoose.Types.ObjectId(req.body.exhibition).equals(exhibition); }))
-                    res.status(409).send({ success: true, message: 'Visitor already have a ticket for this event.' });
-                else {
-                    var ticket = new Ticket();
-                    ticket.visitor = visitor._id;
-                    ticket.exhibition = req.body.exhibition;
-                    ticket.sharedata = req.body.sharedata;
-                    ticket.save((err, ticketDoc) => {
-                        if (err) {
-                            res.status(400).send({ success: false, message: err });
-                        }
-                        else {
-                            Visitor.findOneAndUpdate({ '_id': visitor._id }, { $set: { password: password }, $push: { "tickets": ticketDoc._id, "exhibitions": ticketDoc.exhibition } }).then(
-                                (err, result) => {
-                                    if (err);
-                                    Exhibition.findOne({ '_id': req.body.exhibition }, async (err, exhibitionDoc) => {
-                                        if (!err) {
-                                            {
-                                                if (exhibitionDoc) {
-                                                    try {
-                                                        await Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": visitor._id, "tickets": ticketDoc._id } })
-                                                    }
-                                                    catch (error) {
-                                                        console.log("Error while adding " + visitor._id + " to exhibition( " + req.body.exhibition + " )");
-                                                    }
+exports.participateFreely = async (req, res) => {
+    try {
+        const password = Math.random().toString(36).slice(-8);
+        const visitorExisting = await Visitor.findOne({ 'email': req.body.email });
 
-                                                    try {
-                                                        let transporter = nodemailer.createTransport({
-                                                            service: "gmail",
-                                                            auth: {
-                                                                user: process.env.NODE_MAILER_EMAIL,
-                                                                pass: process.env.NODE_MAILER_PASSWORD,
-                                                            },
-                                                        });
-                                                        let info = await transporter.sendMail({
-                                                            from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
-                                                            to: visitor.email, // list of receivers
-                                                            subject: "Coordonnées d'accces à XPOLAND", // Subject line
-                                                            html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
-                                                        });
-                                                        res.status(201).send({ success: true, message: 'Visitor added successfully.' });
-                                                    } catch (err) {
-                                                        throw ({ success: false, message: "Error while sending e-mail." });
-                                                    }
-                                                }
-                                                else {
-                                                    res.status(404).send({ "error": "Exhibition not found" })
-                                                }
-                                            }
-                                        }
-                                        else
-                                            res.send(err);
-                                    })
-                                }
-                            ).catch(
-                                (error) => {
-                                    res.status(400).send({
-                                        success: false,
-                                        message: error
-                                    });
-                                }
-                            );
-                        }
+        if (visitorExisting) {
+            const isExhibitionPresent = visitorExisting.exhibitions.find((exhibition) => new mongoose.Types.ObjectId(req.body.exhibition).equals(exhibition));
 
-                    })
-                }
+            if (isExhibitionPresent) {
+                return res.status(409).send({ success: true, message: 'Visitor already have a ticket for this event.' });
             }
-            else {
-                var visitor = new Visitor();
-                visitor.email = req.body.email;
-                visitor.password = password;
-                visitor.phoneNumber = req.body.phoneNumber;
-                visitor.firstName = req.body.firstName;
-                visitor.lastName = req.body.lastName;
-                visitor.sexe = req.body.sexe;
-                visitor.age = req.body.age;
-                visitor.profession = req.body.profession;
-                visitor.sector = req.body.sector;
-                visitor.establishment = req.body.establishment;
-                visitor.save((err, doc) => {
-                    if (!err) {
-                        var ticket = new Ticket();
-                        ticket.visitor = visitor._id;
-                        ticket.exhibition = req.body.exhibition;
-                        ticket.sharedata = req.body.sharedata;
-                        ticket.save((err, ticketDoc) => {
-                            if (err) {
-                                res.status(400).send({ success: false, message: err });
-                            }
-                            else {
-                                Exhibition.findOne({ '_id': req.body.exhibition }, async (err, exhibition) => {
-                                    if (!err) {
-                                        {
-                                            if (exhibition) {
-                                                if (!exhibition.visitors.includes(visitor._id))
-                                                    try {
-                                                        await Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": visitor._id, "tickets": ticketDoc._id } })
-                                                    }
-                                                    catch (error) {
-                                                        console.log("Error while adding " + visitor._id + " to exhibition( " + req.body.exhibition + " )");
-                                                    }
 
-                                                let transporter = nodemailer.createTransport({
-                                                    service: "gmail",
-                                                    auth: {
-                                                        user: process.env.NODE_MAILER_EMAIL,
-                                                        pass: process.env.NODE_MAILER_PASSWORD,
-                                                    },
-                                                });
-                                                try {
-                                                    let info = await transporter.sendMail({
-                                                        from: '"XPOLAND Team" <xpoland@gmail.com>', // sender address
-                                                        to: visitor.email, // list of receivers
-                                                        subject: "Coordonnées d'accces à XPOLAND", // Subject line
-                                                        html: "<h3>Login : </h3><strong>" + visitor.email + "</strong><br/><h3>Password : </h3><strong>" + password + "</strong><br/><h2 style=\"color:red;\">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>", // html body
-                                                    });
-                                                    res.status(201).send({ success: true, message: 'Visitor added successfully.' });
-                                                } catch (err) {
-                                                    throw ({ success: false, message: "Error while sending e-mail." });
-                                                }
-                                            }
-                                            else {
-                                                res.status(404).send({ "error": "Exhibition not found" })
-                                            }
-                                        }
-                                    }
-                                    else
-                                        res.send(err);
-                                })
+            const ticket = new Ticket({
+                visitor: visitorExisting._id,
+                exhibition: req.body.exhibition,
+                sharedata: req.body.sharedata
+            });
 
-                            }
+            const ticketDoc = await ticket.save();
+            await Visitor.findOneAndUpdate({ '_id': visitorExisting._id }, { $set: { password: password }, $push: { "tickets": ticketDoc._id, "exhibitions": ticketDoc.exhibition } });
 
-                        })
-                    }
-                    else {
-                        return res.send({ 'error': err });
-                    }
-                });
+            const exhibitionDoc = await Exhibition.findOne({ '_id': req.body.exhibition });
+            if (!exhibitionDoc) {
+                return res.status(404).send({ "error": "Exhibition not found" });
             }
+
+            await Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": visitorExisting._id, "tickets": ticketDoc._id } });
+
+            await sendMail(visitorExisting.email, password);
+            res.status(201).send({ success: true, message: 'Visitor added successfully.' });
+
+        } else {
+            const visitor = new Visitor({
+                email: req.body.email,
+                password: password,
+                phoneNumber: req.body.phoneNumber,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                sexe: req.body.sexe,
+                age: req.body.age,
+                profession: req.body.profession,
+                sector: req.body.sector,
+                establishment: req.body.establishment
+            });
+
+            const doc = await visitor.save();
+
+            const ticket = new Ticket({
+                visitor: doc._id,
+                exhibition: req.body.exhibition,
+                sharedata: req.body.sharedata
+            });
+
+            const ticketDoc = await ticket.save();
+
+            const exhibition = await Exhibition.findOne({ '_id': req.body.exhibition });
+            if (!exhibition) {
+                return res.status(404).send({ "error": "Exhibition not found" });
+            }
+
+            if (!exhibition.visitors.includes(doc._id)) {
+                await Exhibition.updateOne({ '_id': req.body.exhibition }, { $push: { "visitors": doc._id, "tickets": ticketDoc._id } });
+            }
+
+            await sendMail(doc.email, password);
+            res.status(201).send({ success: true, message: 'Visitor added successfully.' });
         }
-        else { res.send(err); }
-    })
+
+    } catch (error) {
+        console.error("Error in participateFreely: ", error);
+        res.status(400).send({ success: false, message: error.message });
+    }
+}
+
+const sendMail = async (email, password) => {
+    let transporter = nodemailer.createTransport({
+        host: process.env.NODE_MAILER_HOST,
+        port: process.env.NODE_MAILER_PORT,
+        secure: process.env.NODE_MAILER_SECURE,
+        auth: {
+            user: process.env.NODE_MAILER_EMAIL,
+            pass: process.env.NODE_MAILER_PASSWORD,
+        },
+    });
+
+    await transporter.sendMail({
+        from: 'XPOLAND Team',
+        to: email,
+        subject: "Coordonnées d'accces à XPOLAND",
+        html: `<h3>Login : </h3><strong>${email}</strong><br/><h3>Password : </h3><strong>${password}</strong><br/><h2 style="color:red;">NB : Veuillez changer votre mot de passe lors de votre première connexion</h2>`
+    });
 }
 
 exports.payWithCreditCard = async (req, res) => {

@@ -149,7 +149,7 @@ exports.updateBackgroundColor = (req, res) => {
                 })
                     .then((jimpObject) => {
                         jimpObject.write(process.env.AWS_S3_ROOT_PATH + stand.texture_download_url, (err) => {
-                            if (err) return console.log(err);
+                            if (err) return console.error(err);
                             replaceColor({
                                 image: process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url,
                                 colors: {
@@ -161,7 +161,7 @@ exports.updateBackgroundColor = (req, res) => {
                             })
                                 .then((jimpObject) => {
                                     jimpObject.write(process.env.AWS_S3_ROOT_PATH + stand.banner.texture_download_url, (err) => {
-                                        if (err) return console.log(err);
+                                        if (err) return console.error(err);
                                         Stand.updateOne({ _id: req.stand }, stand).then(
                                             () => {
                                                 res.status(201).json({
@@ -179,13 +179,13 @@ exports.updateBackgroundColor = (req, res) => {
                                     })
                                 })
                                 .catch((err) => {
-                                    console.log(err)
+                                    console.error(err)
                                 })
 
                         })
                     })
                     .catch((err) => {
-                        console.log(err)
+                        console.error(err)
                     })
 
             }
@@ -1096,7 +1096,7 @@ exports.updateBannerCustom0 = (req, res) => {
                             break;
 
                         default:
-                            console.log('erreur fel banner');
+                            console.error('erreur fel banner');
                     }
 
                 }
@@ -1239,7 +1239,7 @@ exports.updateBannerCustom0 = (req, res) => {
                             break;
 
                         default:
-                            console.log('erreur fel banners');
+                            console.error('erreur fel banners');
                     }
 
                 }
@@ -1337,7 +1337,7 @@ exports.updateBannerCustom0 = (req, res) => {
                             );
                             break;
                         default:
-                            console.log('erreur fel banners');
+                            console.error('erreur fel banners');
                     }
 
                 }
@@ -1492,7 +1492,7 @@ exports.updateBannerCustom1 = (req, res) => {
                             break;
 
                         default:
-                            console.log('erreur fel banners');
+                            console.error('erreur fel banners');
                     }
 
                 }
@@ -1504,7 +1504,6 @@ exports.getStandById = function (req, res) {
     Stand.findOne({ _id: req.params.id }).
         exec((err, result) => {
             if (!err) {
-                console.log(result);
                 if (result) {
                     res.status(200).send(result);
                 }

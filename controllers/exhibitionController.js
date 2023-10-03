@@ -2,6 +2,7 @@ const mongoose = require('mongoose'),
     User = mongoose.model('Users'),
     Exhibition = mongoose.model('Exhibitions'),
     Ticket = mongoose.model('Tickets'),
+    Visitor = mongoose.model('Visitors'),
     Stand = mongoose.model('Stands'),
     StandLog = mongoose.model('StandLogs'),
     ObjectId = require('mongoose').Types.ObjectId,
@@ -1082,24 +1083,32 @@ exports.getStands = function (req, res) {
 
 }
 
-exports.getVisitors = (req, res) => {
-    Exhibition.distinct('visitors', { _id: req.exhibition }, (err, result) => {
-        if (!err) {
-            User.find({ _id: { "$in": result } }, 'visitor', { skip: req.params.offset * 20, limit: 20 }, (err, visitors) => {
-                if (!err) {
-                    res.status(200).send({ success: true, data: visitors, nbDocuments: result.length });
-                }
-                else {
-                    res.status(400).send({ success: false, message: err.message })
+const ITEMS_PER_PAGE = 20;
 
-                }
-            })
+exports.getVisitors = async (req, res) => {
+    try {
+        const { exhibition, params: { offset } } = req;
+        
+        // Validation (exemplaire)
+        if (!exhibition || offset < 0) {
+            return res.status(400).send({ success: false, message: "Invalid input." });
         }
-        else {
-            res.status(400).send({ success: false, message: err.message })
-        }
-    })
-}
+
+        const distinctVisitors = await Exhibition.distinct('visitors', { _id: exhibition });
+
+        const visitors = await Visitor.find(
+            { _id: { "$in": distinctVisitors } }, 
+            'visitor', 
+            { skip: offset * ITEMS_PER_PAGE, limit: ITEMS_PER_PAGE }
+        );
+
+        res.status(200).send({ success: true, data: visitors, nbDocuments: distinctVisitors.length });
+
+    } catch (err) {
+        res.status(400).send({ success: false, message: err.message });
+    }
+};
+
 
 exports.getExhibitionVisitorsSheet = (req, res) => {
     Exhibition.distinct('visitors', { _id: req.exhibition }, (err, result) => {
@@ -1819,7 +1828,7 @@ exports.updateEntranceCubeScreen03 = (req, res) => {
 
 exports.getVisitorsForNetworking = (req, res) => {
     Ticket.find({ exhibition: req.params.exhibition, sharedata: true }, 'visitor', { skip: req.params.offset * 14, limit: 14 }).
-        populate({ path: 'visitor', select: 'visitor.email visitor.firstName visitor.lastName visitor.phoneNumber visitor.profession visitor.establishment' }).
+        populate({ path: 'visitor', select: 'email firstName lastName phoneNumber profession establishment' }).
         exec((err, result) => {
             if (!err) {
                 if (result) {
