@@ -122,7 +122,7 @@ exports.getExhibitionForVisitor = function (req, res) {
                     res.status(200).send(result);
                 }
                 else {
-                    res.status(404).send({success:true,message:'Exhibition not found.'});
+                    res.status(404).send({ success: true, message: 'Exhibition not found.' });
 
                 }
             }
@@ -1088,7 +1088,7 @@ const ITEMS_PER_PAGE = 20;
 exports.getVisitors = async (req, res) => {
     try {
         const { exhibition, params: { offset } } = req;
-        
+
         // Validation (exemplaire)
         if (!exhibition || offset < 0) {
             return res.status(400).send({ success: false, message: "Invalid input." });
@@ -1097,8 +1097,8 @@ exports.getVisitors = async (req, res) => {
         const distinctVisitors = await Exhibition.distinct('visitors', { _id: exhibition });
 
         const visitors = await Visitor.find(
-            { _id: { "$in": distinctVisitors } }, 
-            'visitor', 
+            { _id: { "$in": distinctVisitors } },
+            'visitor',
             { skip: offset * ITEMS_PER_PAGE, limit: ITEMS_PER_PAGE }
         );
 
@@ -1827,23 +1827,62 @@ exports.updateEntranceCubeScreen03 = (req, res) => {
 }
 
 exports.getVisitorsForNetworking = (req, res) => {
-    Ticket.find({ exhibition: req.params.exhibition, sharedata: true }, 'visitor', { skip: req.params.offset * 14, limit: 14 }).
-        populate({ path: 'visitor', select: 'email firstName lastName phoneNumber profession establishment' }).
-        exec((err, result) => {
+    Ticket.aggregate([
+        {
+            $match: { exhibition: mongoose.Types.ObjectId(req.params.exhibition), sharedata: true }
+        },
+        {
+            $lookup: {
+                from: 'visitors',
+                localField: 'visitor',
+                foreignField: '_id',
+                as: 'visitor'
+            }
+        },
+        {
+            $unwind: '$visitor'
+        },
+        {
+            $project: {
+                _id: '$visitor._id',
+                email: '$visitor.email',
+                firstName: '$visitor.firstName',
+                lastName: '$visitor.lastName',
+                phoneNumber: '$visitor.phoneNumber',
+                profession: '$visitor.profession',
+                establishment: '$visitor.establishment'
+            }
+        },
+        {
+            $group: {
+                _id: '$_id',
+                email: { $first: '$email' },
+                firstName: { $first: '$firstName' },
+                lastName: { $first: '$lastName' },
+                phoneNumber: { $first: '$phoneNumber' },
+                profession: { $first: '$profession' },
+                establishment: { $first: '$establishment' }
+            }
+        },
+        {
+            $skip: req.params.offset * 14
+        },
+        {
+            $limit: 14
+        }
+    ])
+        .exec((err, result) => {
             if (!err) {
                 if (result) {
                     res.status(200).send({ success: true, data: result });
-                }
-                else {
+                } else {
                     res.status(200).send([]);
-
                 }
-            }
-            else {
+            } else {
                 res.status(400).send({ success: false, message: err });
             }
         });
-}
+};
 
 // Usefull to set the pagination system in the event gameplay
 exports.getVisitorsForNetworkingCount = (req, res) => {
