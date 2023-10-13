@@ -27,6 +27,11 @@ app.use(express.json());
 app.use(cors());
 app.use(passport.initialize())
 
+app.get('/env', (req, res) => {
+  const envVariables = process.env;
+  res.json({ environmentVariables: envVariables });
+});
+
 //import routes
 const userRoute = require('./routes/userRoute');
 const exhibitionRoute = require('./routes/exhibitionRoute');
