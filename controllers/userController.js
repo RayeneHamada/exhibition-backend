@@ -207,11 +207,14 @@ exports.createModerator = async (req, res, next) => {
             // Handle the error and send an error response to the client.
             res
               .status(500)
-              .json({ success: false, message: "Error while sending email." });
+              .json({
+                success: false,
+                message: "Error while sending email. " + err,
+              });
             // You can also log the error for debugging purposes.
             console.error("Error while sending email:", err);
           }
-          console.log("daz")
+          console.log("daz");
           try {
             const fileContent = fs.readFileSync(
               "./ressources/entrance_sponsor_screen.png"

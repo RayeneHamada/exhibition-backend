@@ -90,7 +90,7 @@ exports.getEntrance = function (req, res) {
 
 exports.getVisitors = function (req, res) {
     Exhibition.findOne({ _id: req.params.id }, 'visitors').
-        populate({ path: 'visitors', select: 'visitor.firstName visitor.lastName visitor.phoneNumber visitor.email' }).
+        populate({ path: 'visitors', select: 'firstName visitor.lastName visitor.phoneNumber visitor.email' }).
         exec((err, result) => {
             if (!err) {
                 if (result) {
@@ -1084,7 +1084,6 @@ exports.getStands = function (req, res) {
 }
 
 const ITEMS_PER_PAGE = 20;
-
 exports.getVisitors = async (req, res) => {
     try {
         const { exhibition, params: { offset } } = req;

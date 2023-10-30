@@ -8,6 +8,7 @@ const mongoose = require('mongoose'),
 stripe = require('stripe')(process.env.STRIPE_SECRET_KEY),
 
   exports.webhook = async (req, res) => {
+    console.log("wsel");
     let event;
     try {
       event = stripe.webhooks.constructEvent(
@@ -29,6 +30,8 @@ stripe = require('stripe')(process.env.STRIPE_SECRET_KEY),
     // Handle the event
     // Review important events for Billing webhooks
     // https://stripe.com/docs/billing/webhooks
+    console.log(dataObject);
+    console.log(event.type);
     switch (event.type) {
       case 'payment_intent.succeeded':
         if (dataObject['metadata']['email']) {
