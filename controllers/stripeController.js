@@ -8,7 +8,6 @@ const mongoose = require('mongoose'),
 stripe = require('stripe')(process.env.STRIPE_SECRET_KEY),
 
   exports.webhook = async (req, res) => {
-    console.log("wsel");
     let event;
     try {
       event = stripe.webhooks.constructEvent(
